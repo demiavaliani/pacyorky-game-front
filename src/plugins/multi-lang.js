@@ -40,6 +40,7 @@ export default new MLCreate({
             players_count_in_room: "в этой комнате играет",
             max_time_per_turn: "максимальное время отведенное на ход (мин)",
             room_name: "впишите название комнаты тут",
+            go_to_home_page: "перейти на главную",
         })
     ]
 })
