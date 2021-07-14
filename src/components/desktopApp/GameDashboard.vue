@@ -218,7 +218,22 @@ p {
 	}
 }
 
-@media (min-width: 1199.98px) and (max-width: 1600px) {
+@media(min-device-width: 1440px) and (max-device-width: 1440px) {
+	.middle-gif {
+		height: 255px;
+	}
+
+	.active-games-list {
+		width: 260px;
+	}
+
+	.validation-def-style {
+		font-size: 75%;
+		top: 259px;
+	}
+}
+
+@media (min-device-width: 1536px) and (max-device-width: 1536px) {
 	.middle-gif {
 		height: 213px;
 	}
