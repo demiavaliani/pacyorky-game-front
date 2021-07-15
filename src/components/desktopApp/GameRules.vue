@@ -1,6 +1,6 @@
 <template>
 	<b-container class="container d-flex flex-column align-items-center">
-		<div class="rules mt-3 mb-4">
+		<div class="rules mt-md-5 mb-md-5 mt-xl-3 mb-xl-4">
 			<img src="@/assets/navbar/game-rules/game-rules-bird.png" />
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Venenatis arcu etiam duis amet
@@ -36,7 +36,7 @@
 			<p>Odio aliquam, et mauris nullam pharetra cum. Lorem in diam elit aenean nulla eu.</p>
 		</div>
 
-		<b-button class="w-25" to="/"> {{ $ml.get("go_to_home_page") }} </b-button>
+		<b-button class="w-md-25" to="/"> {{ $ml.get("go_to_home_page") }} </b-button>
 	</b-container>
 </template>
 
@@ -68,6 +68,14 @@ img {
 
 .rules {
 	height: 57vh;
-	overflow-y: scroll;
+	overflow-y: auto;
+}
+
+@media (min-device-width: 1537px) {
+	.rules {
+		height: 45vh;
+		margin-top: 100px !important;
+		margin-bottom: 60px !important;
+	}
 }
 </style>
