@@ -1,6 +1,6 @@
 <template>
 	<b-container
-		id="GameDashboard"
+		id="game-dashboard"
 		class="d-flex flex-column justify-content-center align-items-center h-75"
 	>
 		<b-row class="d-flex justify-content-center">
@@ -89,7 +89,9 @@ export default {
 		return {
 			showCreateRoomModal: false,
 			showJoinRoomModal: false,
-			currentRoom: {},
+			currentRoom: {
+				players: [],
+			},
 			currentRoomId: 0,
 			roomSelected: false,
 		};
@@ -218,7 +220,7 @@ p {
 	}
 }
 
-@media(min-device-width: 1440px) and (max-device-width: 1440px) {
+@media (min-device-width: 1440px) and (max-device-width: 1440px) {
 	.middle-gif {
 		height: 255px;
 	}
