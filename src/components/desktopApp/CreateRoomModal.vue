@@ -8,7 +8,7 @@
 		footer-class="justify-content-center modal-footer"
 	>
 		<template #modal-header>
-			<b-button @click="onClose" class="removeDefaultButtonStyle">
+			<b-button @click="onClose" class="remove-default-button-style">
 				<img src="@/assets/game-dashboard/modal-close-x.svg" />
 			</b-button>
 		</template>
@@ -17,6 +17,9 @@
 			<b-row cols="2" class="d-flex align-items-center justify-content-center">
 				<b-col cols="8">
 					<p>{{ $ml.get("play_with_computer") }}</p>
+					<p v-if="playWithComputerState" class="validation-def-style">
+						Please select one.
+					</p>
 				</b-col>
 				<b-col cols="2">
 					<b-form-radio-group class="d-flex justify-content-around">
@@ -44,12 +47,15 @@
 				<b-col cols="8">
 					<div class="w-75">
 						<p>{{ $ml.get("choose_players_count") }}</p>
+						<p v-if="roomCapacityState" class="validation-def-style">
+							Please choose the room capacity.
+						</p>
 					</div>
 				</b-col>
 				<b-col cols="2" class="d-flex justify-content-around align-items-center">
 					<b-row class="d-flex justify-content-center pt-2">
 						<b-col cols="2" class="px-0 d-flex justify-content-center">
-							<b-button @click="capacityDecrease" class="removeDefaultButtonStyle">
+							<b-button @click="capacityDecrease" class="remove-default-button-style">
 								<img src="@/assets/game-dashboard/component-minus.svg" />
 							</b-button>
 						</b-col>
@@ -64,7 +70,7 @@
 							</div>
 						</b-col>
 						<b-col cols="2" class="px-0 d-flex justify-content-center">
-							<b-button @click="capacityIncrease" class="removeDefaultButtonStyle ">
+							<b-button @click="capacityIncrease" class="remove-default-button-style ">
 								<img src="@/assets/game-dashboard/component-plus.svg" />
 							</b-button>
 						</b-col>
@@ -84,13 +90,13 @@
 					</div>
 				</b-col>
 				<b-col cols="2" class="d-flex justify-content-around align-items-center">
-					<b-button class="removeDefaultButtonStyle">
+					<b-button class="remove-default-button-style">
 						<img src="@/assets/game-dashboard/component-minus.svg" />
 					</b-button>
 					<div>
 						{{ maxTimePerTurn }}
 					</div>
-					<b-button class="removeDefaultButtonStyle">
+					<b-button class="remove-default-button-style">
 						<img src="@/assets/game-dashboard/component-plus.svg" />
 					</b-button>
 				</b-col>
@@ -100,15 +106,26 @@
 				<b-col cols="7">
 					<b-form-input
 						v-model="roomForm.name"
+						:state="roomNameState"
 						:placeholder="$ml.get('room_name')"
 						size="lg"
 					></b-form-input>
+					<b-form-invalid-feedback>
+						Name must be 3-11 characters long.
+					</b-form-invalid-feedback>
+					<b-form-valid-feedback>
+						Looks Good.
+					</b-form-valid-feedback>
 				</b-col>
 			</b-row>
 		</b-container>
 
 		<template #modal-footer="{ ok }">
-			<b-button @click="onCreateRoom" class="submitGameCreateBtn mb-5 mt-4">
+			<b-button
+				:disabled="fullFormValidity == false"
+				@click="onCreateRoom"
+				class="submit-game-create-btn mb-5 mt-4"
+			>
 				<p style="color: white" class="my-0">
 					{{ $ml.get("create_new_room") }}
 				</p>
@@ -133,7 +150,7 @@ export default {
 
 			roomForm: {
 				capacity: 0,
-				withComputer: true,
+				withComputer: null,
 				privateRoom: true,
 				password: "",
 				name: "",
@@ -154,6 +171,28 @@ export default {
 			return {
 				"x-active": this.tickActive === "x",
 			};
+		},
+
+		roomNameState() {
+			return this.roomForm.name.length > 2 && this.roomForm.name.length <= 11;
+		},
+
+		roomCapacityState() {
+			return this.roomForm.capacity < 1;
+		},
+
+		playWithComputerState() {
+			return this.roomForm.withComputer === null ? true : false;
+		},
+
+		fullFormValidity() {
+			if (
+				this.roomNameState == false ||
+				this.roomCapacityState == true ||
+				this.playWithComputerState == true
+			) {
+				return false;
+			} else return true;
 		},
 	},
 
@@ -195,10 +234,18 @@ p {
 	color: #747474;
 }
 
-.removeDefaultButtonStyle {
+.remove-default-button-style {
 	border: 0;
 	background-color: transparent !important;
 	box-shadow: none !important;
+}
+
+.validation-def-style {
+	color: #dc3545;
+	font-size: 80%;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+		"Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol", "Noto Color Emoji";
 }
 
 .men-img {
@@ -256,7 +303,7 @@ p {
 	content: url("../../assets/game-dashboard/component-x-active.svg");
 }
 
-.submitGameCreateBtn {
+.submit-game-create-btn {
 	width: 345px;
 	height: 56px;
 	border-radius: 10px;

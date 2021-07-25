@@ -38,16 +38,13 @@
 					</b-col>
 
 					<b-col lg="6" md="6" order-md="8" order-lg="0" class="py-md-1">
-						<b-row class="align-items-center pt-3">
+						<b-row class="align-items-center">
 							<b-col cols="6" class="text-center">
 								<img src="@/assets/footer/ministry.svg" class="ministry-logo" />
 							</b-col>
 
 							<b-col cols="3" class="text-center">
-								<img
-									src="@/assets/footer/integratsiooni.svg"
-									class="integratsiooni-logo"
-								/>
+								<img src="@/assets/footer/integratsiooni.svg" class="integratsiooni-logo" />
 							</b-col>
 
 							<b-col cols="3" class="text-center">
@@ -63,24 +60,15 @@
 					<b-col lg="3" md="6" order-md="6" order-lg="0" class="py-md-1">
 						<b-row>
 							<b-col class="pr-1">
-								<img
-									src="@/assets/footer/footer-facebook.svg"
-									style="width: 25px;"
-								/>
+								<img src="@/assets/footer/footer-facebook.svg" style="width: 25px;" />
 							</b-col>
 
 							<b-col class="px-1">
-								<img
-									src="@/assets/footer/footer-share.svg"
-									style="width: 20px;"
-								/>
+								<img src="@/assets/footer/footer-share.svg" style="width: 20px;" />
 							</b-col>
 
 							<b-col class="pl-1">
-								<img
-									src="@/assets/footer/footer-email.svg"
-									style="width: 25px;"
-								/>
+								<img src="@/assets/footer/footer-email.svg" style="width: 25px;" />
 							</b-col>
 						</b-row>
 					</b-col>
