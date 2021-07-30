@@ -1,9 +1,10 @@
 <template>
 	<div id="app">
-		<NavBar></NavBar>
+		<!-- <NavBar></NavBar> -->
 		<!-- <ErrorModal></ErrorModal> -->
-		<router-view></router-view>
-		<MainFooter></MainFooter>
+		<!-- <router-view></router-view> -->
+		<!-- <MainFooter></MainFooter> -->
+		<WebSocketPlayersList></WebSocketPlayersList>
 	</div>
 </template>
 
@@ -20,6 +21,7 @@ import GameDashboard from "@/components/desktopApp/GameDashboard";
 import ActiveRoomsGraph from "@/components/desktopApp/ActiveRoomsGraph";
 import CreateRoomModal from "@/components/desktopApp/CreateRoomModal";
 import JoinRoomModal from "@/components/desktopApp/JoinRoomModal";
+import WebSocketPlayersList from "@/components/desktopApp/WebSocketPlayersList";
 
 export default {
 	name: "app",
@@ -35,6 +37,7 @@ export default {
 		ActiveRoomsGraph,
 		CreateRoomModal,
 		JoinRoomModal,
+		WebSocketPlayersList,
 	},
 	mounted() {
 		this.setPlayerID();
