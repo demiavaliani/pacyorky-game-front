@@ -15,8 +15,6 @@
 <script>
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-const express = require("express");
-const { createProxyMiddleware } = require("http-proxy-middleware");
 
 export default {
 	name: "websocketdemo",
