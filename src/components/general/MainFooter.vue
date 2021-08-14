@@ -10,6 +10,12 @@
 							style="width: 210px;"
 						/>
 					</b-col>
+
+					<b-col>
+						<p style="font-size: 11px;">
+							{{ $ml.get("copyright_footer") }}
+						</p>
+					</b-col>
 				</b-row>
 			</b-col>
 
@@ -37,7 +43,7 @@
 						<p>info@pacyorky.ee</p>
 					</b-col>
 
-					<b-col lg="6" md="6" order-md="8" order-lg="0" class="py-md-1">
+					<b-col lg="6" md="6" order-md="8" order-lg="0" class="d-flex align-items-center py-md-1">
 						<b-row class="align-items-center">
 							<b-col cols="6" class="text-center">
 								<img src="@/assets/footer/ministry.svg" class="ministry-logo" />
@@ -73,14 +79,6 @@
 						</b-row>
 					</b-col>
 				</b-row>
-			</b-col>
-		</b-row>
-
-		<b-row class="mb-3">
-			<b-col>
-				<p style="font-size: 11px;">
-					{{ $ml.get("copyright_footer") }}
-				</p>
 			</b-col>
 		</b-row>
 	</b-container>
