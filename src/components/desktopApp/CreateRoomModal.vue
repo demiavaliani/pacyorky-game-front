@@ -205,6 +205,7 @@ export default {
 			if (this.roomForm.name) {
 				api.createRoom(this.roomForm).then((response) => {
 					if (response) {
+						this.$emit("update-active-rooms-graph");
 						this.$emit("close");
 					}
 				});

@@ -58,6 +58,7 @@
 		<CreateRoomModal
 			:isModalShown="showCreateRoomModal"
 			@close="showCreateRoomModal = !showCreateRoomModal"
+			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</CreateRoomModal>
 
@@ -65,6 +66,7 @@
 			:isModalShown="showJoinRoomModal"
 			:currentRoom="currentRoom"
 			@close="showJoinRoomModal = !showJoinRoomModal"
+			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</JoinRoomModal>
 	</b-container>
@@ -118,7 +120,11 @@ export default {
 		},
 	},
 
-	methods: {},
+	methods: {
+		updateActiveRoomsGraph() {
+			this.$store.dispatch("setRoomAction");
+		},
+	},
 };
 </script>
 

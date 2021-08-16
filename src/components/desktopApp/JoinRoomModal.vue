@@ -77,6 +77,7 @@ export default {
 		},
 
 		onJoinRoom() {
+			this.$emit("update-active-rooms-graph");
 			this.$emit("close");
 		},
 	},
