@@ -199,6 +199,7 @@ export default {
 	methods: {
 		onClose() {
 			this.$emit("close");
+			// catch this event in game dashboard to update the game list with the created game automatically
 		},
 
 		onCreateRoom() {

@@ -4,6 +4,7 @@
 		<!-- <ErrorModal></ErrorModal> -->
 		<router-view></router-view>
 		<MainFooter></MainFooter>
+		<!-- <BoardGame></BoardGame> -->
 	</div>
 </template>
 
