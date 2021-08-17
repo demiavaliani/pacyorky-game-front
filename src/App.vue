@@ -53,6 +53,17 @@ export default {
 </script>
 
 <style lang="less">
+*::-webkit-scrollbar {
+	width: 27px;
+}
+
+*::-webkit-scrollbar-thumb {
+	border: 10px solid transparent;
+	border-radius: 9999px;
+	background-clip: padding-box;
+	background-color: #5f9da5;
+}
+
 #app {
 	height: 100%;
 }
