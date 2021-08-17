@@ -34,13 +34,13 @@
 							:class="currentRoomId == item.id ? 'animateRoomClass' : ''"
 							@current-room-click="
 								currentRoom = $event;
-								currentRoomId = item.id;
+								currentRoomId = $event.id;
 								roomSelected = true;
 							"
 						></ActiveRoomsGraph>
 					</div>
 				</div>
-				<p v-if="roomSelected == false" class="validation-def-style">Please select one.</p>
+				<!-- <p v-if="roomSelected == false" class="validation-def-style">Please select one.</p> -->
 
 				<b-button
 					@click="showJoinRoomModal = !showJoinRoomModal"
@@ -119,6 +119,14 @@ export default {
 	},
 
 	methods: {},
+
+	watch: {
+		async getActiveRoomsAndSortByPlayersCountAsc() {
+			try {
+				this.currentRoomId = await this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
+			} catch (error) {}
+		},
+	},
 };
 </script>
 

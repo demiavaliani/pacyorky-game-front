@@ -17,9 +17,6 @@
 			<b-row cols="2" class="d-flex align-items-center justify-content-center">
 				<b-col cols="8">
 					<p>{{ $ml.get("play_with_computer") }}</p>
-					<p v-if="playWithComputerState" class="validation-def-style">
-						Please select one.
-					</p>
 				</b-col>
 				<b-col cols="2">
 					<b-form-radio-group class="d-flex justify-content-around">
@@ -47,9 +44,6 @@
 				<b-col cols="8">
 					<div class="w-75">
 						<p>{{ $ml.get("choose_players_count") }}</p>
-						<p v-if="roomCapacityState" class="validation-def-style">
-							Please choose the room capacity.
-						</p>
 					</div>
 				</b-col>
 				<b-col cols="2" class="d-flex justify-content-around align-items-center">
@@ -149,14 +143,14 @@ export default {
 			maxTimePerTurn: 0,
 
 			roomForm: {
-				capacity: 0,
+				capacity: 4,
 				withComputer: null,
 				privateRoom: true,
 				password: "",
 				name: "",
 			},
 
-			tickActive: undefined,
+			tickActive: "x",
 		};
 	},
 
@@ -178,19 +172,11 @@ export default {
 		},
 
 		roomCapacityState() {
-			return this.roomForm.capacity < 1;
-		},
-
-		playWithComputerState() {
-			return this.roomForm.withComputer === null ? true : false;
+			return this.roomForm.capacity > 1;
 		},
 
 		fullFormValidity() {
-			if (
-				this.roomNameState == false ||
-				this.roomCapacityState == true ||
-				this.playWithComputerState == true
-			) {
+			if (this.roomNameState == false || this.roomCapacityState == false) {
 				return false;
 			} else return true;
 		},
