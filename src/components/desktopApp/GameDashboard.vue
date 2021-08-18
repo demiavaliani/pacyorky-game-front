@@ -41,12 +41,6 @@
 					</div>
 				</div>
 
-				<!-- <div
-					class="mt-5"
-					:disabled="disabled"
-					v-b-tooltip.hover.noninteractive="{ customClass: 'my-tooltip' }"
-					:title="tooltipTitle"
-				> -->
 				<div id="tooltip-trigger" class="mt-5">
 					<b-button
 						@click="showJoinRoomModal = !showJoinRoomModal"
@@ -67,7 +61,6 @@
 						>{{ $ml.get("no_rooms_available") }}</b-tooltip
 					>
 				</div>
-				<!-- </div> -->
 			</b-col>
 		</b-row>
 
