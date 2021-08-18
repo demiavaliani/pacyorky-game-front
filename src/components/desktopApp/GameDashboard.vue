@@ -40,18 +40,34 @@
 						></ActiveRoomsGraph>
 					</div>
 				</div>
-				<!-- <p v-if="roomSelected == false" class="validation-def-style">Please select one.</p> -->
 
-				<b-button
-					@click="showJoinRoomModal = !showJoinRoomModal"
-					class="game-btns join mt-5"
-					style="background-color: white; border: 4px solid #35838d"
-					:disabled="roomSelected == false"
-				>
-					<p class="mb-0">
-						{{ $ml.get("join") }}
-					</p>
-				</b-button>
+				<!-- <div
+					class="mt-5"
+					:disabled="disabled"
+					v-b-tooltip.hover.noninteractive="{ customClass: 'my-tooltip' }"
+					:title="tooltipTitle"
+				> -->
+				<div id="tooltip-trigger" class="mt-5">
+					<b-button
+						@click="showJoinRoomModal = !showJoinRoomModal"
+						class="game-btns join"
+						style="background-color: white; border: 4px solid #35838d"
+						:disabled="roomSelected === false"
+					>
+						<p class="mb-0">
+							{{ $ml.get("join") }}
+						</p>
+					</b-button>
+					<b-tooltip
+						target="tooltip-trigger"
+						triggers="hover"
+						noninteractive
+						custom-class="my-tooltip"
+						:disabled="disabled"
+						>{{ $ml.get("no_rooms_available") }}</b-tooltip
+					>
+				</div>
+				<!-- </div> -->
 			</b-col>
 		</b-row>
 
@@ -94,6 +110,7 @@ export default {
 			},
 			currentRoomId: 0,
 			roomSelected: false,
+			disabled: false,
 		};
 	},
 
@@ -124,13 +141,31 @@ export default {
 		async getActiveRoomsAndSortByPlayersCountAsc() {
 			try {
 				this.currentRoomId = await this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
-			} catch (error) {}
+				this.currentRoom = await this.getActiveRoomsAndSortByPlayersCountAsc[0];
+				this.roomSelected = true;
+				this.disabled = true;
+			} catch (error) {
+				this.roomSelected = false;
+			}
 		},
 	},
 };
 </script>
 
 <style scoped>
+.my-tooltip {
+	opacity: 1 !important;
+}
+
+::v-deep .tooltip-inner {
+	color: white;
+	background-color: #5a6268;
+}
+
+::v-deep .arrow::before {
+	border-top-color: #5a6268 !important;
+}
+
 p {
 	font-size: max(0.73vw, 15px);
 	font-family: "Montserrat";
@@ -143,6 +178,10 @@ p {
 	border-radius: 10px;
 	border: 0;
 	background-color: #5f9da5;
+}
+
+.game-btns.join {
+	width: 100%;
 }
 
 .validation-def-style {

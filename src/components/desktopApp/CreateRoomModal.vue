@@ -20,6 +20,12 @@
 				</b-col>
 				<b-col cols="2">
 					<b-form-radio-group class="d-flex justify-content-around">
+						<!-- 
+						#######################################################################################################################
+						####	@change - when a different radio is clicked, "tickActive" data property is set to either "tick" or "x".    ####
+						####	Later, the values are used by "tickActiveObj()" and "xActiveObj()" methods.								   ####
+						#######################################################################################################################
+						-->
 						<b-form-radio
 							id="tick"
 							@change="tickActive = 'tick'"
@@ -155,6 +161,9 @@ export default {
 	},
 
 	computed: {
+		// ###############################################################################################################
+		// ####    "tickActiveObj" and "xActiveObj" methods return strings based on the data property "tickActive"    ####
+		// ###############################################################################################################
 		tickActiveObj() {
 			return {
 				"tick-active": this.tickActive === "tick",
