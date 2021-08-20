@@ -75,8 +75,8 @@
 <script>
 import { mapState } from "vuex";
 import ActiveRoomsGraph from "@/components/desktopApp/ActiveRoomsGraph";
-import CreateRoomModal from "@/components/desktopApp/CreateRoomModal";
-import JoinRoomModal from "@/components/desktopApp/JoinRoomModal";
+import CreateRoomModal from "@/components/modals/CreateRoomModal";
+import JoinRoomModal from "@/components/modals/JoinRoomModal";
 
 export default {
 	name: "GameDashboard",
