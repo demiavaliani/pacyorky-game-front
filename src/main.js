@@ -17,6 +17,7 @@ axios.interceptors.response.use(response => {
 }, error => {
   store.dispatch("setModalStatusAction", true)
   store.dispatch("setErrorCodeAction", error.response.data.code)
+  console.log(error.response.data)
   return Promise.reject(error);
 })
 

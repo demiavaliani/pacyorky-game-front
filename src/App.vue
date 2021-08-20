@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import ErrorModal from "@/components/desktopApp/ErrorModal";
+import ErrorModal from "@/components/modals/ErrorModal";
 import axios from "axios";
 import NavBar from "@/components/general/NavBar";
 import HomePage from "@/components/desktopApp/HomePage";
@@ -18,8 +18,8 @@ import BoardGame from "@/components/desktopApp/BoardGame";
 import GameRules from "@/components/desktopApp/GameRules";
 import GameDashboard from "@/components/desktopApp/GameDashboard";
 import ActiveRoomsGraph from "@/components/desktopApp/ActiveRoomsGraph";
-import CreateRoomModal from "@/components/desktopApp/CreateRoomModal";
-import JoinRoomModal from "@/components/desktopApp/JoinRoomModal";
+import CreateRoomModal from "@/components/modals/CreateRoomModal";
+import JoinRoomModal from "@/components/modals/JoinRoomModal";
 
 export default {
 	name: "app",
@@ -53,6 +53,17 @@ export default {
 </script>
 
 <style lang="less">
+*::-webkit-scrollbar {
+	width: 27px;
+}
+
+*::-webkit-scrollbar-thumb {
+	border: 10px solid transparent;
+	border-radius: 9999px;
+	background-clip: padding-box;
+	background-color: #5f9da5;
+}
+
 #app {
 	height: 100%;
 }
