@@ -6,7 +6,7 @@
 		<b-row class="d-flex justify-content-center">
 			<b-col cols="auto" class="d-flex flex-column pr-4">
 				<div class="middle-gif">
-					<img src="#" />
+
 				</div>
 
 				<b-button @click="showCreateRoomModal = !showCreateRoomModal" class="game-btns mt-5">
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import {mapState} from "vuex";
 import ActiveRoomsGraph from "@/components/desktopApp/ActiveRoomsGraph";
 import CreateRoomModal from "@/components/modals/CreateRoomModal";
 import JoinRoomModal from "@/components/modals/JoinRoomModal";
