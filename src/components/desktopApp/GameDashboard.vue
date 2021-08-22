@@ -5,9 +5,7 @@
 	>
 		<b-row class="d-flex justify-content-center">
 			<b-col cols="auto" class="d-flex flex-column pr-4">
-				<div class="middle-gif">
-					<img src="#" />
-				</div>
+				<div class="middle-gif"></div>
 
 				<b-button
 					@click="
@@ -96,6 +94,7 @@
 			:isModalShown="showCreateRoomModal"
 			@close="showCreateRoomModal = !showCreateRoomModal"
 			ref="createRoomModalChildComponent"
+			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</CreateRoomModal>
 
@@ -103,6 +102,7 @@
 			:isModalShown="showJoinRoomModal"
 			:currentRoom="currentRoom"
 			@close="showJoinRoomModal = !showJoinRoomModal"
+			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</JoinRoomModal>
 	</b-container>
@@ -165,10 +165,14 @@ export default {
 		triggerCreateRoomModalChildComponent() {
 			this.$refs.createRoomModalChildComponent.randomNamePicker();
 		},
+
+		updateActiveRoomsGraph() {
+			this.$store.dispatch("setRoomAction");
+		},
 	},
 
 	watch: {
-		/* 
+		/*
 		"getActiveRoomsAndSortByPlayersCountAsc" watcher selects a default room item before any click.
 
 		First, TRY block is executed, if there is a room available ->
