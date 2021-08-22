@@ -21,10 +21,9 @@
 				<b-col cols="2">
 					<b-form-radio-group class="d-flex justify-content-around">
 						<!-- 
-						#######################################################################################################################
-						####	@change - when a different radio is clicked, "tickActive" data property is set to either "tick" or "x".    ####
-						####	Later, the values are used by "tickActiveObj()" and "xActiveObj()" methods.								   ####
-						#######################################################################################################################
+							First - @change - when a different radio is clicked, "tickActive" data property is set to either "tick" or "x".
+							Later, the values are used by "tickActiveObj()" and "xActiveObj()" methods.
+							After that, either "tickActiveObj" or "xActiveObj" is binded as a CSS class to choose the appropriate button.
 						-->
 						<b-form-radio
 							id="tick"
@@ -113,9 +112,6 @@
 					<b-form-invalid-feedback>
 						Name must be 3-11 characters long.
 					</b-form-invalid-feedback>
-					<b-form-valid-feedback>
-						Looks Good.
-					</b-form-valid-feedback>
 				</b-col>
 			</b-row>
 		</b-container>
@@ -147,6 +143,20 @@ export default {
 	data() {
 		return {
 			maxTimePerTurn: 0,
+			tickActive: "x",
+			roomNameArray: [
+				"red",
+				"orange",
+				"yellow",
+				"green",
+				"blue",
+				"purple",
+				"golden",
+				"brown",
+				"black",
+				"white",
+			],
+			roomName: [],
 
 			roomForm: {
 				capacity: 4,
@@ -155,15 +165,11 @@ export default {
 				password: "",
 				name: "",
 			},
-
-			tickActive: "x",
 		};
 	},
 
 	computed: {
-		// ###############################################################################################################
-		// ####    "tickActiveObj" and "xActiveObj" methods return strings based on the data property "tickActive"    ####
-		// ###############################################################################################################
+		// "tickActiveObj" and "xActiveObj" methods return strings, which are CSS classes, based on the data property "tickActive"
 		tickActiveObj() {
 			return {
 				"tick-active": this.tickActive === "tick",
@@ -204,6 +210,33 @@ export default {
 					}
 				});
 			}
+		},
+
+		randomNamePicker() {
+			// let roomName =
+			// 	this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)] + "_room";
+			// this.roomForm.name = this.$ml.get(roomName);
+			let roomName = this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)];
+
+			// console.log(`initial roomName: ${roomName}`);
+			if (this.roomName.length < 10 && !this.roomName.includes(roomName)) {
+				this.roomForm.name = roomName;
+				this.roomName.push(roomName);
+				// console.log(`roomName: ${roomName} pushed`);
+				// console.log(`roomName: ${this.roomName}`);
+			} else if (this.roomName.length < 10 && this.roomName.includes(roomName)) {
+				// console.log(`${roomName} already in array!`);
+				do {
+					roomName = this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)];
+				} while (this.roomName.includes(roomName));
+
+				this.roomForm.name = roomName;
+				this.roomName.push(roomName);
+				// console.log(`roomName: ${roomName} pushed INSTEAD`);
+				// console.log(`roomName: ${this.roomName}`);
+			} else {
+			}
+			// console.log("All names are used!!!");
 		},
 
 		capacityIncrease() {

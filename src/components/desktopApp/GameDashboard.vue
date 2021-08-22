@@ -9,7 +9,13 @@
 					<img src="#" />
 				</div>
 
-				<b-button @click="showCreateRoomModal = !showCreateRoomModal" class="game-btns mt-5">
+				<b-button
+					@click="
+						showCreateRoomModal = !showCreateRoomModal;
+						triggerCreateRoomModalChildComponent();
+					"
+					class="game-btns mt-5"
+				>
 					<p style="color: white" class="mb-0">
 						{{ $ml.get("create_new_room") }}
 					</p>
@@ -25,13 +31,28 @@
 					class="d-flex flex-column justify-content-start flex-grow-1 active-games-list px-3 py-1"
 				>
 					<div>
+						<!-- 
+							"@current-room-click" sets "currentRoomId" to the "$event.id". "$event" is the room object
+							passed from "ActiveRoomsGraph". That event is triggered when any of the item is clicked.  
+							":class" attribute assigns "animate-room-class" CSS class to each "ActiveRoomsGraph" item IF:
+							"currentRoomId" from data is same as "item.id" from v-for loop below.
+						-->
+						<!-- 
+							"@current-room-click" also sets the "currentRoom" from data to the room object from
+							"ActiveRoomsGraph". This object is later passed to the "JoinRoom Modal".
+						 -->
+						<!-- 
+							"@current-room-click" also sets "roomSelected" to true. "roomSelected" value is used by
+							"join-room" button. If "roomSelected" is true, meaning the room item was clicked,
+							the "join-room" button will be active, otherwise it will be disabled.
+						  -->
 						<ActiveRoomsGraph
 							v-for="item in getActiveRoomsAndSortByPlayersCountAsc"
 							:key="item.id"
-							:activePlayersCount="item.players.length"
-							:activeRoomName="item.name"
-							:currentRoom="item"
-							:class="currentRoomId == item.id ? 'animateRoomClass' : ''"
+							:activePlayersCountFromActiveRoomsGraph="item.players.length"
+							:activeRoomNameFromActiveRoomsGraph="item.name"
+							:currentRoomFromActiveRoomsGraph="item"
+							:class="currentRoomId == item.id ? 'animate-room-class' : ''"
 							@current-room-click="
 								currentRoom = $event;
 								currentRoomId = $event.id;
@@ -43,6 +64,7 @@
 
 				<div id="tooltip-trigger" class="mt-5">
 					<b-button
+						id="join-room"
 						@click="showJoinRoomModal = !showJoinRoomModal"
 						class="game-btns join"
 						style="background-color: white; border: 4px solid #35838d"
@@ -52,13 +74,19 @@
 							{{ $ml.get("join") }}
 						</p>
 					</b-button>
+					<!-- 
+						tooltip below will be disabled if "disabled" data attribute is true.
+						"disabled" attribute by default is false, in case there are no rooms available.
+						If there is a room available, "disabled" attribute is adjusted by
+						"getActiveRoomsAndSortByPlayersCountAsc" watcher.
+					 -->
 					<b-tooltip
 						target="tooltip-trigger"
 						triggers="hover"
 						noninteractive
 						custom-class="my-tooltip"
 						:disabled="disabled"
-						>{{ $ml.get("no_rooms_available") }}</b-tooltip
+						>{{ $ml.get("please_add_new_game") }}</b-tooltip
 					>
 				</div>
 			</b-col>
@@ -67,6 +95,7 @@
 		<CreateRoomModal
 			:isModalShown="showCreateRoomModal"
 			@close="showCreateRoomModal = !showCreateRoomModal"
+			ref="createRoomModalChildComponent"
 		>
 		</CreateRoomModal>
 
@@ -128,9 +157,29 @@ export default {
 		},
 	},
 
-	methods: {},
+	methods: {
+		/*
+		using ref="createRoomModalChildComponent" on "CreateRoomModal" we can call "randomNamePicker()"
+		method from parent component to child.
+		*/
+		triggerCreateRoomModalChildComponent() {
+			this.$refs.createRoomModalChildComponent.randomNamePicker();
+		},
+	},
 
 	watch: {
+		/* 
+		"getActiveRoomsAndSortByPlayersCountAsc" watcher selects a default room item before any click.
+
+		First, TRY block is executed, if there is a room available ->
+		"currentRoomId" is set to get "animate-room-class" CSS class, giving it selection effect;
+		"currentRoom" is set so that the default room object can be passed to "JoinRoomModal";
+		"roomSelected" is set to true to enable the "join-room" button;
+		"disabled" is set to true to disable the tooltip;
+
+		IF no room is available, CATCH block is executed ->
+		"roomSelected is set to false to disable the "join-room" button;
+		*/
 		async getActiveRoomsAndSortByPlayersCountAsc() {
 			try {
 				this.currentRoomId = await this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
@@ -202,7 +251,7 @@ p {
 	border-radius: 10px;
 }
 
-.animateRoomClass {
+.animate-room-class {
 	font-weight: bold;
 }
 
