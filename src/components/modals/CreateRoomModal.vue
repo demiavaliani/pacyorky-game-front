@@ -81,25 +81,6 @@
 					</b-row>
 				</b-col>
 
-				<b-col cols="12" class="mb-3 mt-4"></b-col>
-
-				<b-col cols="8">
-					<div class="w-75">
-						<p>{{ $ml.get("choose_max_time_per_turn") }}</p>
-					</div>
-				</b-col>
-				<b-col cols="2" class="d-flex justify-content-around align-items-center">
-					<b-button class="remove-default-button-style">
-						<img src="@/assets/game-dashboard/component-minus.svg" />
-					</b-button>
-					<div>
-						{{ maxTimePerTurn }}
-					</div>
-					<b-button class="remove-default-button-style">
-						<img src="@/assets/game-dashboard/component-plus.svg" />
-					</b-button>
-				</b-col>
-
 				<b-col cols="12" class="mb-5"></b-col>
 
 				<b-col cols="7">
@@ -110,7 +91,7 @@
 						size="lg"
 					></b-form-input>
 					<b-form-invalid-feedback>
-						Name must be 3-11 characters long.
+						{{ $ml.get("name_3_11_characters_long") }}
 					</b-form-invalid-feedback>
 				</b-col>
 			</b-row>
@@ -145,18 +126,28 @@ export default {
 			maxTimePerTurn: 0,
 			tickActive: "x",
 			roomNameArray: [
-				"red",
-				"orange",
-				"yellow",
-				"green",
-				"blue",
-				"purple",
-				"golden",
-				"brown",
-				"black",
-				"white",
+				"kyiv",
+				"kharkiv",
+				"odesa",
+				"myrhorod",
+				"dnipro",
+				"donetsk",
+				"zaporizhia",
+				"zhovkva",
+				"bakota",
+				"yalta",
+				"uzhhorod",
+				"lviv",
+				"slavske",
+				"mykolaiv",
+				"mariupol",
+				"luhansk",
+				"sevastopol",
+				"vinnytsia",
+				"makiivka",
+				"poltava",
 			],
-			roomName: [],
+			usedRoomNamesArray: [],
 
 			roomForm: {
 				capacity: 4,
@@ -186,12 +177,8 @@ export default {
 			return this.roomForm.name.length > 2 && this.roomForm.name.length <= 11;
 		},
 
-		roomCapacityState() {
-			return this.roomForm.capacity > 1;
-		},
-
 		fullFormValidity() {
-			if (this.roomNameState == false || this.roomCapacityState == false) {
+			if (this.roomNameState == false) {
 				return false;
 			} else return true;
 		},
@@ -217,27 +204,31 @@ export default {
 			// let roomName =
 			// 	this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)] + "_room";
 			// this.roomForm.name = this.$ml.get(roomName);
+
 			let roomName = this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)];
 
 			// console.log(`initial roomName: ${roomName}`);
-			if (this.roomName.length < 10 && !this.roomName.includes(roomName)) {
-				this.roomForm.name = roomName;
-				this.roomName.push(roomName);
+			if (this.usedRoomNamesArray.length < 20 && !this.usedRoomNamesArray.includes(roomName)) {
+				this.roomForm.name = this.$ml.get(roomName);
+				this.usedRoomNamesArray.push(roomName);
 				// console.log(`roomName: ${roomName} pushed`);
-				// console.log(`roomName: ${this.roomName}`);
-			} else if (this.roomName.length < 10 && this.roomName.includes(roomName)) {
+				// console.log(`usedRoomNamesArray: ${this.usedRoomNamesArray}`);
+			} else if (
+				this.usedRoomNamesArray.length < 20 &&
+				this.usedRoomNamesArray.includes(roomName)
+			) {
 				// console.log(`${roomName} already in array!`);
 				do {
 					roomName = this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)];
-				} while (this.roomName.includes(roomName));
+				} while (this.usedRoomNamesArray.includes(roomName));
 
-				this.roomForm.name = roomName;
-				this.roomName.push(roomName);
+				this.roomForm.name = this.$ml.get(roomName);
+				this.usedRoomNamesArray.push(roomName);
 				// console.log(`roomName: ${roomName} pushed INSTEAD`);
-				// console.log(`roomName: ${this.roomName}`);
+				// console.log(`usedRoomNamesArray: ${this.usedRoomNamesArray}`);
 			} else {
+				// console.log("All names are used!!!");
 			}
-			// console.log("All names are used!!!");
 		},
 
 		capacityIncrease() {
@@ -247,7 +238,7 @@ export default {
 		},
 
 		capacityDecrease() {
-			if (this.roomForm.capacity > 0) {
+			if (this.roomForm.capacity > 2) {
 				this.roomForm.capacity--;
 			}
 		},
