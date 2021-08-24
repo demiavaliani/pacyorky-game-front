@@ -8,6 +8,7 @@ export default new MLCreate({
     save: process.env.NODE_ENV === 'production',
     languages: [
         new MLanguage('Ukrainian').create({
+            "": "",
             please_add_new_game: 'В данный момент игр нет. Добавьте новую',
             home: 'главная',
             games: 'Игры',

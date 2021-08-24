@@ -201,10 +201,6 @@ export default {
 		},
 
 		randomNamePicker() {
-			// let roomName =
-			// 	this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)] + "_room";
-			// this.roomForm.name = this.$ml.get(roomName);
-
 			let roomName = this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)];
 
 			// console.log(`initial roomName: ${roomName}`);
