@@ -1,10 +1,10 @@
 <template>
 	<div id="app">
-		<NavBar></NavBar>
+		<!-- <NavBar></NavBar> -->
 		<!-- <ErrorModal></ErrorModal> -->
-		<router-view></router-view>
-		<MainFooter></MainFooter>
-		<!-- <BoardGame></BoardGame> -->
+		<!-- <router-view></router-view> -->
+		<!-- <MainFooter></MainFooter> -->
+		<BoardGame></BoardGame>
 	</div>
 </template>
 

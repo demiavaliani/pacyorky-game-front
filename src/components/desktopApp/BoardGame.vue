@@ -1,6 +1,6 @@
 <template>
 	<div id="main-div">
-		<img src="@/assets/board-game/game1.svg" usemap="#image-map" />
+		<img src="@/assets/board-game/board-game-noframe.svg" usemap="#image-map" />
 
 		<map name="image-map">
 			<area @click="numClick('14')" alt="14" href="#" coords="88,232,24" shape="circle" />
