@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<NavBar></NavBar>
-		<!-- <ErrorModal></ErrorModal> -->
+		<ErrorModal></ErrorModal>
 		<router-view></router-view>
 		<MainFooter></MainFooter>
 	</div>
