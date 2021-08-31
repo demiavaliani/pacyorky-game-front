@@ -1,11 +1,11 @@
 <template>
 	<b-row
 		class="d-flex align-items-center text-center room-entry"
-		@click="$emit('current-room-click', currentRoom)"
+		@click="$emit('current-room-click', currentRoomFromActiveRoomsGraph)"
 	>
 		<b-col cols="6" class="pr-1">
 			<p class="m-0 text-left">
-				{{ activeRoomName }}
+				{{ activeRoomNameFromActiveRoomsGraph }}
 			</p>
 		</b-col>
 
@@ -73,13 +73,13 @@
 <script>
 export default {
 	props: {
-		activePlayersCount: Number,
-		activeRoomName: String,
-		currentRoom: {},
+		activePlayersCountFromActiveRoomsGraph: Number,
+		activeRoomNameFromActiveRoomsGraph: String,
+		currentRoomFromActiveRoomsGraph: {},
 	},
 	methods: {
 		fillMan(position) {
-			return this.activePlayersCount >= position;
+			return this.activePlayersCountFromActiveRoomsGraph >= position;
 		},
 	},
 };
