@@ -132,7 +132,7 @@ export default {
 			},
 			currentRoomId: 0,
 			roomSelected: false,
-			disabled: false,
+			disabled: true,
 		};
 	},
 
@@ -140,6 +140,7 @@ export default {
 		...mapState({
 			activeRooms: "listOfActiveRooms",
 		}),
+
 		getActiveRoomsAndSortByPlayersCountAsc() {
 			return this.activeRooms
 				.sort((a, b) => {
@@ -184,15 +185,22 @@ export default {
 		IF no room is available, CATCH block is executed ->
 		"roomSelected is set to false to disable the "join-room" button;
 		*/
-		async getActiveRoomsAndSortByPlayersCountAsc() {
-			try {
-				this.currentRoomId = await this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
-				this.currentRoom = await this.getActiveRoomsAndSortByPlayersCountAsc[0];
-				this.roomSelected = true;
-				this.disabled = true;
-			} catch (error) {
-				this.roomSelected = false;
-			}
+		getActiveRoomsAndSortByPlayersCountAsc: {
+			immediate: true,
+			async handler() {
+				if (this.getActiveRoomsAndSortByPlayersCountAsc.length > 0) {
+					try {
+						this.currentRoomId = await this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
+						this.currentRoom = await this.getActiveRoomsAndSortByPlayersCountAsc[0];
+						this.roomSelected = true;
+						this.disabled = true;
+					} catch (error) {
+						this.roomSelected = false;
+						this.disabled = false;
+						console.log(error);
+					}
+				}
+			},
 		},
 	},
 };
