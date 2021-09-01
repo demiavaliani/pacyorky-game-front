@@ -74,13 +74,13 @@ export default {
 }
 
 @font-face {
-	font-family: Montserrat;
+	font-family: "Montserrat";
 	src: url("assets/fonts/MontserratAlternates-Bold.ttf") format("truetype");
 	font-weight: bold;
 }
 
 @font-face {
-	font-family: Montserrat;
+	font-family: "Montserrat";
 	src: url("assets/fonts/MontserratAlternates-SemiBold.ttf") format("truetype");
 	font-weight: 600;
 }

@@ -3,10 +3,7 @@
 		<b-container fluid class="main-container h-75">
 			<b-row cols="1" class="h-100 d-flex align-content-around">
 				<b-col>
-					<img
-						src="@/assets/home-page/family-home-page.png"
-						class="family-picture"
-					/>
+					<img src="@/assets/home-page/family-home-page.png" class="family-picture" />
 				</b-col>
 
 				<b-col>
@@ -16,8 +13,11 @@
 				</b-col>
 
 				<b-col>
-					<b-button to="/game-dashboard" class="start-game-btn">
-						<p>{{ $ml.get("start_game") }}</p>
+					<b-button
+						to="/game-dashboard"
+						class="start-game-btn d-flex justify-content-center align-items-center"
+					>
+						<p style="color: white;">{{ $ml.get("start_game") }}</p>
 					</b-button>
 				</b-col>
 			</b-row>
@@ -35,8 +35,7 @@ export default {
 <style scoped>
 .main-container {
 	background-color: #ffffff;
-	background: url("../../assets/home-page/background-patterns.png") top center
-		no-repeat;
+	background: url("../../assets/home-page/background-patterns.png") top center no-repeat;
 }
 
 .main-container {
@@ -56,17 +55,20 @@ p {
 
 .text-in-middle {
 	width: 35vw;
+	font-size: max(21px, 1.25vw);
 	text-align: center;
 	font-weight: bold;
-	font-size: max(21px, 1.25vw);
+	color: #3c3b3b;
 }
 
 .start-game-btn {
 	width: max(200px, 15vw);
+	height: 6vh;
+	border: 0;
 	border-radius: 10px;
-	background-color: #35838d;
-	font-weight: 600;
 	font-size: max(19px, 1.15vw);
+	font-weight: 600;
+	background-color: #35838dc9;
 }
 
 .family-picture {

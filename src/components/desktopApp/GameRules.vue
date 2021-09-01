@@ -36,7 +36,14 @@
 			<p>Odio aliquam, et mauris nullam pharetra cum. Lorem in diam elit aenean nulla eu.</p>
 		</div>
 
-		<b-button class="w-md-25" to="/"> {{ $ml.get("go_to_home_page") }} </b-button>
+		<b-button
+			class="w-md-25 back-to-home-btn d-flex justify-content-center align-items-center"
+			to="/"
+		>
+			<p class="mb-0">
+				{{ $ml.get("go_to_home_page") }}
+			</p>
+		</b-button>
 	</b-container>
 </template>
 
@@ -61,6 +68,10 @@ export default {
 	width: 57vw;
 }
 
+p {
+	font-family: "Montserrat";
+}
+
 img {
 	width: 15vw;
 	float: left;
@@ -69,6 +80,14 @@ img {
 .rules {
 	height: 57vh;
 	overflow-y: auto;
+}
+
+.back-to-home-btn {
+	width: max(200px, 15vw);
+	height: 6vh;
+	border: 0;
+	border-radius: 10px;
+	background-color: #5f9da5;
 }
 
 @media (min-device-width: 1537px) {
