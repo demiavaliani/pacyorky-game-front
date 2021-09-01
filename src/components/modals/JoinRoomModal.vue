@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import api from "@/api/api";
+
 export default {
 	name: "JoinRoomModal",
 
@@ -77,7 +79,12 @@ export default {
 		},
 
 		onJoinRoom() {
-			this.$emit("close");
+			api.joinRoom(this.currentRoom.id).then((response) => {
+				if (response) {
+					this.$emit("close");
+					this.$emit("update-active-rooms-graph");
+				}
+			});
 		},
 	},
 };

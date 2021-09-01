@@ -17,12 +17,14 @@
 			<b-row cols="2" class="d-flex align-items-center justify-content-center">
 				<b-col cols="8">
 					<p>{{ $ml.get("play_with_computer") }}</p>
-					<p v-if="playWithComputerState" class="validation-def-style">
-						Please select one.
-					</p>
 				</b-col>
 				<b-col cols="2">
 					<b-form-radio-group class="d-flex justify-content-around">
+						<!-- 
+							First - @change - when a different radio is clicked, "tickActive" data property is set to either "tick" or "x".
+							Later, the values are used by "tickActiveObj()" and "xActiveObj()" methods.
+							After that, either "tickActiveObj" or "xActiveObj" is binded as a CSS class to choose the appropriate button.
+						-->
 						<b-form-radio
 							id="tick"
 							@change="tickActive = 'tick'"
@@ -47,9 +49,6 @@
 				<b-col cols="8">
 					<div class="w-75">
 						<p>{{ $ml.get("choose_players_count") }}</p>
-						<p v-if="roomCapacityState" class="validation-def-style">
-							Please choose the room capacity.
-						</p>
 					</div>
 				</b-col>
 				<b-col cols="2" class="d-flex justify-content-around align-items-center">
@@ -82,25 +81,6 @@
 					</b-row>
 				</b-col>
 
-				<b-col cols="12" class="mb-3 mt-4"></b-col>
-
-				<b-col cols="8">
-					<div class="w-75">
-						<p>{{ $ml.get("choose_max_time_per_turn") }}</p>
-					</div>
-				</b-col>
-				<b-col cols="2" class="d-flex justify-content-around align-items-center">
-					<b-button class="remove-default-button-style">
-						<img src="@/assets/game-dashboard/component-minus.svg" />
-					</b-button>
-					<div>
-						{{ maxTimePerTurn }}
-					</div>
-					<b-button class="remove-default-button-style">
-						<img src="@/assets/game-dashboard/component-plus.svg" />
-					</b-button>
-				</b-col>
-
 				<b-col cols="12" class="mb-5"></b-col>
 
 				<b-col cols="7">
@@ -111,11 +91,8 @@
 						size="lg"
 					></b-form-input>
 					<b-form-invalid-feedback>
-						Name must be 3-11 characters long.
+						{{ $ml.get("name_3_11_characters_long") }}
 					</b-form-invalid-feedback>
-					<b-form-valid-feedback>
-						Looks Good.
-					</b-form-valid-feedback>
 				</b-col>
 			</b-row>
 		</b-container>
@@ -147,20 +124,43 @@ export default {
 	data() {
 		return {
 			maxTimePerTurn: 0,
+			tickActive: "x",
+			roomNameArray: [
+				"kyiv",
+				"kharkiv",
+				"odesa",
+				"myrhorod",
+				"dnipro",
+				"donetsk",
+				"zaporizhia",
+				"zhovkva",
+				"bakota",
+				"yalta",
+				"uzhhorod",
+				"lviv",
+				"slavske",
+				"mykolaiv",
+				"mariupol",
+				"luhansk",
+				"sevastopol",
+				"vinnytsia",
+				"makiivka",
+				"poltava",
+			],
+			usedRoomNamesArray: [],
 
 			roomForm: {
-				capacity: 0,
+				capacity: 4,
 				withComputer: null,
 				privateRoom: true,
 				password: "",
 				name: "",
 			},
-
-			tickActive: undefined,
 		};
 	},
 
 	computed: {
+		// "tickActiveObj" and "xActiveObj" methods return strings, which are CSS classes, based on the data property "tickActive"
 		tickActiveObj() {
 			return {
 				"tick-active": this.tickActive === "tick",
@@ -177,20 +177,8 @@ export default {
 			return this.roomForm.name.length > 2 && this.roomForm.name.length <= 11;
 		},
 
-		roomCapacityState() {
-			return this.roomForm.capacity < 1;
-		},
-
-		playWithComputerState() {
-			return this.roomForm.withComputer === null ? true : false;
-		},
-
 		fullFormValidity() {
-			if (
-				this.roomNameState == false ||
-				this.roomCapacityState == true ||
-				this.playWithComputerState == true
-			) {
+			if (this.roomNameState == false) {
 				return false;
 			} else return true;
 		},
@@ -206,9 +194,37 @@ export default {
 			if (this.roomForm.name) {
 				api.createRoom(this.roomForm).then((response) => {
 					if (response) {
+						this.$emit("update-active-rooms-graph");
 						this.$emit("close");
 					}
 				});
+			}
+		},
+
+		randomNamePicker() {
+			let roomName = this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)];
+
+			// console.log(`initial roomName: ${roomName}`);
+			if (this.usedRoomNamesArray.length < 20 && !this.usedRoomNamesArray.includes(roomName)) {
+				this.roomForm.name = this.$ml.get(roomName);
+				this.usedRoomNamesArray.push(roomName);
+				// console.log(`roomName: ${roomName} pushed`);
+				// console.log(`usedRoomNamesArray: ${this.usedRoomNamesArray}`);
+			} else if (
+				this.usedRoomNamesArray.length < 20 &&
+				this.usedRoomNamesArray.includes(roomName)
+			) {
+				// console.log(`${roomName} already in array!`);
+				do {
+					roomName = this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)];
+				} while (this.usedRoomNamesArray.includes(roomName));
+
+				this.roomForm.name = this.$ml.get(roomName);
+				this.usedRoomNamesArray.push(roomName);
+				// console.log(`roomName: ${roomName} pushed INSTEAD`);
+				// console.log(`usedRoomNamesArray: ${this.usedRoomNamesArray}`);
+			} else {
+				// console.log("All names are used!!!");
 			}
 		},
 
@@ -219,7 +235,7 @@ export default {
 		},
 
 		capacityDecrease() {
-			if (this.roomForm.capacity > 0) {
+			if (this.roomForm.capacity > 2) {
 				this.roomForm.capacity--;
 			}
 		},

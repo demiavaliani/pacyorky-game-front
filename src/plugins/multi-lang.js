@@ -8,6 +8,7 @@ export default new MLCreate({
     save: process.env.NODE_ENV === 'production',
     languages: [
         new MLanguage('Ukrainian').create({
+            "": "",
             please_add_new_game: 'В данный момент игр нет. Добавьте новую',
             home: 'главная',
             games: 'Игры',
@@ -40,6 +41,30 @@ export default new MLCreate({
             players_count_in_room: "в этой комнате играет",
             max_time_per_turn: "максимальное время отведенное на ход (мин)",
             room_name: "впишите название комнаты тут",
+            go_to_home_page: "перейти на главную",
+            min_2_players_in_the_room: "В комнате должно быть минимум 2 игрока",
+            name_3_11_characters_long: "Имя должно состоять из 3–11 символов",
+            red_room: "Красная комната",
+            kyiv: "Киев",
+            kharkiv: "Харьков",
+            odesa: "Одесса",
+            myrhorod: "Миргород",
+            dnipro: "Днепр",
+            donetsk: "Донецк",
+            zaporizhia: "Запорожье",
+            zhovkva: "Жолква",
+            bakota: "Бакота",
+            yalta: "Ялта",
+            uzhhorod: "Ужгород",
+            lviv: "Львов",
+            slavske: "Славское",
+            mykolaiv: "Николаев",
+            mariupol: "Мариуполь",
+            luhansk: "Луганск",
+            sevastopol: "Севастополь",
+            vinnytsia: "Винница",
+            makiivka: "Макеевка",
+            poltava: "Полтава",
         })
     ]
 })
