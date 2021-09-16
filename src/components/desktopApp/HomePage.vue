@@ -3,10 +3,7 @@
 		<b-container fluid class="main-container h-75">
 			<b-row cols="1" class="h-100 d-flex align-content-around">
 				<b-col>
-					<img
-						src="@/assets/home-page/family-home-page.png"
-						class="family-picture"
-					/>
+					<img src="@/assets/home-page/family-home-page.png" class="family-picture" />
 				</b-col>
 
 				<b-col>
@@ -35,8 +32,7 @@ export default {
 <style scoped>
 .main-container {
 	background-color: #ffffff;
-	background: url("../../assets/home-page/background-patterns.png") top center
-		no-repeat;
+	background: url("../../assets/home-page/background-patterns.png") top center no-repeat;
 }
 
 .main-container {

@@ -14,6 +14,9 @@ export default new Vuex.Store({
         modalStatus: false,
         errorCode: "",
         listOfActiveRooms: [],
+        gameState: {},
+        devicePlayerId: "",
+
     },
 
     getters: {
@@ -44,9 +47,21 @@ export default new Vuex.Store({
             context.commit("setErrorCodeMutation", errorCode);
         },
 
-        setRoomAction(context, room) {
+        setRoomAction(context) {
             api.getRooms().then(response => {
                 context.commit("setRoomMutation", response)
+            })
+        },
+
+        setGameAction(context) {
+            api.getGame().then(response => {
+                context.commit("setGameMutation", response)
+            })
+        },
+
+        setDevicePlayerIdAction(context) {
+            api.getDevicePlayerId().then(response => {
+                context.commit("setDevicePlayerIdMutation", response)
             })
         }
     },
@@ -62,6 +77,14 @@ export default new Vuex.Store({
 
         setRoomMutation(state, room) {
             state.listOfActiveRooms = room;
+        },
+
+        setGameMutation(state, game) {
+            state.gameState = game;
+        },
+
+        setDevicePlayerIdMutation(state, id) {
+            state.devicePlayerId = id;
         }
     },
 })

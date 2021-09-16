@@ -1,9 +1,10 @@
 <template>
 	<div id="app">
 		<NavBar></NavBar>
-		<ErrorModal></ErrorModal>
+		<!-- <ErrorModal></ErrorModal> -->
 		<router-view></router-view>
-		<MainFooter></MainFooter>
+		<!-- <MainFooter></MainFooter> -->
+		<GameLogic></GameLogic>
 	</div>
 </template>
 
@@ -20,6 +21,7 @@ import GameDashboard from "@/components/desktopApp/GameDashboard";
 import ActiveRoomsGraph from "@/components/desktopApp/ActiveRoomsGraph";
 import CreateRoomModal from "@/components/modals/CreateRoomModal";
 import JoinRoomModal from "@/components/modals/JoinRoomModal";
+import GameLogic from "@/components/desktopApp/GameLogic";
 
 export default {
 	name: "app",
@@ -35,16 +37,17 @@ export default {
 		ActiveRoomsGraph,
 		CreateRoomModal,
 		JoinRoomModal,
+		GameLogic,
 	},
 	mounted() {
-		this.setPlayerID();
+		// this.setPlayerID();
 	},
 	methods: {
-		setPlayerID: function() {
-			axios.get("/api/player/id/").then((res) => {
-				this.$cookies.set("playerid", res.data);
-			});
-		},
+		// setPlayerID: function() {
+		// 	axios.get("/api/player/id/").then((res) => {
+		// 		this.$cookies.set("playerid", res.data);
+		// 	});
+		// },
 	},
 	created() {
 		document.querySelector("body").style.height = "100vh";
