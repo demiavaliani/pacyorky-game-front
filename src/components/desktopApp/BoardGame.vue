@@ -4,33 +4,79 @@
 			<b-col>
 				<div>
 					<img
-						src="@/assets/board-game/board-game-noframe.svg"
+						src="@/assets/board-game/board.svg"
 						class="board-game-img"
 						usemap="#image-map"
 					/>
 
 					<map name="image-map">
-						<area @click="numClick('14')" alt="14" href="#" coords="88,232,24" shape="circle" />
-						<area @click="numClick('13')" alt="13" href="#" coords="128,508,24" shape="circle" />
-						<area @click="numClick('15')" alt="15" href="#" coords="235,74,24" shape="circle" />
+						<area alt="101" title="101" href="#" coords="756,682,19" shape="circle">
+						<area alt="106" title="106" href="#" coords="799,669,20" shape="circle">
+						<area alt="107" title="107" href="#" coords="848,691,22" shape="circle">
+						<area alt="113" title="113" href="#" coords="813,730,21" shape="circle">
+						<area alt="114" title="114" href="#" coords="786,772,20" shape="circle">
+						<area alt="118" title="118" href="#" coords="839,788,21" shape="circle">
+						<area alt="119" title="119" href="#" coords="885,763,22" shape="circle">
+						<area alt="201" title="201" href="#" coords="938,725,23" shape="circle">
+						<area alt="215" title="215" href="#" coords="943,675,21" shape="circle">
+						<area alt="216" title="216" href="#" coords="978,638,24" shape="circle">
+						<area alt="217" title="217" href="#" coords="1037,653,23" shape="circle">
+						<area alt="301" title="301" href="#" coords="1087,598,23" shape="circle">
+						<area alt="314" title="314" href="#" coords="1070,544,21" shape="circle">
+						<area alt="322" title="322" href="#" coords="1131,537,21" shape="circle">
+						<area alt="330" title="330" href="#" coords="1105,483,21" shape="circle">
+						<area alt="407" title="407" href="#" coords="1142,411,21" shape="circle">
+						<area alt="408" title="408" href="#" coords="1102,376,20" shape="circle">
+						<area alt="409" title="409" href="#" coords="1144,337,20" shape="circle">
+						<area alt="410" title="410" href="#" coords="1098,305,21" shape="circle">
+						<area alt="505" title="505" href="#" coords="1068,255,20" shape="circle">
+						<area alt="506" title="506" href="#" coords="1021,228,21" shape="circle">
+						<area alt="522" title="522" href="#" coords="1013,178,22" shape="circle">
+						<area alt="523" title="523" href="#" coords="965,163,20" shape="circle">
+						<area alt="601" title="601" href="#" coords="920,123,23" shape="circle">
+						<area alt="602" title="602" href="#" coords="867,143,22" shape="circle">
+						<area alt="603" title="603" href="#" coords="836,98,23" shape="circle">
+						<area alt="604" title="604" href="#" coords="785,122,22" shape="circle">
+						<area alt="701" title="701" href="#" coords="717,108,23" shape="circle">
+						<area alt="707" title="707" href="#" coords="668,148,20" shape="circle">
+						<area alt="712" title="712" href="#" coords="613,117,21" shape="circle">
+						<area alt="802" title="802" href="#" coords="552,156,21" shape="circle">
+						<area alt="814" title="814" href="#" coords="538,212,21" shape="circle">
+						<area alt="819" title="819" href="#" coords="482,226,21" shape="circle">
+						<area alt="901" title="901" href="#" coords="429,289,24" shape="circle">
+						<area alt="927" title="927" href="#" coords="451,337,21" shape="circle">
+						<area alt="928" title="928" href="#" coords="393,368,25" shape="circle">
+						<area alt="1014" title="1014" href="#" coords="390,439,22" shape="circle">
+						<area alt="1015" title="1015" href="#" coords="373,486,23" shape="circle">
+						<area alt="1016" title="1016" href="#" coords="423,508,24" shape="circle">
+						<area alt="1017" title="1017" href="#" coords="383,557,23" shape="circle">
+						<area alt="1101" title="1101" href="#" coords="435,595,24" shape="circle">
+						<area alt="1121" title="1121" href="#" coords="441,651,21" shape="circle">
+						<area alt="1122" title="1122" href="#" coords="497,638,23" shape="circle">
+						<area alt="1123" title="1123" href="#" coords="518,697,22" shape="circle">
+						<area alt="1204" title="1204" href="#" coords="576,724,20" shape="circle">
+						<area alt="1207" title="1207" href="#" coords="603,763,20" shape="circle">
+						<area alt="1213" title="1213" href="#" coords="657,767,19" shape="circle">
+						<area alt="1219" title="1219" href="#" coords="691,731,21" shape="circle">
 					</map>
 				</div>
 			</b-col>
 		</b-row>
+		
 
-		<b-row class="menu-card-row mt-4">
+		<!-- <b-row class="menu-card-row mt-4">
 			<b-col>
-				<!-- Bottom menu card -->
+
 				<div class="menu-card">
 					<b-row class="container">
-						<!-- Left wing -->
+
 						<b-col md="auto" class="text-center pl-0">
 							<img src="@/assets/cards/character/baba_docka.png" class="character-card-img" />
 						</b-col>
-						<!-- Right wing -->
+
 						<b-col>
 							<b-row class="right-wing-row justify-content-center">
-								<!-- Card with zheton points -->
+								
 								<b-col md="auto" class="d-flex flex-column justify-content-between">
 									<div class="zheton-card">
 										<b-row class="justify-content-center align-items-center">
@@ -103,7 +149,7 @@
 										</svg>
 									</div>
 								</b-col>
-								<!-- Dice column -->
+
 								<b-col md="auto" class="text-center">
 									<div class="text-center dice-div">
 										<img src="@/assets/board-game/dice.svg" class="dice-img" />
@@ -112,7 +158,7 @@
 										<p>{{ $ml.get("roll_the_dice") }}</p>
 									</b-button>
 								</b-col>
-								<!-- Info sign -->
+
 								<b-col md="auto" class="info-sign-col pr-0">
 									<b-button class="info-sign-btn pt-0 pr-0">
 										<img src="@/assets/board-game/info-sign.svg" class="info-sign-img" />
@@ -123,7 +169,7 @@
 					</b-row>
 				</div>
 			</b-col>
-		</b-row>
+		</b-row> -->
 	</div>
 </template>
 
@@ -137,28 +183,54 @@ export default {
 		return {};
 	},
 
-	methods: {
-		numClick(number) {
-			console.log(`Number ${number} clicked!`);
-		},
+	computed: {
+		
+	},
 
-		fillMan(position) {
-			return this.activePlayersCountFromActiveRoomsGraph >= position;
-		},
+	methods: {
+		dateClick() {
+			let holidaysArray = document.getElementsByTagName("area");
+			for (let holiday of holidaysArray) {
+				let date = holiday.getAttribute('title');
+				holiday.addEventListener('click', () => {
+					console.log(`Current date is: ${ date }`)
+				})
+			}
+		}
+		
+		// numClick(number) {
+		// 	console.log(`Number ${number} clicked!`);
+		// },
+
+		// fillMan(position) {
+		// 	return this.activePlayersCountFromActiveRoomsGraph >= position;
+		// },
 	},
 
 	mounted() {
 		ImageMap("img[usemap]");
+		this.dateClick();
 	},
 
-	beforeUpdate() {
-		ImageMap("img[usemap]");
-	},
+	// beforeUpdate() {
+	// 	ImageMap("img[usemap]");
+	// },
 };
 </script>
 
 <style scoped>
-* {
+#main-div {
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+	
+.board-game-img {
+	width: 75vw;
+}
+	
+/* * {
 	box-sizing: content-box;
 }
 #main-div {
@@ -197,9 +269,7 @@ p {
 	fill: black;
 }
 
-.board-game-img {
-	width: 56vw;
-}
+
 
 .menu-card {
 	padding: 10px;
@@ -280,10 +350,10 @@ p {
 
 .info-sign-img {
 	width: 30px;
-}
+} */
 
 @media (min-width: 768px) and (max-width: 991.98px) {
-	.board-game-row {
+	/* .board-game-row {
 		margin-top: 30px !important;
 	}
 
@@ -322,7 +392,7 @@ p {
 
 	.dice-text-btn {
 		padding: 2px 8px 2px;
-	}
+	} */
 }
 @media (min-width: 992px) and (max-width: 1199.98px) {
 }
