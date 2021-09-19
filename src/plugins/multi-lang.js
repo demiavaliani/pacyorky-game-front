@@ -65,6 +65,7 @@ export default new MLCreate({
             vinnytsia: "Винница",
             makiivka: "Макеевка",
             poltava: "Полтава",
+            roll_the_dice: "бросить кости",
         })
     ]
 })

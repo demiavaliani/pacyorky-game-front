@@ -1,10 +1,11 @@
 <template>
 	<div id="app">
-		<NavBar></NavBar>
+		<!-- <NavBar></NavBar> -->
 		<!-- <ErrorModal></ErrorModal> -->
-		<router-view></router-view>
+		<!-- <router-view></router-view> -->
 		<!-- <MainFooter></MainFooter> -->
-		<GameLogic></GameLogic>
+    <!-- <GameLogic></GameLogic> -->
+		<BoardGame></BoardGame>
 	</div>
 </template>
 
@@ -77,14 +78,20 @@ export default {
 }
 
 @font-face {
-	font-family: Montserrat;
+	font-family: "Montserrat";
 	src: url("assets/fonts/MontserratAlternates-Bold.ttf") format("truetype");
 	font-weight: bold;
 }
 
 @font-face {
-	font-family: Montserrat;
+	font-family: "Montserrat";
 	src: url("assets/fonts/MontserratAlternates-SemiBold.ttf") format("truetype");
 	font-weight: 600;
+}
+
+@font-face {
+	font-family: "Amatic_SC";
+	src: url("assets/fonts/AmaticSC-Bold.ttf") format("truetype");
+	font-weight: bold;
 }
 </style>
