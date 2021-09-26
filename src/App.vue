@@ -4,8 +4,9 @@
 		<!-- <ErrorModal></ErrorModal> -->
 		<!-- <router-view></router-view> -->
 		<!-- <MainFooter></MainFooter> -->
-    <!-- <GameLogic></GameLogic> -->
+		<!-- <GameLogic></GameLogic> -->
 		<BoardGame></BoardGame>
+		<GameDashboard></GameDashboard>
 	</div>
 </template>
 

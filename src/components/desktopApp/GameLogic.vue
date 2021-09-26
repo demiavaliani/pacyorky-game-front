@@ -8,7 +8,6 @@
 		<b-button @click="throwDice()" :disabled="throwDiceDisabled">Throw Dice</b-button>
 		<b-button @click="throwCards()" :disabled="throwCardsDisabled">Throw Cards</b-button>
 		<b-button @click="vote()" :disabled="voteDisabled">Vote</b-button>
-		<b-button @click="player()">Current Player</b-button>
 		<b-button @click="leaveRoom()">Leave room</b-button>
 	</div>
 </template>
@@ -59,15 +58,9 @@ export default {
 	},
 
 	methods: {
-		player() {
-			if (this.game && this.gameStatus === "STARTED" && this.game.step.currentPlayer.id) {
-				console.log(this.game.step.currentPlayer.id);
-			}
-		},
-
 		throwDice() {
 			api.throwDice().then(() => {
-				console.log("Threw Dice!!!");
+				// console.log("Threw Dice!!!");
 			});
 		},
 
@@ -79,7 +72,7 @@ export default {
 				.forEach((eachId) => playerCardIDs.push(eachId.id));
 			api.throwCards(playerCardIDs).then(() => {
 				this.getDroppedCards();
-				console.log("Threw Cards!!!");
+				// console.log("Threw Cards!!!");
 			});
 		},
 
@@ -98,14 +91,13 @@ export default {
 
 		vote() {
 			api.vote(this.droppedCards).then((res) => {
-				console.log("Vote given!!!");
+				// console.log("Vote given!!!");
+				// console.log(res);
 			});
 		},
 
 		leaveRoom() {
-			api.leaveRoom().then((res) => {
-				console.log("Leave Room res: ", res);
-			});
+			api.leaveRoom().then((res) => {});
 		},
 
 		initializeGame() {
@@ -131,6 +123,7 @@ export default {
 					(curPlayer) => curPlayer.id == this.devicePlayerId
 				)[0].currentDay.deskOrder;
 			}
+			this.$emit("deskOrder", this.deskOrder);
 		},
 
 		identifyCurrentTurnPlayerId() {
