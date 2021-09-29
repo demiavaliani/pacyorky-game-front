@@ -6,7 +6,7 @@
 		<!-- <MainFooter></MainFooter> -->
 		<!-- <GameLogic></GameLogic> -->
 		<BoardGame></BoardGame>
-		<GameDashboard></GameDashboard>
+		<!-- <GameDashboard></GameDashboard> -->
 	</div>
 </template>
 

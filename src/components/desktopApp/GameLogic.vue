@@ -69,7 +69,7 @@ export default {
 			const playerCardIDs = [];
 			this.game.step.currentPlayer.deck
 				.slice(0, 3)
-				.forEach((eachId) => playerCardIDs.push(eachId.id));
+				.forEach(eachId => playerCardIDs.push(eachId.id));
 			api.throwCards(playerCardIDs).then(() => {
 				this.getDroppedCards();
 				// console.log("Threw Cards!!!");
@@ -78,7 +78,7 @@ export default {
 
 		getDroppedCards() {
 			if (this.game && this.gameStatus === "STARTED" && this.stepStatus === "WAITING_VOTE") {
-				api.getGame().then((res) => {
+				api.getGame().then(res => {
 					let cards = res.step.stepCards;
 					let cardIdArr = [];
 					for (let item of cards) {
@@ -90,14 +90,14 @@ export default {
 		},
 
 		vote() {
-			api.vote(this.droppedCards).then((res) => {
+			api.vote(this.droppedCards).then(res => {
 				// console.log("Vote given!!!");
 				// console.log(res);
 			});
 		},
 
 		leaveRoom() {
-			api.leaveRoom().then((res) => {});
+			api.leaveRoom().then(res => {});
 		},
 
 		initializeGame() {
@@ -120,7 +120,7 @@ export default {
 		setDeskOrder() {
 			if (this.game && this.gameStatus === "STARTED") {
 				this.deskOrder = this.game.players.filter(
-					(curPlayer) => curPlayer.id == this.devicePlayerId
+					curPlayer => curPlayer.id == this.devicePlayerId
 				)[0].currentDay.deskOrder;
 			}
 			this.$emit("deskOrder", this.deskOrder);
@@ -151,7 +151,7 @@ export default {
 	},
 
 	created() {
-		this.initializeGame();
+		// this.initializeGame();
 		this.initializeDevicePlayerId();
 	},
 };
