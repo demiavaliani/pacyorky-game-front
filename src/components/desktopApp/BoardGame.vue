@@ -8,14 +8,24 @@
 			<!-- <GameLogic @deskOrder="setDeskOrder"></GameLogic> -->
 			<b-col>
 				<div class="game-controls-box">
-					<b-row cols="1" class="d-flex justify-content-center align-items-stretch h-100 mx-auto">
-						<b-col class="text-center">My Turn</b-col>
-						<b-col>
-							<b-button class="throw-dice-btn">Throw Dice</b-button>
+					<b-row class="d-flex flex-column justify-content-between h-100">
+						<b-col class="text-center flex-grow-0">
+							<p>My Turn</p>
+						</b-col>
+
+						<b-col class="d-flex justify-content-between align-items-center flex-grow-0">
+							<b-button class="throw-dice-btn">
+								<p>Throw Dice</p>
+							</b-button>
 							<img src="@/assets/board-game/dice.svg" />
 						</b-col>
-						<b-col>
-							<img src="@/assets/board-game/timer.svg" />
+
+						<b-col class="d-flex flex-column flex-grow-0">
+							<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
+
+							<svg viewBox="0 0 229 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<rect y="0.833008" width="229" height="11" rx="5.5" fill="#04944F" />
+							</svg>
 						</b-col>
 					</b-row>
 				</div>
@@ -212,7 +222,7 @@ export default {
 
 <style scoped>
 * {
-	box-sizing: content-box;
+	box-sizing: border-box;
 }
 
 #main-div {
@@ -223,6 +233,14 @@ export default {
 	height: 100vh;
 	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
 	background-size: 100vw;
+}
+
+p {
+	margin-bottom: 0;
+	font-family: "Amatic_SC";
+	font-size: 32px;
+	line-height: 1;
+	color: black;
 }
 
 .board-game-row {
@@ -237,6 +255,7 @@ export default {
 .game-controls-box {
 	width: 287px;
 	height: 272px;
+	padding: 20px 30px 35px 30px;
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
 	background-color: #ffffff;
@@ -246,6 +265,16 @@ export default {
 		0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
 		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725),
 		0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
+}
+
+.throw-dice-btn {
+	border: 1px solid #5f9da5;
+	border-radius: 10px;
+	background-color: white;
+}
+
+.throw-dice-btn p {
+	font-size: 20px;
 }
 
 .vukol-character {
