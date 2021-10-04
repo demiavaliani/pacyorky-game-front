@@ -4,36 +4,39 @@
 			<img src="@/assets/board-game/vukol.png" />
 		</div> -->
 
-		<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
-			<!-- <GameLogic @deskOrder="setDeskOrder"></GameLogic> -->
-			<b-col>
-				<div class="game-controls-box">
-					<b-row class="d-flex flex-column justify-content-between h-100">
-						<b-col class="text-center flex-grow-0">
-							<p>My Turn</p>
-						</b-col>
+		<b-container
+			fluid
+			class="d-flex justify-content-between align-items-center main-container px-0 h-100"
+		>
+			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
+				<!-- <GameLogic @deskOrder="setDeskOrder"></GameLogic> -->
+				<b-col>
+					<div class="game-controls-box">
+						<b-row class="d-flex flex-column justify-content-between h-100">
+							<b-col class="text-center flex-grow-0">
+								<p>{{ $ml.get("my_turn") }}</p>
+							</b-col>
 
-						<b-col class="d-flex justify-content-between align-items-center flex-grow-0">
-							<b-button class="throw-dice-btn">
-								<p>Throw Dice</p>
-							</b-button>
-							<img src="@/assets/board-game/dice.svg" />
-						</b-col>
+							<b-col class="d-flex justify-content-between align-items-center flex-grow-0">
+								<b-button class="throw-dice-btn">
+									<p>{{ $ml.get("throw_dice") }}</p>
+								</b-button>
+								<img src="@/assets/board-game/dice.svg" />
+							</b-col>
 
-						<b-col class="d-flex flex-column flex-grow-0">
-							<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
+							<b-col class="d-flex flex-column flex-grow-0">
+								<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
 
-							<svg viewBox="0 0 229 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<rect y="0.833008" width="229" height="11" rx="5.5" fill="#04944F" />
-							</svg>
-						</b-col>
-					</b-row>
-				</div>
-			</b-col>
-		</b-row>
+								<svg viewBox="0 0 229 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<rect y="0.833008" width="229" height="11" rx="5.5" fill="#04944F" />
+								</svg>
+							</b-col>
+						</b-row>
+					</div>
+				</b-col>
+			</b-row>
 
-		<b-row class="board-game-row">
-			<b-col>
+			<div class="board-game-row">
 				<img src="@/assets/board-game/board-1.svg" class="board-game-img" usemap="#image-map" />
 
 				<map name="image-map">
@@ -86,8 +89,168 @@
 					<area id="img-map-area" alt="1213" href="" coords="415,768,20" shape="circle" />
 					<area id="img-map-area" alt="1219" href="" coords="449,733,20" shape="circle" />
 				</map>
-			</b-col>
-		</b-row>
+			</div>
+
+			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
+				<b-col cols="12" class="d-flex justify-content-between align-items-center">
+					<p>{{ $ml.get("room_name") }}</p>
+					<b-button>
+						<p>{{ $ml.get("end_game") }}</p>
+					</b-button>
+				</b-col>
+
+				<b-col cols="12" class="d-flex justify-content-end" style="height: 430px">
+					<div class="my-cards-box h-100">
+						<b-row class="d-flex justify-content-end align-items-start h-100 mx-auto">
+							<b-col cols="auto" class="d-flex flex-column">
+								<p>{{ $ml.get("deck") }}</p>
+							</b-col>
+
+							<b-col cols="auto" class="pr-0 d-flex flex-column">
+								<img src="@/assets/board-game/info-sign.svg" width="18" />
+							</b-col>
+
+							<b-col cols="12" class="cards dishes pl-0 pr-4">
+								<b-row class="mx-auto">
+									<b-col cols="1" class="p-0 first-col">
+										<img src="@/assets/cards/dishes/borsh.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/cukerki.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/golubci.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/golubci.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/golubci.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/golubci.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/golubci.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/golubci.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/golubci.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/dishes/golubci.png" />
+									</b-col>
+								</b-row>
+							</b-col>
+
+							<b-col cols="12" class="cards stuff pl-0 pr-4">
+								<b-row class="mx-auto">
+									<b-col cols="1" class="p-0 first-col">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/stuff/bajan.png" />
+									</b-col>
+								</b-row>
+							</b-col>
+
+							<b-col cols="12" class="cards rituals pl-0 pr-4">
+								<b-row class="mx-auto">
+									<b-col cols="1" class="p-0 first-col">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+
+									<b-col cols="1" class="p-0">
+										<img src="@/assets/cards/rituals/chitannja.png" />
+									</b-col>
+								</b-row>
+							</b-col>
+						</b-row>
+					</div>
+				</b-col>
+
+				<b-col cols="12" class="d-flex justify-content-end">
+					<div class="my-progress-box"></div>
+				</b-col>
+			</b-row>
+			<!-- </b-col> -->
+		</b-container>
 	</div>
 </template>
 
@@ -226,10 +389,6 @@ export default {
 }
 
 #main-div {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100vw;
 	height: 100vh;
 	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
 	background-size: 100vw;
@@ -238,15 +397,14 @@ export default {
 p {
 	margin-bottom: 0;
 	font-family: "Amatic_SC";
-	font-size: 32px;
 	line-height: 1;
 	color: black;
 }
 
-.board-game-row {
+/* .board-game-row {
 	position: absolute;
 	left: 25%;
-}
+} */
 
 .board-game-row img {
 	width: 50vw;
@@ -258,13 +416,17 @@ p {
 	padding: 20px 30px 35px 30px;
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
-	background-color: #ffffff;
+	background-color: white;
 	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07),
 		0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
 		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275),
 		0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
 		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725),
 		0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
+}
+
+.game-controls-box p {
+	font-size: 32px;
 }
 
 .throw-dice-btn {
@@ -275,6 +437,115 @@ p {
 
 .throw-dice-btn p {
 	font-size: 20px;
+}
+
+.right-side p {
+	font-size: 50px;
+}
+
+.right-side button p {
+	font-family: "Montserrat";
+	font-size: 18px;
+}
+
+.my-cards-box {
+	width: 198px;
+	height: 381px;
+	padding: 10px;
+	border: 1px solid #e4e4e4;
+	border-radius: 20px;
+	background-color: white;
+	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07),
+		0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
+		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275),
+		0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
+		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725),
+		0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
+}
+
+.my-cards-box p {
+	font-size: 35px;
+}
+
+.my-cards-box .cards {
+	height: 100px;
+}
+
+.my-cards-box .cards img {
+	/* position: relative; */
+	width: 63px;
+}
+
+.cards .p-0:hover img {
+	position: absolute;
+	width: 110px;
+	bottom: 20px;
+	z-index: 9999;
+}
+
+/* .cards :nth-child(n + 1):hover img {
+	position: absolute;
+	bottom: 20px;
+	z-index: 9999;
+} */
+
+.cards :nth-child(9) {
+	position: relative;
+	top: 3px;
+}
+
+.cards :nth-child(8) {
+	position: relative;
+	top: 6px;
+}
+
+.cards :nth-child(7) {
+	position: relative;
+	top: 9px;
+}
+
+.cards :nth-child(6) {
+	position: relative;
+	top: 12px;
+}
+
+.cards :nth-child(5) {
+	position: relative;
+	top: 15px;
+}
+
+.cards :nth-child(4) {
+	position: relative;
+	top: 18px;
+}
+
+.cards :nth-child(3) {
+	position: relative;
+	top: 21px;
+}
+
+.cards :nth-child(2) {
+	position: relative;
+	top: 24px;
+}
+
+.first-col {
+	position: relative;
+	top: 27px;
+}
+
+.my-progress-box {
+	width: 329px;
+	height: 154px;
+	border: 1px solid #e4e4e4;
+	border-radius: 20px;
+	background-color: white;
+	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07),
+		0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
+		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275),
+		0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
+		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725),
+		0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
 }
 
 .vukol-character {
