@@ -76,7 +76,7 @@ export default {
 		activePlayersCountFromActiveRoomsGraph: Number,
 		activeRoomNameFromActiveRoomsGraph: String,
 		currentRoomFromActiveRoomsGraph: {},
-		displayRoomName: String,
+		displayRoomName: Boolean,
 	},
 	methods: {
 		fillMan(position) {
