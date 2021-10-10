@@ -254,7 +254,34 @@
 				</b-col>
 
 				<b-col cols="12" class="d-flex justify-content-end">
-					<div class="my-progress-box"></div>
+					<div class="my-progress-box">
+						<b-row class="h-100">
+							<b-col cols="6" class="left h-100">
+								<img
+									class="character-img w-100 h-100"
+									src="@/assets/cards/character/baba_docka.png"
+								/>
+							</b-col>
+
+							<b-col cols="6" class="d-flex flex-column justify-content-between right">
+								<p>{{ $ml.get("my_character") }}</p>
+
+								<p class="mt-5">{{ $ml.get("my_happiness") }}</p>
+
+								<b-row class="d-flex justify-content-center align-items-center happiness">
+									<b-col cols="5" class="px-0">
+										<img src="@/assets/board-game/zheton.png" />
+									</b-col>
+									<b-col cols="auto" class="px-2">
+										<p>-</p>
+									</b-col>
+									<b-col cols="2" class="px-0">
+										<p>0</p>
+									</b-col>
+								</b-row>
+							</b-col>
+						</b-row>
+					</div>
 				</b-col>
 			</b-row>
 		</b-container>
@@ -490,7 +517,6 @@ p {
 }
 
 .my-cards-box .cards img {
-	/* position: relative; */
 	width: 53px;
 }
 
@@ -555,6 +581,7 @@ p {
 .my-progress-box {
 	width: 329px;
 	height: 200px;
+	padding: 20px 30px 20px 30px;
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
 	background-color: white;
@@ -564,6 +591,19 @@ p {
 		0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
 		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725),
 		0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
+}
+
+.my-progress-box p {
+	font-size: 22px;
+	text-align: center;
+}
+
+.happiness img {
+	width: 55px;
+}
+
+.happiness p {
+	font-size: 33px;
 }
 
 .vukol-character {

@@ -70,7 +70,9 @@ export default new MLCreate({
 			throw_dice: "бросить кости",
 			room_name: "кімната “КИЇВ”",
 			end_game: "залишити гру",
-			deck: "комора"
+			deck: "комора",
+			my_character: "мій герой",
+			my_happiness: "моє щастя"
 		})
 	]
 })
