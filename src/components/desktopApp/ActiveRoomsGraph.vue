@@ -3,13 +3,13 @@
 		class="d-flex align-items-center text-center room-entry"
 		@click="$emit('current-room-click', currentRoomFromActiveRoomsGraph)"
 	>
-		<b-col cols="6" class="pr-1">
+		<b-col cols="6" class="pr-1" v-if="displayRoomName">
 			<p class="m-0 text-left">
 				{{ activeRoomNameFromActiveRoomsGraph }}
 			</p>
 		</b-col>
 
-		<b-col cols="6" style="line-height: 0">
+		<b-col cols="auto" style="line-height: 0">
 			<svg
 				class="men-img"
 				xmlns="http://www.w3.org/2000/svg"
@@ -76,6 +76,7 @@ export default {
 		activePlayersCountFromActiveRoomsGraph: Number,
 		activeRoomNameFromActiveRoomsGraph: String,
 		currentRoomFromActiveRoomsGraph: {},
+		displayRoomName: String,
 	},
 	methods: {
 		fillMan(position) {

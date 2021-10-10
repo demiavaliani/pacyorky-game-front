@@ -99,8 +99,16 @@
 					</b-button>
 				</b-col>
 
-				<b-col cols="12" class="d-flex justify-content-end" style="height: 430px">
-					<div class="my-cards-box h-100">
+				<b-col class="d-flex justify-content-end">
+					<ActiveRoomsGraph
+						class="active-rooms-graph"
+						:displayRoomName="false"
+						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
+					></ActiveRoomsGraph>
+				</b-col>
+
+				<b-col cols="12" class="d-flex justify-content-end">
+					<div class="my-cards-box">
 						<b-row class="d-flex justify-content-end align-items-start h-100 mx-auto">
 							<b-col cols="auto" class="d-flex flex-column">
 								<p>{{ $ml.get("deck") }}</p>
@@ -249,20 +257,22 @@
 					<div class="my-progress-box"></div>
 				</b-col>
 			</b-row>
-			<!-- </b-col> -->
 		</b-container>
 	</div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 import ImageMap from "image-map";
 import GameLogic from "./GameLogic";
+import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 
 export default {
 	name: "BoardGame",
 
 	components: {
 		GameLogic,
+		ActiveRoomsGraph,
 	},
 
 	data() {
@@ -275,7 +285,11 @@ export default {
 		};
 	},
 
-	computed: {},
+	computed: {
+		...mapState({
+			game: "gameState",
+		}),
+	},
 
 	methods: {
 		setDeskOrder(event) {
@@ -448,9 +462,13 @@ p {
 	font-size: 18px;
 }
 
+::v-deep .men-img {
+	width: 10vw;
+}
+
 .my-cards-box {
 	width: 198px;
-	height: 381px;
+	height: 380px;
 	padding: 10px;
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
@@ -468,12 +486,12 @@ p {
 }
 
 .my-cards-box .cards {
-	height: 100px;
+	height: 90px;
 }
 
 .my-cards-box .cards img {
 	/* position: relative; */
-	width: 63px;
+	width: 53px;
 }
 
 .cards .p-0:hover img {
@@ -536,7 +554,7 @@ p {
 
 .my-progress-box {
 	width: 329px;
-	height: 154px;
+	height: 200px;
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
 	background-color: white;

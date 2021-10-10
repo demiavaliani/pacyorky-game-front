@@ -29,17 +29,17 @@
 					class="d-flex flex-column justify-content-start flex-grow-1 active-games-list px-3 py-1"
 				>
 					<div>
-						<!-- 
+						<!--
 							"@current-room-click" sets "currentRoomId" to the "$event.id". "$event" is the room object
-							passed from "ActiveRoomsGraph". That event is triggered when any of the item is clicked.  
+							passed from "ActiveRoomsGraph". That event is triggered when any of the item is clicked.
 							":class" attribute assigns "animate-room-class" CSS class to each "ActiveRoomsGraph" item IF:
 							"currentRoomId" from data is same as "item.id" from v-for loop below.
 						-->
-						<!-- 
+						<!--
 							"@current-room-click" also sets the "currentRoom" from data to the room object from
 							"ActiveRoomsGraph". This object is later passed to the "JoinRoom Modal".
 						 -->
-						<!-- 
+						<!--
 							"@current-room-click" also sets "roomSelected" to true. "roomSelected" value is used by
 							"join-room" button. If "roomSelected" is true, meaning the room item was clicked,
 							the "join-room" button will be active, otherwise it will be disabled.
@@ -47,6 +47,7 @@
 						<ActiveRoomsGraph
 							v-for="item in getActiveRoomsAndSortByPlayersCountAsc"
 							:key="item.id"
+							:displayRoomName="false"
 							:activePlayersCountFromActiveRoomsGraph="item.players.length"
 							:activeRoomNameFromActiveRoomsGraph="item.name"
 							:currentRoomFromActiveRoomsGraph="item"
@@ -72,7 +73,7 @@
 							{{ $ml.get("join") }}
 						</p>
 					</b-button>
-					<!-- 
+					<!--
 						tooltip below will be disabled if "disabled" data attribute is true.
 						"disabled" attribute by default is false, in case there are no rooms available.
 						If there is a room available, "disabled" attribute is adjusted by
@@ -110,9 +111,9 @@
 
 <script>
 import { mapState } from "vuex";
-import ActiveRoomsGraph from "@/components/desktopApp/ActiveRoomsGraph";
-import CreateRoomModal from "@/components/modals/CreateRoomModal";
-import JoinRoomModal from "@/components/modals/JoinRoomModal";
+import ActiveRoomsGraph from "./ActiveRoomsGraph";
+import CreateRoomModal from "../modals/CreateRoomModal.vue";
+import JoinRoomModal from "../modals/JoinRoomModal";
 
 export default {
 	name: "GameDashboard",
