@@ -79,10 +79,11 @@ export default {
 		},
 
 		onJoinRoom() {
-			api.joinRoom(this.currentRoom.id).then((response) => {
+			api.joinRoom(this.currentRoom.id).then(response => {
 				if (response) {
-					this.$emit("close");
 					this.$emit("update-active-rooms-graph");
+					this.$router.push("board-game");
+					this.$emit("close");
 				}
 			});
 		},

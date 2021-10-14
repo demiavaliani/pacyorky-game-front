@@ -1,11 +1,11 @@
 <template>
 	<div id="app">
-		<!-- <NavBar></NavBar> -->
+		<NavBar v-if="$route.name != 'boardGame'"></NavBar>
+		<router-view></router-view>
+		<MainFooter v-if="$route.name != 'boardGame'"></MainFooter>
 		<!-- <ErrorModal></ErrorModal> -->
-		<!-- <router-view></router-view> -->
-		<!-- <MainFooter></MainFooter> -->
 		<!-- <GameLogic></GameLogic> -->
-		<BoardGame></BoardGame>
+		<!-- <BoardGame></BoardGame> -->
 		<!-- <GameDashboard></GameDashboard> -->
 	</div>
 </template>

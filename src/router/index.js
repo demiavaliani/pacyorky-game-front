@@ -11,40 +11,41 @@ import GameDashboard from "@/components/desktopApp/GameDashboard"
 
 Vue.use(Router)
 export default new Router({
-  mode: 'history',
-  routes: [
-    {
-      path: '/',
-      component: HomePage,
-    },
+	mode: 'history',
+	routes: [
+		{
+			path: '/',
+			component: HomePage,
+		},
 
-    {
-      path: "/game-description",
-      component: GameDescription,
-    },
+		{
+			path: "/game-description",
+			component: GameDescription,
+		},
 
-    {
-      path: "/game-rules",
-      component: GameRules,
-    },
+		{
+			path: "/game-rules",
+			component: GameRules,
+		},
 
-    {
-      path: "/board-game",
-      component: BoardGame,
-    },
+		{
+			path: "/board-game",
+			component: BoardGame,
+			name: 'boardGame'
+		},
 
-    {
-      path: "/game-dashboard",
-      component: GameDashboard,
-    },
+		{
+			path: "/game-dashboard",
+			component: GameDashboard,
+		},
 
-    {
-      path: '/games',
-      component: GamesDesktop,
-    },
+		{
+			path: '/games',
+			component: GamesDesktop,
+		},
 
-    {
-      path: '/game/:id',
-      component: GameDesktop,
-    }]
+		{
+			path: '/game/:id',
+			component: GameDesktop,
+		}]
 })

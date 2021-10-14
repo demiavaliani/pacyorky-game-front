@@ -5,7 +5,7 @@
 		<div><b>Device Player:</b> {{ devicePlayerId }}</div>
 		<div><b>Current Player:</b> {{ currentTurnPlayerId }}</div>
 		<div><b>Desk Order:</b> {{ deskOrder }}</div>
-		<b-button @click="throwDice()" :disabled="throwDiceDisabled">Throw Dice</b-button>
+		<!-- <b-button @click="throwDice()" :disabled="throwDiceDisabled">Throw Dice</b-button> -->
 		<b-button @click="throwCards()" :disabled="throwCardsDisabled">Throw Cards</b-button>
 		<b-button @click="vote()" :disabled="voteDisabled">Vote</b-button>
 		<b-button @click="leaveRoom()">Leave room</b-button>
@@ -38,11 +38,18 @@ export default {
 			devicePlayerId: "devicePlayerId",
 		}),
 
-		throwDiceDisabled() {
-			if (this.stepStatus !== "WAITING_DICE" || this.currentTurnPlayerId !== this.devicePlayerId) {
-				return true;
-			} else false;
-		},
+		// throwDiceDisabled() {
+		// 	if (this.stepStatus !== "WAITING_DICE" || this.currentTurnPlayerId !== this.devicePlayerId) {
+		// 		this.$emit("throw-dice-disabled", true);
+		// 		return true;
+		// 	} else if (
+		// 		this.stepStatus === "WAITING_DICE" &&
+		// 		this.currentTurnPlayerId === this.devicePlayerId
+		// 	) {
+		// 		this.$emit("throw-dice-disabled", false);
+		// 		return false;
+		// 	}
+		// },
 
 		throwCardsDisabled() {
 			if (this.stepStatus !== "WAITING_CARD" || this.currentTurnPlayerId !== this.devicePlayerId) {
@@ -123,7 +130,7 @@ export default {
 					curPlayer => curPlayer.id == this.devicePlayerId
 				)[0].currentDay.deskOrder;
 			}
-			this.$emit("deskOrder", this.deskOrder);
+			this.$emit("desk-order", this.deskOrder || 101);
 		},
 
 		identifyCurrentTurnPlayerId() {
@@ -136,7 +143,29 @@ export default {
 			if (this.game && this.gameStatus === "STARTED" && this.game.step.status) {
 				this.stepStatus = this.game.step.status;
 			}
+
+			if (this.stepStatus !== "WAITING_DICE" || this.currentTurnPlayerId !== this.devicePlayerId) {
+				this.$emit("throw-dice-disabled", true);
+			}
+			if (this.stepStatus === "WAITING_DICE" && this.currentTurnPlayerId === this.devicePlayerId) {
+				this.$emit("throw-dice-disabled", false);
+			}
 		},
+
+		// throwDiceDisabled() {
+		// 	this.$emit("step-status", this.stepStatus);
+
+		// if (this.stepStatus !== "WAITING_DICE" || this.currentTurnPlayerId !== this.devicePlayerId) {
+		// 	this.$emit("throw-dice-disabled", true);
+		// 	return true;
+		// } else if (
+		// 	this.stepStatus === "WAITING_DICE" &&
+		// 	this.currentTurnPlayerId === this.devicePlayerId
+		// ) {
+		// 	this.$emit("throw-dice-disabled", false);
+		// 	return false;
+		// }
+		// },
 	},
 
 	watch: {
@@ -148,10 +177,14 @@ export default {
 			this.setStepStatus();
 			this.getDroppedCards();
 		},
+
+		// stepStatus() {
+		// 	this.throwDiceDisabled();
+		// },
 	},
 
 	created() {
-		// this.initializeGame();
+		this.initializeGame();
 		this.initializeDevicePlayerId();
 	},
 };

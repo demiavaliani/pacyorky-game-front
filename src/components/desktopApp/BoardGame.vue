@@ -1,15 +1,22 @@
 <template>
 	<div id="main-div">
-		<!-- <div id="vukol-character" class="vukol-character">
+		<div id="vukol-character" class="vukol-character">
 			<img src="@/assets/board-game/vukol.png" />
-		</div> -->
+		</div>
+
+		<GameLogic
+			ref="gameLogic"
+			@desk-order="setDeskOrder"
+			@throw-dice-disabled="diceBtnDisabled = $event"
+			class="game-logic"
+		>
+		</GameLogic>
 
 		<b-container
 			fluid
 			class="d-flex justify-content-between align-items-center main-container px-0 h-100"
 		>
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
-				<!-- <GameLogic @deskOrder="setDeskOrder"></GameLogic> -->
 				<b-col>
 					<div class="game-controls-box">
 						<b-row class="d-flex flex-column justify-content-between h-100">
@@ -18,7 +25,7 @@
 							</b-col>
 
 							<b-col class="d-flex justify-content-between align-items-center flex-grow-0">
-								<b-button class="throw-dice-btn">
+								<b-button @click="callThrowDice" :disabled="diceBtnDisabled" class="throw-dice-btn">
 									<p>{{ $ml.get("throw_dice") }}</p>
 								</b-button>
 								<img src="@/assets/board-game/dice.svg" />
@@ -37,7 +44,12 @@
 			</b-row>
 
 			<div class="board-game-row">
-				<img src="@/assets/board-game/board-1.svg" class="board-game-img" usemap="#image-map" />
+				<img
+					id="board"
+					src="@/assets/board-game/board-1.svg"
+					class="board-game-img"
+					usemap="#image-map"
+				/>
 
 				<map name="image-map">
 					<area id="img-map-area" alt="101" href="" coords="513,682,19" shape="circle" />
@@ -309,6 +321,7 @@ export default {
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
+			diceBtnDisabled: "",
 		};
 	},
 
@@ -316,73 +329,66 @@ export default {
 		...mapState({
 			game: "gameState",
 		}),
+		// diceDisabled() {
+		// 	this.$refs.gameLogic.throwDiceDisabled();
+		// },
 	},
 
 	methods: {
+		callThrowDice() {
+			this.$refs.gameLogic.throwDice();
+		},
+
+		callThrowCards() {
+			this.$refs.gameLogic.throwCards();
+		},
+
+		callVote() {
+			this.$refs.gameLogic.vote();
+		},
+
+		callLeaveRoom() {
+			this.$refs.gameLogic.leaveRoom();
+		},
+
 		setDeskOrder(event) {
 			this.deskOrder = event;
 		},
 
 		getBoardPosition() {
-			if (document.readyState !== "complete") {
-				window.addEventListener("load", () => {
-					let elem = document.querySelector("#board");
-					let board = elem.getBoundingClientRect();
-					this.boardX = board.x;
-					this.boardY = board.y;
-					// console.log("boardX: ", this.boardX);
-					// console.log("boardY: ", this.boardY);
-				});
-			} else if (document.readyState === "complete") {
-				let elem = document.querySelector("#board");
-				let board = elem.getBoundingClientRect();
-				this.boardX = board.x;
-				this.boardY = board.y;
-				console.log("boardX: ", this.boardX);
-				console.log("boardY: ", this.boardY);
-			}
+			let elem = document.querySelector("#board");
+			let board = elem.getBoundingClientRect();
+			this.boardX = board.x;
+			this.boardY = board.y;
+			// console.log("Original boardX: ", this.boardX);
+			// console.log("Original boardY: ", this.boardY);
 		},
 
 		adjustImgMapCoords() {
-			if (document.readyState !== "complete") {
-				window.addEventListener("load", () => {
-					setTimeout(() => {
-						let elem = document.body.querySelector(`area[alt="${this.deskOrder}"]`);
-						let coordsAttr = elem.getAttribute("coords");
-						let coordsAttrArray = coordsAttr.split(",");
-						// console.log("coords attributes array:", coordsAttrArray);
-
-						this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
-						this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
-						// console.log("adjusted coordX: ", this.adjustedCoordX);
-						// console.log("adjusted coordY: ", this.adjustedCoordY);
-					});
-				});
-			} else if (document.readyState === "complete") {
-				setTimeout(() => {
-					let elem = document.body.querySelector(`area[alt="${this.deskOrder}"]`);
-					let coordsAttr = elem.getAttribute("coords");
-					let coordsAttrArray = coordsAttr.split(",");
-					// console.log("coords attributes array:", coordsAttrArray);
-
-					this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
-					this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
-					console.log("adjusted coordX: ", this.adjustedCoordX);
-					console.log("adjusted coordY: ", this.adjustedCoordY);
-				});
-			}
+			setTimeout(() => {
+				let elem = document.querySelector(`area[alt='${this.deskOrder}']`);
+				// console.log("elem is: ", elem);
+				let coordsAttr = elem.getAttribute("coords");
+				// console.log("coords attribute is: ", coordsAttr);
+				let coordsAttrArray = coordsAttr.split(",");
+				// console.log("splitted attributes array:", coordsAttrArray);
+				this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
+				this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
+				// console.log("adjusted coordX: ", this.adjustedCoordX);
+				// console.log("adjusted coordY: ", this.adjustedCoordY);
+			});
 		},
 
 		udpatePlayerBoardPosition() {
 			setTimeout(() => {
 				let player = document.getElementById("vukol-character");
 
-				player.style.left = `${this.adjustedCoordX}px`;
-				player.style.top = `${this.adjustedCoordY}px`;
+				player.style.left = `${this.adjustedCoordX - 20}px`;
+				player.style.top = `${this.adjustedCoordY - 120}px`;
 
-				console.log("player.style.left", player.style.left);
-				console.log("player.style.top", player.style.top);
-			});
+				// console.log("player.style.left", player.style.left);
+				// console.log("player.style.top", player.style.top);
+			}, 15);
 		},
 
 		areaClick() {
@@ -391,31 +397,33 @@ export default {
 			area.forEach(() => {
 				addEventListener("click", event => {
 					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
+					// event.stopPropagation();
+					// event.stopImmediatePropagation();
 				});
 			});
 		},
-
-		// fillMan(position) {
-		// 	return this.activePlayersCountFromActiveRoomsGraph >= position;
-		// }
 	},
 
 	watch: {
 		deskOrder() {
-			this.getBoardPosition();
+			// this.getBoardPosition();
 			this.adjustImgMapCoords();
-			this.udpatePlayerBoardPosition();
+			// this.udpatePlayerBoardPosition();
 		},
 	},
 
 	mounted() {
-		ImageMap("img[usemap]");
+		ImageMap("img[usemap]", 0);
 		this.areaClick();
-		// this.getBoardPosition();
-		// this.adjustImgMapCoords();
-		// this.udpatePlayerBoardPosition();
+		window.addEventListener("load", () => {
+			this.getBoardPosition();
+			this.adjustImgMapCoords();
+
+			this.$watch("deskOrder", function() {
+				console.log("WWWWWWWWWWWW");
+				this.udpatePlayerBoardPosition();
+			});
+		});
 	},
 
 	// beforeUpdate() {
@@ -425,6 +433,10 @@ export default {
 </script>
 
 <style scoped>
+.game-logic {
+	position: absolute;
+}
+
 * {
 	box-sizing: border-box;
 }
