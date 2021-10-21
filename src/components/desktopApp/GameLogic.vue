@@ -106,7 +106,7 @@ export default {
 		},
 
 		setDeskOrder() {
-			if (this.game && this.gameStatus === "STARTED") {
+			if (this.game && this.gameStatus === "STARTED" && this.game.players) {
 				this.deskOrder = this.game.players.filter(
 					curPlayer => curPlayer.id == this.devicePlayerId
 				)[0].currentDay.deskOrder;

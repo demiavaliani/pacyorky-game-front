@@ -181,7 +181,7 @@
 										<p>-</p>
 									</b-col>
 									<b-col cols="2" class="px-0">
-										<p>0</p>
+										<p>{{ playerHappiness }}</p>
 									</b-col>
 								</b-row>
 							</b-col>
@@ -219,6 +219,8 @@ export default {
 
 			diceBtnDisabled: true,
 
+			currentDevicePlayer: {},
+
 			dishesDeck: [],
 			ritualsDeck: [],
 			stuffDeck: [],
@@ -230,6 +232,10 @@ export default {
 			game: "gameState",
 			devicePlayerId: "devicePlayerId",
 		}),
+
+		playerHappiness() {
+			return this.currentDevicePlayer.happiness;
+		},
 	},
 
 	methods: {
@@ -313,7 +319,13 @@ export default {
 
 		game() {
 			if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
-				let deck = this.game.players.filter(player => player.id === this.devicePlayerId)[0].deck;
+				this.currentDevicePlayer = this.game.players.filter(
+					player => player.id === this.devicePlayerId
+				)[0];
+			}
+
+			if (Object.keys(this.currentDevicePlayer).length) {
+				let deck = this.currentDevicePlayer.deck;
 
 				this.dishesDeck = deck.filter(card => card.cardType === 1);
 				this.ritualsDeck = deck.filter(card => card.cardType === 2);
