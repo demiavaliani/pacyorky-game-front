@@ -211,51 +211,24 @@ export default {
 	data() {
 		return {
 			deskOrder: "101",
+
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
+
 			diceBtnDisabled: "",
-			currentPlayerDeck: "",
-			deck: [],
-			dishesDeck: [
-				{ id: 15, name: "med", cardType: 1 },
-				{ id: 9, name: "polunica", cardType: 1 },
-				{ id: 13, name: "kartoplya", cardType: 1 },
-				{ id: 43, name: "uzvar", cardType: 1 },
-				{ id: 43, name: "uzvar", cardType: 1 },
-				{ id: 43, name: "uzvar", cardType: 1 },
-				{ id: 43, name: "uzvar", cardType: 1 },
-				{ id: 43, name: "uzvar", cardType: 1 },
-			],
 
-			ritualsDeck: [
-				{ id: 123, name: "chitannja", cardType: 2 },
-				{ id: 152, name: "prikrashati_hati", cardType: 2 },
-				{ id: 157, name: "kidannja_vinkiv", cardType: 2 },
-				{ id: 145, name: "obdaruvati", cardType: 2 },
-				{ id: 145, name: "obdaruvati", cardType: 2 },
-				{ id: 145, name: "obdaruvati", cardType: 2 },
-			],
-
-			stuffDeck: [
-				{ id: 193, name: "proskuri", cardType: 3 },
-				{ id: 187, name: "ptashki", cardType: 3 },
-				{ id: 228, name: "bandura", cardType: 3 },
-				{ id: 196, name: "pisachok", cardType: 3 },
-				{ id: 196, name: "pisachok", cardType: 3 },
-				{ id: 196, name: "pisachok", cardType: 3 },
-				{ id: 196, name: "pisachok", cardType: 3 },
-				{ id: 196, name: "pisachok", cardType: 3 },
-				{ id: 196, name: "pisachok", cardType: 3 },
-				{ id: 196, name: "pisachok", cardType: 3 },
-			],
+			dishesDeck: [],
+			ritualsDeck: [],
+			stuffDeck: [],
 		};
 	},
 
 	computed: {
 		...mapState({
 			game: "gameState",
+			devicePlayerId: "devicePlayerId",
 		}),
 
 		// diceDisabled() {
@@ -343,8 +316,12 @@ export default {
 		},
 
 		game() {
-			if (this.game && this.game.status === "STARTED" && this.game.step.currentPlayer) {
-				this.currentPlayerDeck = this.game.step.currentPlayer.deck;
+			if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
+				let deck = this.game.players.filter(player => player.id === this.devicePlayerId)[0].deck;
+
+				this.dishesDeck = deck.filter(card => card.cardType === 1);
+				this.ritualsDeck = deck.filter(card => card.cardType === 2);
+				this.stuffDeck = deck.filter(card => card.cardType === 3);
 			}
 		},
 	},

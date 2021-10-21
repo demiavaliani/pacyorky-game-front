@@ -5,7 +5,6 @@
 		<div><b>Device Player:</b> {{ devicePlayerId }}</div>
 		<div><b>Current Player:</b> {{ currentTurnPlayerId }}</div>
 		<div><b>Desk Order:</b> {{ deskOrder }}</div>
-		<!-- <b-button @click="throwDice()" :disabled="throwDiceDisabled">Throw Dice</b-button> -->
 		<b-button @click="throwCards()" :disabled="throwCardsDisabled">Throw Cards</b-button>
 		<b-button @click="vote()" :disabled="voteDisabled">Vote</b-button>
 		<b-button @click="leaveRoom()">Leave room</b-button>
@@ -37,31 +36,6 @@ export default {
 			game: "gameState",
 			devicePlayerId: "devicePlayerId",
 		}),
-
-		// throwDiceDisabled() {
-		// 	if (this.stepStatus !== "WAITING_DICE" || this.currentTurnPlayerId !== this.devicePlayerId) {
-		// 		this.$emit("throw-dice-disabled", true);
-		// 		return true;
-		// 	} else if (
-		// 		this.stepStatus === "WAITING_DICE" &&
-		// 		this.currentTurnPlayerId === this.devicePlayerId
-		// 	) {
-		// 		this.$emit("throw-dice-disabled", false);
-		// 		return false;
-		// 	}
-		// },
-
-		throwCardsDisabled() {
-			if (this.stepStatus !== "WAITING_CARD" || this.currentTurnPlayerId !== this.devicePlayerId) {
-				return true;
-			} else false;
-		},
-
-		voteDisabled() {
-			if (this.stepStatus !== "WAITING_VOTE" || this.currentTurnPlayerId === this.devicePlayerId) {
-				return true;
-			} else false;
-		},
 	},
 
 	methods: {
@@ -143,29 +117,30 @@ export default {
 			if (this.game && this.gameStatus === "STARTED" && this.game.step.status) {
 				this.stepStatus = this.game.step.status;
 			}
+		},
 
-			if (this.stepStatus !== "WAITING_DICE" || this.currentTurnPlayerId !== this.devicePlayerId) {
+		throwDiceDisabled() {
+			if (this.stepStatus !== "WAITING_DICE") {
 				this.$emit("throw-dice-disabled", true);
-			}
-			if (this.stepStatus === "WAITING_DICE" && this.currentTurnPlayerId === this.devicePlayerId) {
+			} else if (
+				this.stepStatus === "WAITING_DICE" &&
+				this.currentTurnPlayerId === this.devicePlayerId
+			) {
 				this.$emit("throw-dice-disabled", false);
 			}
 		},
 
-		// throwDiceDisabled() {
-		// 	this.$emit("step-status", this.stepStatus);
+		throwCardsDisabled() {
+			if (this.stepStatus !== "WAITING_CARD" || this.currentTurnPlayerId !== this.devicePlayerId) {
+				return true;
+			} else false;
+		},
 
-		// if (this.stepStatus !== "WAITING_DICE" || this.currentTurnPlayerId !== this.devicePlayerId) {
-		// 	this.$emit("throw-dice-disabled", true);
-		// 	return true;
-		// } else if (
-		// 	this.stepStatus === "WAITING_DICE" &&
-		// 	this.currentTurnPlayerId === this.devicePlayerId
-		// ) {
-		// 	this.$emit("throw-dice-disabled", false);
-		// 	return false;
-		// }
-		// },
+		voteDisabled() {
+			if (this.stepStatus !== "WAITING_VOTE" || this.currentTurnPlayerId === this.devicePlayerId) {
+				return true;
+			} else false;
+		},
 	},
 
 	watch: {
@@ -178,9 +153,9 @@ export default {
 			this.getDroppedCards();
 		},
 
-		// stepStatus() {
-		// 	this.throwDiceDisabled();
-		// },
+		stepStatus() {
+			this.throwDiceDisabled();
+		},
 	},
 
 	created() {
