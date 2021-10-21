@@ -9,7 +9,7 @@
 			</p>
 		</b-col>
 
-		<b-col cols="auto" style="line-height: 0">
+		<b-col cols="6" style="line-height: 0">
 			<svg
 				class="men-img"
 				xmlns="http://www.w3.org/2000/svg"

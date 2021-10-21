@@ -47,7 +47,7 @@
 						<ActiveRoomsGraph
 							v-for="item in getActiveRoomsAndSortByPlayersCountAsc"
 							:key="item.id"
-							:displayRoomName="false"
+							:displayRoomName="true"
 							:activePlayersCountFromActiveRoomsGraph="item.players.length"
 							:activeRoomNameFromActiveRoomsGraph="item.name"
 							:currentRoomFromActiveRoomsGraph="item"
