@@ -7,7 +7,6 @@
 		<div><b>Desk Order:</b> {{ deskOrder }}</div>
 		<b-button @click="throwCards()" :disabled="throwCardsDisabled">Throw Cards</b-button>
 		<b-button @click="vote()" :disabled="voteDisabled">Vote</b-button>
-		<b-button @click="leaveRoom()">Leave room</b-button>
 	</div>
 </template>
 
@@ -36,6 +35,18 @@ export default {
 			game: "gameState",
 			devicePlayerId: "devicePlayerId",
 		}),
+
+		throwCardsDisabled() {
+			if (this.stepStatus !== "WAITING_CARD" || this.currentTurnPlayerId !== this.devicePlayerId) {
+				return true;
+			} else false;
+		},
+
+		voteDisabled() {
+			if (this.stepStatus !== "WAITING_VOTE" || this.currentTurnPlayerId === this.devicePlayerId) {
+				return true;
+			} else false;
+		},
 	},
 
 	methods: {
@@ -75,10 +86,6 @@ export default {
 				// console.log("Vote given!!!");
 				// console.log(res);
 			});
-		},
-
-		leaveRoom() {
-			api.leaveRoom().then(res => {});
 		},
 
 		initializeGame() {
@@ -128,18 +135,6 @@ export default {
 			) {
 				this.$emit("throw-dice-disabled", false);
 			}
-		},
-
-		throwCardsDisabled() {
-			if (this.stepStatus !== "WAITING_CARD" || this.currentTurnPlayerId !== this.devicePlayerId) {
-				return true;
-			} else false;
-		},
-
-		voteDisabled() {
-			if (this.stepStatus !== "WAITING_VOTE" || this.currentTurnPlayerId === this.devicePlayerId) {
-				return true;
-			} else false;
 		},
 	},
 

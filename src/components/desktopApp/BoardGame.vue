@@ -107,7 +107,7 @@
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
 					<p>{{ $ml.get("room_name") }}</p>
-					<b-button>
+					<b-button @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
 				</b-col>
@@ -194,7 +194,7 @@
 </template>
 
 <script>
-import ImageMap from "image-map";
+import api from "@/api/api";
 import * as imageMapResize from "@/plugins/imageMapResizer.min.js";
 import { mapState } from "vuex";
 import GameLogic from "./GameLogic";
@@ -217,7 +217,7 @@ export default {
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 
-			diceBtnDisabled: "",
+			diceBtnDisabled: true,
 
 			dishesDeck: [],
 			ritualsDeck: [],
@@ -230,10 +230,6 @@ export default {
 			game: "gameState",
 			devicePlayerId: "devicePlayerId",
 		}),
-
-		// diceDisabled() {
-		// 	this.$refs.gameLogic.throwDiceDisabled();
-		// },
 	},
 
 	methods: {
@@ -249,8 +245,8 @@ export default {
 			this.$refs.gameLogic.vote();
 		},
 
-		callLeaveRoom() {
-			this.$refs.gameLogic.leaveRoom();
+		leaveRoom() {
+			api.leaveRoom().then();
 		},
 
 		setDeskOrder(event) {
