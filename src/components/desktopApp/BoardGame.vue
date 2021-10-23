@@ -9,6 +9,8 @@
 			@desk-order="setDeskOrder"
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="throwCardsModalVisible = true"
+			@dropped-cards="populateVoteCardDecks($event)"
+			@show-vote-modal="voteModalVisible = true"
 			class="game-logic"
 		>
 		</GameLogic>
@@ -192,16 +194,49 @@
 			</b-row>
 		</b-container>
 
-		<InGameModal
-			:modalVisible="throwCardsModalVisible"
-			:footerHidden="modalFooterHidden"
-			ref="throwCardsModal"
-		>
+		<InGameModal :modalVisible="voteModalVisible" :footerHidden="modalFooterHidden">
+			<template v-slot:upper-half>
+				<div class="mx-1" v-for="card in dishesDeckForVote">
+					<img
+						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+
+				<div class="mx-1" v-for="card in ritualsDeckForVote">
+					<img
+						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+
+				<div class="mx-1" v-for="card in stuffDeckForVote">
+					<img
+						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+				<p>{{ cardsToVote }}</p>
+			</template>
+
+			<template v-slot:footer>
+				<b-button @click="callVote()">
+					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
+						{{ $ml.get("throw_cards") }}
+					</p>
+				</b-button>
+			</template>
+		</InGameModal>
+
+		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="modalFooterHidden">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 					<p>{{ card.id }}</p>
 				</div>
@@ -209,7 +244,7 @@
 				<div class="mx-1" v-for="card in ritualsDeck">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 					<p>{{ card.id }}</p>
 				</div>
@@ -217,7 +252,7 @@
 				<div class="mx-1" v-for="card in stuffDeck">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 					<p>{{ card.id }}</p>
 				</div>
@@ -263,6 +298,19 @@ export default {
 
 			currentDevicePlayer: {},
 			cardsToThrow: [],
+			cardsToVote: [],
+			dishesDeckForVote: [
+				// { id: 15, name: "med", cardType: 1 },
+				// { id: 9, name: "polunica", cardType: 1 },
+			],
+			ritualsDeckForVote: [
+				// { id: 123, name: "chitannja", cardType: 2 },
+				// { id: 152, name: "prikrashati_hati", cardType: 2 },
+			],
+			stuffDeckForVote: [
+				// { id: 193, name: "proskuri", cardType: 3 },
+				// { id: 187, name: "ptashki", cardType: 3 },
+			],
 
 			dishesDeck: [
 				// { id: 15, name: "med", cardType: 1 },
@@ -278,6 +326,7 @@ export default {
 			],
 
 			throwCardsModalVisible: false,
+			voteModalVisible: false,
 			modalFooterHidden: false,
 
 			diceBtnDisabled: true,
@@ -296,18 +345,17 @@ export default {
 	},
 
 	methods: {
-		chooseCardToThrow(id, ev) {
+		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
-			if (!this.cardsToThrow.includes(id)) {
-				this.cardsToThrow.push(id);
+			if (!this[actionArray].includes(id)) {
+				this[actionArray].push(id);
 
 				elementStyle.position = "relative";
 				elementStyle.bottom = "30px";
 			} else {
-				let cardIndexToRemove = this.cardsToThrow.indexOf(id);
-
-				this.cardsToThrow.splice(cardIndexToRemove, 1);
+				let cardIndexToRemove = this[actionArray].indexOf(id);
+				this[actionArray].splice(cardIndexToRemove, 1);
 
 				elementStyle.position = "static";
 				elementStyle.bottom = "0";
@@ -324,8 +372,17 @@ export default {
 			this.throwCardsModalVisible = false;
 		},
 
+		populateVoteCardDecks(thrownCards) {
+			console.log(thrownCards);
+			this.dishesDeckForVote = thrownCards.filter(card => card.cardType === 1);
+			this.ritualsDeckForVote = thrownCards.filter(card => card.cardType === 2);
+			this.stuffDeckForVote = thrownCards.filter(card => card.cardType === 3);
+		},
+
 		callVote() {
-			this.$refs.gameLogic.vote();
+			this.$refs.gameLogic.vote(this.cardsToVote);
+			this.cardsToVote = [];
+			this.voteModalVisible = false;
 		},
 
 		leaveRoom() {

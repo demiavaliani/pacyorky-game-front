@@ -5,7 +5,6 @@
 		<div><b>Device Player:</b> {{ devicePlayerId }}</div>
 		<div><b>Current Player:</b> {{ currentTurnPlayerId }}</div>
 		<div><b>Desk Order:</b> {{ deskOrder }}</div>
-		<b-button @click="vote()" :disabled="voteDisabled">Vote</b-button>
 	</div>
 </template>
 
@@ -25,7 +24,6 @@ export default {
 			deskOrder: "",
 			currentTurnPlayerId: "",
 			stepStatus: "",
-			droppedCards: [],
 		};
 	},
 
@@ -34,28 +32,17 @@ export default {
 			game: "gameState",
 			devicePlayerId: "devicePlayerId",
 		}),
-
-		voteDisabled() {
-			if (this.stepStatus !== "WAITING_VOTE" || this.currentTurnPlayerId === this.devicePlayerId) {
-				return true;
-			} else false;
-		},
 	},
 
 	methods: {
 		throwDice() {
-			api.throwDice().then(() => {
-				// console.log("Threw Dice!!!");
-			});
+			api.throwDice().then(() => {});
 		},
 
 		// currently for testing - passing random card IDs
 		throwCards(cardsToThrow) {
-			console.log(cardsToThrow);
-
 			api.throwCards(cardsToThrow).then(res => {
-				console.log("res", res);
-				this.getDroppedCards;
+				// this.getDroppedCards;
 			});
 
 			// const playerCardIDs = [];
@@ -68,23 +55,30 @@ export default {
 		},
 
 		getDroppedCards() {
-			if (this.game && this.gameStatus === "STARTED" && this.stepStatus === "WAITING_VOTE") {
-				api.getGame().then(res => {
-					let cards = res.step.stepCards;
-					let cardIdArr = [];
-					for (let item of cards) {
-						cardIdArr.push(item.card.id);
-					}
-					this.droppedCards = cardIdArr;
-				});
+			if (
+				this.game &&
+				this.gameStatus === "STARTED" &&
+				this.stepStatus === "WAITING_VOTE" &&
+				this.currentTurnPlayerId !== this.devicePlayerId
+			) {
+				api
+					.getGame()
+					.then(res => {
+						let cards = res.step.stepCards;
+						let cardsArray = [];
+						for (let item of cards) {
+							cardsArray.push(item.card);
+						}
+						this.$emit("dropped-cards", cardsArray);
+					})
+					.then(() => {
+						this.$emit("show-vote-modal");
+					});
 			}
 		},
 
-		vote() {
-			api.vote(this.droppedCards).then(res => {
-				// console.log("Vote given!!!");
-				// console.log(res);
-			});
+		vote(cardsToVote) {
+			api.vote(cardsToVote).then(res => {});
 		},
 
 		initializeGame() {
@@ -141,6 +135,12 @@ export default {
 				this.$emit("show-throw-cards-modal");
 			}
 		},
+
+		// showVoteModal() {
+		// 	if (this.stepStatus === "WAITING_VOTE" && this.currentTurnPlayerId !== this.devicePlayerId) {
+		// 		this.$emit("show-vote-modal");
+		// 	}
+		// },
 	},
 
 	watch: {
@@ -150,18 +150,19 @@ export default {
 
 			this.identifyCurrentTurnPlayerId();
 			this.setStepStatus();
-			this.getDroppedCards();
 		},
 
 		stepStatus() {
+			this.getDroppedCards();
 			this.throwDiceDisabled();
 			this.showThrowCardsModal();
+			// this.showVoteModal();
 		},
 	},
 
 	created() {
-		// this.initializeGame();
-		// this.initializeDevicePlayerId();
+		this.initializeGame();
+		this.initializeDevicePlayerId();
 	},
 };
 </script>
