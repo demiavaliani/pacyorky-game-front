@@ -5,7 +5,6 @@
 		<div><b>Device Player:</b> {{ devicePlayerId }}</div>
 		<div><b>Current Player:</b> {{ currentTurnPlayerId }}</div>
 		<div><b>Desk Order:</b> {{ deskOrder }}</div>
-		<b-button @click="throwCards()" :disabled="throwCardsDisabled">Throw Cards</b-button>
 		<b-button @click="vote()" :disabled="voteDisabled">Vote</b-button>
 	</div>
 </template>
@@ -36,12 +35,6 @@ export default {
 			devicePlayerId: "devicePlayerId",
 		}),
 
-		throwCardsDisabled() {
-			if (this.stepStatus !== "WAITING_CARD" || this.currentTurnPlayerId !== this.devicePlayerId) {
-				return true;
-			} else false;
-		},
-
 		voteDisabled() {
 			if (this.stepStatus !== "WAITING_VOTE" || this.currentTurnPlayerId === this.devicePlayerId) {
 				return true;
@@ -57,15 +50,21 @@ export default {
 		},
 
 		// currently for testing - passing random card IDs
-		throwCards() {
-			const playerCardIDs = [];
-			this.game.step.currentPlayer.deck
-				.slice(0, 3)
-				.forEach(eachId => playerCardIDs.push(eachId.id));
-			api.throwCards(playerCardIDs).then(() => {
-				this.getDroppedCards();
-				// console.log("Threw Cards!!!");
+		throwCards(cardsToThrow) {
+			console.log(cardsToThrow);
+
+			api.throwCards(cardsToThrow).then(res => {
+				console.log("res", res);
+				this.getDroppedCards;
 			});
+
+			// const playerCardIDs = [];
+			// this.game.step.currentPlayer.deck
+			// 	.slice(0, 3)
+			// 	.forEach(eachId => playerCardIDs.push(eachId.id));
+			// api.throwCards(playerCardIDs).then(() => {
+			// 	this.getDroppedCards();
+			// });
 		},
 
 		getDroppedCards() {
@@ -136,6 +135,12 @@ export default {
 				this.$emit("throw-dice-disabled", false);
 			}
 		},
+
+		showThrowCardsModal() {
+			if (this.stepStatus === "WAITING_CARD" && this.currentTurnPlayerId === this.devicePlayerId) {
+				this.$emit("show-throw-cards-modal");
+			}
+		},
 	},
 
 	watch: {
@@ -150,12 +155,13 @@ export default {
 
 		stepStatus() {
 			this.throwDiceDisabled();
+			this.showThrowCardsModal();
 		},
 	},
 
 	created() {
-		this.initializeGame();
-		this.initializeDevicePlayerId();
+		// this.initializeGame();
+		// this.initializeDevicePlayerId();
 	},
 };
 </script>

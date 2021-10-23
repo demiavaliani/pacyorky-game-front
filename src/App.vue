@@ -3,6 +3,9 @@
 		<NavBar v-if="$route.name != 'boardGame'"></NavBar>
 		<router-view></router-view>
 		<MainFooter v-if="$route.name != 'boardGame'"></MainFooter>
+
+		<!-- <InGameModal></InGameModal> -->
+
 		<!-- <ErrorModal></ErrorModal> -->
 		<!-- <GameLogic></GameLogic> -->
 		<!-- <BoardGame></BoardGame> -->
@@ -24,6 +27,7 @@ import ActiveRoomsGraph from "@/components/desktopApp/ActiveRoomsGraph";
 import CreateRoomModal from "@/components/modals/CreateRoomModal";
 import JoinRoomModal from "@/components/modals/JoinRoomModal";
 import GameLogic from "@/components/desktopApp/GameLogic";
+import InGameModal from "@/components/modals/InGameModal";
 
 export default {
 	name: "app",
@@ -40,6 +44,7 @@ export default {
 		CreateRoomModal,
 		JoinRoomModal,
 		GameLogic,
+		InGameModal,
 	},
 	mounted() {
 		// this.setPlayerID();

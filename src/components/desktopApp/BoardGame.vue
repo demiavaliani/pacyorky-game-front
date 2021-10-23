@@ -8,6 +8,7 @@
 			ref="gameLogic"
 			@desk-order="setDeskOrder"
 			@throw-dice-disabled="diceBtnDisabled = $event"
+			@show-throw-cards-modal="throwCardsModalVisible = true"
 			class="game-logic"
 		>
 		</GameLogic>
@@ -190,6 +191,47 @@
 				</b-col>
 			</b-row>
 		</b-container>
+
+		<InGameModal
+			:modalVisible="throwCardsModalVisible"
+			:footerHidden="modalFooterHidden"
+			ref="throwCardsModal"
+		>
+			<template v-slot:upper-half>
+				<div class="mx-1" v-for="card in dishesDeck">
+					<img
+						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						@click="chooseCardToThrow(card.id, $event)"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+
+				<div class="mx-1" v-for="card in ritualsDeck">
+					<img
+						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						@click="chooseCardToThrow(card.id, $event)"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+
+				<div class="mx-1" v-for="card in stuffDeck">
+					<img
+						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						@click="chooseCardToThrow(card.id, $event)"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+				<p>{{ cardsToThrow }}</p>
+			</template>
+
+			<template v-slot:footer>
+				<b-button @click="callThrowCards()">
+					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
+						{{ $ml.get("throw_cards") }}
+					</p>
+				</b-button>
+			</template>
+		</InGameModal>
 	</div>
 </template>
 
@@ -199,6 +241,7 @@ import * as imageMapResize from "@/plugins/imageMapResizer.min.js";
 import { mapState } from "vuex";
 import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
+import InGameModal from "../modals/InGameModal.vue";
 
 export default {
 	name: "BoardGame",
@@ -206,24 +249,38 @@ export default {
 	components: {
 		GameLogic,
 		ActiveRoomsGraph,
+		InGameModal,
 	},
 
 	data() {
 		return {
-			deskOrder: "101",
+			deskOrder: 101,
 
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 
-			diceBtnDisabled: true,
-
 			currentDevicePlayer: {},
+			cardsToThrow: [],
 
-			dishesDeck: [],
-			ritualsDeck: [],
-			stuffDeck: [],
+			dishesDeck: [
+				// { id: 15, name: "med", cardType: 1 },
+				// { id: 9, name: "polunica", cardType: 1 },
+			],
+			ritualsDeck: [
+				// { id: 123, name: "chitannja", cardType: 2 },
+				// { id: 152, name: "prikrashati_hati", cardType: 2 },
+			],
+			stuffDeck: [
+				// { id: 193, name: "proskuri", cardType: 3 },
+				// { id: 187, name: "ptashki", cardType: 3 },
+			],
+
+			throwCardsModalVisible: false,
+			modalFooterHidden: false,
+
+			diceBtnDisabled: true,
 		};
 	},
 
@@ -239,12 +296,32 @@ export default {
 	},
 
 	methods: {
+		chooseCardToThrow(id, ev) {
+			let elementStyle = ev.target.style;
+
+			if (!this.cardsToThrow.includes(id)) {
+				this.cardsToThrow.push(id);
+
+				elementStyle.position = "relative";
+				elementStyle.bottom = "30px";
+			} else {
+				let cardIndexToRemove = this.cardsToThrow.indexOf(id);
+
+				this.cardsToThrow.splice(cardIndexToRemove, 1);
+
+				elementStyle.position = "static";
+				elementStyle.bottom = "0";
+			}
+		},
+
 		callThrowDice() {
 			this.$refs.gameLogic.throwDice();
 		},
 
 		callThrowCards() {
-			this.$refs.gameLogic.throwCards();
+			this.$refs.gameLogic.throwCards(this.cardsToThrow);
+			this.cardsToThrow = [];
+			this.throwCardsModalVisible = false;
 		},
 
 		callVote() {

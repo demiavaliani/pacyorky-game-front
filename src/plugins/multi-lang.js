@@ -68,6 +68,7 @@ export default new MLCreate({
 			roll_the_dice: "бросить кости",
 			my_turn: "мій ход",
 			throw_dice: "бросить кости",
+			throw_cards: "сбросить карты",
 			room_name: "кімната",
 			end_game: "залишити гру",
 			deck: "комора",
