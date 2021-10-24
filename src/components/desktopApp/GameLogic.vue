@@ -32,12 +32,17 @@ export default {
 			game: "gameState",
 			devicePlayerId: "devicePlayerId",
 		}),
+
+		secondsTillNextStep() {
+			// let timeNow = new Date();
+			// let nextStepAt = this.game.nextStepAt;
+			// let timeLeft = (timeNow - nextStepAt) / 1000;
+			// console.log((new Date() - this.game.nextStepAt) / 1000);
+		},
 	},
 
 	methods: {
 		initializeGame() {
-			this.$store.dispatch("setGameAction");
-
 			let interval = setInterval(() => {
 				if (!this.game || !Object.keys(this.game).length) {
 					clearInterval(interval);
@@ -139,45 +144,36 @@ export default {
 				this.$emit("show-throw-cards-modal");
 			}
 		},
-
-		// showVoteModal() {
-		// 	if (this.stepStatus === "WAITING_VOTE" && this.currentTurnPlayerId !== this.devicePlayerId) {
-		// 		this.$emit("show-vote-modal");
-		// 	}
-		// },
 	},
 
 	watch: {
-		game() {
-			this.setGameStatus();
-			this.setDeskOrder();
-
-			this.identifyCurrentTurnPlayerId();
-			this.setStepStatus();
+		game: {
+			handler: function() {
+				this.setGameStatus();
+				this.setDeskOrder();
+				this.identifyCurrentTurnPlayerId();
+				this.setStepStatus();
+			},
+			deep: true,
 		},
-
 		gameStatus() {
-			console.log("GAMEEEEE");
 			if (this.game && this.gameStatus === "FINISHED") {
 				this.$emit("show-game-ended-modal");
 			}
 		},
-
 		stepStatus() {
 			this.getDroppedCards();
 			this.throwDiceDisabled();
 			this.showThrowCardsModal();
-			// this.showVoteModal();
 		},
 	},
 
-	created() {
-		api.getRooms().then(rooms => {
-			if (rooms.length) {
-				this.initializeGame();
-				this.initializeDevicePlayerId();
-			}
-		});
+	async created() {
+		await this.$store.dispatch("setGameAction");
+		if (this.game && Object.keys(this.game).length) {
+			this.initializeGame();
+			this.initializeDevicePlayerId();
+		}
 	},
 };
 </script>

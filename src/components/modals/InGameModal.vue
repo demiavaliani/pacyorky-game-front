@@ -9,9 +9,6 @@
 		</b-container>
 
 		<template #modal-footer>
-			<!-- <b-button @click="ok()">
-				<slot name="footer"> </slot>
-			</b-button> -->
 			<slot name="footer"></slot>
 		</template>
 	</b-modal>

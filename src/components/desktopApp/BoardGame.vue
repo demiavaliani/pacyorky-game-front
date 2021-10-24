@@ -270,7 +270,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="false" :footerHidden="false">
+		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false">
 			<template v-slot:upper-half>
 				<!-- <p style="font-family: Montserrat; font-size: 35px;"> -->
 				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
@@ -296,8 +296,10 @@
 
 		<!--
 			need to add logic to conditionally open the modal
+			condition is a return value is null when calling
+			/game (probably from GameLogic)
 		-->
-		<InGameModal :modalVisible="true" :footerHidden="false">
+		<InGameModal :modalVisible="stepTimeOverModalVisible" :footerHidden="false">
 			<template v-slot:upper-half>
 				<p
 					v-bind:style="{
@@ -378,7 +380,7 @@ export default {
 			throwCardsModalVisible: false,
 			voteModalVisible: false,
 			gameEndedModalVisible: false,
-			stepTimeOverModalVisible: true,
+			stepTimeOverModalVisible: false,
 
 			diceBtnDisabled: true,
 		};
@@ -424,7 +426,6 @@ export default {
 		},
 
 		populateVoteCardDecks(thrownCards) {
-			console.log(thrownCards);
 			this.dishesDeckForVote = thrownCards.filter(card => card.cardType === 1);
 			this.ritualsDeckForVote = thrownCards.filter(card => card.cardType === 2);
 			this.stuffDeckForVote = thrownCards.filter(card => card.cardType === 3);
