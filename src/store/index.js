@@ -20,17 +20,6 @@ export default new Vuex.Store({
 	},
 
 	getters: {
-		modalStatusGetter(state) {
-			return state.modalStatus;
-		},
-
-		errorCodeGetter(state) {
-			return state.errorCode;
-		},
-
-		listOfActiveRoomsGetter(state) {
-			return state.listOfActiveRooms;
-		}
 	},
 
 	actions: {
@@ -54,8 +43,9 @@ export default new Vuex.Store({
 		},
 
 		setGameAction(context) {
-			api.getGame().then(response => {
+			return api.getGame().then(response => {
 				context.commit("setGameMutation", response)
+				return response
 			})
 		},
 

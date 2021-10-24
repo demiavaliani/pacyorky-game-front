@@ -6,7 +6,7 @@
 
 		<!-- <InGameModal></InGameModal> -->
 
-		<!-- <ErrorModal></ErrorModal> -->
+		<ErrorModal></ErrorModal>
 		<!-- <GameLogic></GameLogic> -->
 		<!-- <BoardGame></BoardGame> -->
 		<!-- <GameDashboard></GameDashboard> -->
