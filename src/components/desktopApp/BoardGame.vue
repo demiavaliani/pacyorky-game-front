@@ -109,7 +109,7 @@
 
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
-					<p>{{ $ml.get("room_name") }} “{{ game.name }}”</p>
+					<p v-if="game">{{ $ml.get("room_name") }} “{{ game.name }}”</p>
 					<b-button @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
@@ -117,6 +117,7 @@
 
 				<b-col class="d-flex justify-content-end">
 					<ActiveRoomsGraph
+						v-if="game"
 						class="active-rooms-graph"
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"

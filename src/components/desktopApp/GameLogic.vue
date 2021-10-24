@@ -35,11 +35,26 @@ export default {
 	},
 
 	methods: {
+		initializeGame() {
+			this.$store.dispatch("setGameAction");
+
+			let interval = setInterval(() => {
+				if (!this.game || !Object.keys(this.game).length || this.game.status === "FINISHED") {
+					clearInterval(interval);
+				} else {
+					this.$store.dispatch("setGameAction");
+				}
+			}, 2000);
+		},
+
+		initializeDevicePlayerId() {
+			this.$store.dispatch("setDevicePlayerIdAction");
+		},
+
 		throwDice() {
 			api.throwDice().then(() => {});
 		},
 
-		// currently for testing - passing random card IDs
 		throwCards(cardsToThrow) {
 			api.throwCards(cardsToThrow).then(res => {
 				// this.getDroppedCards;
@@ -79,17 +94,6 @@ export default {
 
 		vote(cardsToVote) {
 			api.vote(cardsToVote).then(res => {});
-		},
-
-		initializeGame() {
-			this.$store.dispatch("setGameAction");
-			setInterval(() => {
-				this.$store.dispatch("setGameAction");
-			}, 2000);
-		},
-
-		initializeDevicePlayerId() {
-			this.$store.dispatch("setDevicePlayerIdAction");
 		},
 
 		setGameStatus() {
@@ -161,8 +165,12 @@ export default {
 	},
 
 	created() {
-		this.initializeGame();
-		this.initializeDevicePlayerId();
+		api.getRooms().then(rooms => {
+			if (rooms.length) {
+				this.initializeGame();
+				this.initializeDevicePlayerId();
+			}
+		});
 	},
 };
 </script>
