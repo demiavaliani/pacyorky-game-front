@@ -15,9 +15,13 @@
 
 		<b-container fluid>
 			<b-row cols="2" class="d-flex align-items-center justify-content-center">
+				<!-- 						 -->
+				<!-- Play with computer / no -->
+				<!--  						 -->
 				<b-col cols="8">
 					<p>{{ $ml.get("play_with_computer") }}</p>
 				</b-col>
+				<!-- Buttons -->
 				<b-col cols="2">
 					<b-form-radio-group class="d-flex justify-content-around">
 						<!--
@@ -45,16 +49,23 @@
 				</b-col>
 
 				<b-col cols="12" class="mb-5"></b-col>
-
+				<!--  				 -->
+				<!-- Player capacity -->
+				<!--  				 -->
 				<b-col cols="8">
 					<div class="w-75">
 						<p>{{ $ml.get("choose_players_count") }}</p>
 					</div>
 				</b-col>
+				<!-- Buttons -->
 				<b-col cols="2" class="d-flex justify-content-around align-items-center">
 					<b-row class="d-flex justify-content-center pt-2">
 						<b-col cols="2" class="px-0 d-flex justify-content-center">
-							<b-button @click="capacityDecrease" class="remove-default-button-style">
+							<b-button
+								@click="capacityDecrease"
+								:disabled="this.tickActive == 'x'"
+								class="remove-default-button-style"
+							>
 								<img src="@/assets/game-dashboard/component-minus.svg" />
 							</b-button>
 						</b-col>
@@ -69,7 +80,11 @@
 							</div>
 						</b-col>
 						<b-col cols="2" class="px-0 d-flex justify-content-center">
-							<b-button @click="capacityIncrease" class="remove-default-button-style ">
+							<b-button
+								@click="capacityIncrease"
+								:disabled="this.tickActive == 'x'"
+								class="remove-default-button-style "
+							>
 								<img src="@/assets/game-dashboard/component-plus.svg" />
 							</b-button>
 						</b-col>
@@ -82,7 +97,9 @@
 				</b-col>
 
 				<b-col cols="12" class="mb-5"></b-col>
-
+				<!-- 		   -->
+				<!-- Room name -->
+				<!-- 		   -->
 				<b-col cols="7">
 					<b-form-input
 						v-model="roomForm.name"
@@ -183,6 +200,10 @@ export default {
 			if (this.roomNameState == false) {
 				return false;
 			} else return true;
+		},
+
+		tickActiveComputed() {
+			return this.tickActive;
 		},
 	},
 
