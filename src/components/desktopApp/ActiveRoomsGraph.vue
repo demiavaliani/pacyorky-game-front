@@ -3,7 +3,7 @@
 		class="d-flex align-items-center text-center room-entry"
 		@click="$emit('current-room-click', currentRoomFromActiveRoomsGraph)"
 	>
-		<b-col cols="6" class="pr-1">
+		<b-col cols="6" class="pr-1" v-if="displayRoomName">
 			<p class="m-0 text-left">
 				{{ activeRoomNameFromActiveRoomsGraph }}
 			</p>
@@ -76,6 +76,7 @@ export default {
 		activePlayersCountFromActiveRoomsGraph: Number,
 		activeRoomNameFromActiveRoomsGraph: String,
 		currentRoomFromActiveRoomsGraph: {},
+		displayRoomName: Boolean,
 	},
 	methods: {
 		fillMan(position) {

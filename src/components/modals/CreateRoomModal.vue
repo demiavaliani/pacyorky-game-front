@@ -24,7 +24,7 @@
 				<!-- Buttons -->
 				<b-col cols="2">
 					<b-form-radio-group class="d-flex justify-content-around">
-						<!-- 
+						<!--
 							First - @change - when a different radio is clicked, "tickActive" data property is set to either "tick" or "x".
 							Later, the values are used by "tickActiveObj()" and "xActiveObj()" methods.
 							After that, either "tickActiveObj" or "xActiveObj" is binded as a CSS class to choose the appropriate button.
@@ -172,6 +172,8 @@ export default {
 				privateRoom: true,
 				password: "",
 				name: "",
+				secondsBeforeStart: 15,
+				secondsForStep: 30,
 			},
 		};
 	},
@@ -208,13 +210,15 @@ export default {
 	methods: {
 		onClose() {
 			this.$emit("close");
+			// catch this event in game dashboard to update the game list with the created game automatically
 		},
 
 		onCreateRoom() {
 			if (this.roomForm.name) {
-				api.createRoom(this.roomForm).then((response) => {
+				api.createRoom(this.roomForm).then(response => {
 					if (response) {
 						this.$emit("update-active-rooms-graph");
+						this.$router.push("board-game");
 						this.$emit("close");
 					}
 				});

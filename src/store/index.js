@@ -6,62 +6,85 @@ import roomModule from "./modules/roomModule"
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    modules: {
-        roomModule
-    },
+	modules: {
+		roomModule
+	},
 
-    state: {
-        modalStatus: false,
-        errorCode: "",
-        listOfActiveRooms: [],
-    },
+	state: {
+		modalStatus: false,
+		errorCode: "",
+		listOfActiveRooms: [],
+		gameState: {},
+		devicePlayerId: "",
 
-    getters: {
-        modalStatusGetter(state) {
-            return state.modalStatus;
-        },
+	},
 
-        errorCodeGetter(state) {
-            return state.errorCode;
-        },
+	getters: {
+		modalStatusGetter(state) {
+			return state.modalStatus;
+		},
 
-        listOfActiveRoomsGetter(state) {
-            return state.listOfActiveRooms;
-        }
-    },
+		errorCodeGetter(state) {
+			return state.errorCode;
+		},
 
-    actions: {
-        getGamesByIdAction() {
-            api.getGamesById().then(response => {
-            })
-        },
+		listOfActiveRoomsGetter(state) {
+			return state.listOfActiveRooms;
+		}
+	},
 
-        setModalStatusAction(context, status) {
-            context.commit("setModalStatusMutation", status);
-        },
+	actions: {
+		getGamesByIdAction() {
+			api.getGamesById().then(response => {
+			})
+		},
 
-        setErrorCodeAction(context, errorCode) {
-            context.commit("setErrorCodeMutation", errorCode);
-        },
+		setModalStatusAction(context, status) {
+			context.commit("setModalStatusMutation", status);
+		},
 
-        setRoomAction(context, room) {
-            api.getRooms().then(response => {
-                context.commit("setRoomMutation", response)
-            })
-        }
-    },
+		setErrorCodeAction(context, errorCode) {
+			context.commit("setErrorCodeMutation", errorCode);
+		},
 
-    mutations: {
-        setModalStatusMutation(state, status) {
-            state.modalStatus = status;
-        },
+		setRoomAction(context) {
+			api.getRooms().then(response => {
+				context.commit("setRoomMutation", response)
+			})
+		},
 
-        setErrorCodeMutation(state, errorCode) {
-            state.errorCode = errorCode;
-        },
+		setGameAction(context) {
+			api.getGame().then(response => {
+				context.commit("setGameMutation", response)
+			})
+		},
 
-        setRoomMutation(state, room) {
-            state.listOfActiveRooms = room;
-        }
-    },
+		setDevicePlayerIdAction(context) {
+			api.getDevicePlayerId().then(response => {
+				context.commit("setDevicePlayerIdMutation", response)
+			})
+		}
+	},
+
+	mutations: {
+		setModalStatusMutation(state, status) {
+			state.modalStatus = status;
+		},
+
+		setErrorCodeMutation(state, errorCode) {
+			state.errorCode = errorCode;
+		},
+
+		setRoomMutation(state, room) {
+			state.listOfActiveRooms = room;
+		},
+
+		setGameMutation(state, game) {
+			state.gameState = game;
+		},
+
+		setDevicePlayerIdMutation(state, id) {
+			state.devicePlayerId = id;
+		}
+	},
 })

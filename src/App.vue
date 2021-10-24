@@ -1,9 +1,15 @@
 <template>
 	<div id="app">
-		<NavBar></NavBar>
-		<ErrorModal></ErrorModal>
+		<NavBar v-if="$route.name != 'boardGame'"></NavBar>
 		<router-view></router-view>
-		<MainFooter></MainFooter>
+		<MainFooter v-if="$route.name != 'boardGame'"></MainFooter>
+
+		<!-- <InGameModal></InGameModal> -->
+
+		<!-- <ErrorModal></ErrorModal> -->
+		<!-- <GameLogic></GameLogic> -->
+		<!-- <BoardGame></BoardGame> -->
+		<!-- <GameDashboard></GameDashboard> -->
 	</div>
 </template>
 
@@ -20,6 +26,8 @@ import GameDashboard from "@/components/desktopApp/GameDashboard";
 import ActiveRoomsGraph from "@/components/desktopApp/ActiveRoomsGraph";
 import CreateRoomModal from "@/components/modals/CreateRoomModal";
 import JoinRoomModal from "@/components/modals/JoinRoomModal";
+import GameLogic from "@/components/desktopApp/GameLogic";
+import InGameModal from "@/components/modals/InGameModal";
 
 export default {
 	name: "app",
@@ -35,16 +43,18 @@ export default {
 		ActiveRoomsGraph,
 		CreateRoomModal,
 		JoinRoomModal,
+		GameLogic,
+		InGameModal,
 	},
 	mounted() {
-		this.setPlayerID();
+		// this.setPlayerID();
 	},
 	methods: {
-		setPlayerID: function() {
-			axios.get("/api/player/id/").then((res) => {
-				this.$cookies.set("playerid", res.data);
-			});
-		},
+		// setPlayerID: function() {
+		// 	axios.get("/api/player/id/").then((res) => {
+		// 		this.$cookies.set("playerid", res.data);
+		// 	});
+		// },
 	},
 	created() {
 		document.querySelector("body").style.height = "100vh";
@@ -83,5 +93,11 @@ export default {
 	font-family: "Montserrat";
 	src: url("assets/fonts/MontserratAlternates-SemiBold.ttf") format("truetype");
 	font-weight: 600;
+}
+
+@font-face {
+	font-family: "Amatic_SC";
+	src: url("assets/fonts/AmaticSC-Bold.ttf") format("truetype");
+	font-weight: bold;
 }
 </style>
