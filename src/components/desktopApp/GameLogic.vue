@@ -39,7 +39,7 @@ export default {
 			this.$store.dispatch("setGameAction");
 
 			let interval = setInterval(() => {
-				if (!this.game || !Object.keys(this.game).length || this.game.status === "FINISHED") {
+				if (!this.game || !Object.keys(this.game).length) {
 					clearInterval(interval);
 				} else {
 					this.$store.dispatch("setGameAction");
@@ -154,6 +154,13 @@ export default {
 
 			this.identifyCurrentTurnPlayerId();
 			this.setStepStatus();
+		},
+
+		gameStatus() {
+			console.log("GAMEEEEE");
+			if (this.game && this.gameStatus === "FINISHED") {
+				this.$emit("show-game-ended-modal");
+			}
 		},
 
 		stepStatus() {

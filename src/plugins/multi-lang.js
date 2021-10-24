@@ -42,6 +42,7 @@ export default new MLCreate({
 			max_time_per_turn: "максимальное время отведенное на ход (мин)",
 			room_name: "впишите название комнаты тут",
 			go_to_home_page: "перейти на главную",
+			go_back_to_home_page: "вернуться на главную",
 			min_2_players_in_the_room: "В комнате должно быть минимум 2 игрока",
 			name_3_11_characters_long: "Имя должно состоять из 3–11 символов",
 			red_room: "Красная комната",
@@ -71,9 +72,12 @@ export default new MLCreate({
 			throw_cards: "сбросить карты",
 			room_name: "кімната",
 			end_game: "залишити гру",
+			game_ended: "Игра завершена!",
 			deck: "комора",
 			my_character: "мій герой",
-			my_happiness: "моє щастя"
+			my_happiness: "моє щастя",
+			step_time_over: "Ваше время истекло!",
+			switching_step: "Переход хода"
 		})
 	]
 })

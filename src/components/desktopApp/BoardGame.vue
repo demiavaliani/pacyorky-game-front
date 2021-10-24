@@ -11,6 +11,7 @@
 			@show-throw-cards-modal="throwCardsModalVisible = true"
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
+			@show-game-ended-modal="gameEndedModalVisible = true"
 			class="game-logic"
 		>
 		</GameLogic>
@@ -195,7 +196,44 @@
 			</b-row>
 		</b-container>
 
-		<InGameModal :modalVisible="voteModalVisible" :footerHidden="modalFooterHidden">
+		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false">
+			<template v-slot:upper-half>
+				<div class="mx-1" v-for="card in dishesDeck">
+					<img
+						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+
+				<div class="mx-1" v-for="card in ritualsDeck">
+					<img
+						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+
+				<div class="mx-1" v-for="card in stuffDeck">
+					<img
+						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+				<p>{{ cardsToThrow }}</p>
+			</template>
+
+			<template v-slot:footer>
+				<b-button @click="callThrowCards()">
+					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
+						{{ $ml.get("throw_cards") }}
+					</p>
+				</b-button>
+			</template>
+		</InGameModal>
+
+		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeckForVote">
 					<img
@@ -232,40 +270,51 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="modalFooterHidden">
+		<InGameModal :modalVisible="false" :footerHidden="false">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeck">
-					<img
-						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
-						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
-					/>
-					<p>{{ card.id }}</p>
-				</div>
-
-				<div class="mx-1" v-for="card in ritualsDeck">
-					<img
-						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
-						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
-					/>
-					<p>{{ card.id }}</p>
-				</div>
-
-				<div class="mx-1" v-for="card in stuffDeck">
-					<img
-						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
-						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
-					/>
-					<p>{{ card.id }}</p>
-				</div>
-				<p>{{ cardsToThrow }}</p>
+				<!-- <p style="font-family: Montserrat; font-size: 35px;"> -->
+				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
+					{{ $ml.get("game_ended") }}
+				</p>
 			</template>
 
 			<template v-slot:footer>
-				<b-button @click="callThrowCards()">
-					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
-						{{ $ml.get("throw_cards") }}
+				<b-button to="/">
+					<p
+						v-bind:style="{
+							color: 'white',
+							fontFamily: 'Montserrat',
+							fontWeight: '400',
+							fontSize: '18px',
+						}"
+					>
+						{{ $ml.get("go_back_to_home_page") }}
 					</p>
 				</b-button>
+			</template>
+		</InGameModal>
+
+		<!--
+			need to add logic to conditionally open the modal
+		-->
+		<InGameModal :modalVisible="true" :footerHidden="false">
+			<template v-slot:upper-half>
+				<p
+					v-bind:style="{
+						color: '#E15465',
+						fontFamily: 'Montserrat',
+						fontWeight: '500',
+						fontSize: '35px',
+					}"
+				>
+					{{ $ml.get("step_time_over") }}
+				</p>
+			</template>
+
+			<template v-slot:footer>
+				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '300', fontSize: '35px' }">
+					{{ $ml.get("switching_step") }}
+				</p>
 			</template>
 		</InGameModal>
 	</div>
@@ -328,7 +377,8 @@ export default {
 
 			throwCardsModalVisible: false,
 			voteModalVisible: false,
-			modalFooterHidden: false,
+			gameEndedModalVisible: false,
+			stepTimeOverModalVisible: true,
 
 			diceBtnDisabled: true,
 		};

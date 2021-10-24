@@ -57,4 +57,15 @@ export default {
 	border-radius: 20px;
 	background-color: #35838d;
 }
+
+::v-deep a {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 270px;
+	height: 40px;
+	border: 0;
+	border-radius: 20px;
+	background-color: #35838d;
+}
 </style>
