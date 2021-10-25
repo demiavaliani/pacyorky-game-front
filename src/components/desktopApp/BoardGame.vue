@@ -1,8 +1,11 @@
 <template>
 	<div id="main-div">
-		<div id="vukol-character" class="vukol-character">
-			<img src="@/assets/board-game/vukol.png" />
+		<div id="player-character" class="player-character">
+			<!-- <img :src="require('@/assets/cards/moving_characters/' + playerCharacter + '.png')" /> -->
+			<!-- <img id="charImg" src="../../assets/cards/moving_characters/baba_docka.png" /> -->
+			<img class="charImg" />
 		</div>
+		<b-button @click="setPlayerCharacterCard()"></b-button>
 
 		<GameLogic
 			ref="gameLogic"
@@ -12,6 +15,7 @@
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
+			@player-character="setPlayerCharacterCard($event)"
 			class="game-logic"
 		>
 		</GameLogic>
@@ -342,13 +346,13 @@ export default {
 	data() {
 		return {
 			deskOrder: 101,
-
+			currentDevicePlayer: {},
+			playerCharacter: "",
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 
-			currentDevicePlayer: {},
 			cardsToThrow: [],
 			cardsToVote: [],
 			dishesDeckForVote: [
@@ -398,6 +402,12 @@ export default {
 	},
 
 	methods: {
+		setPlayerCharacterCard(character) {
+			let elem = document.getElementsByClassName("charImg")[0];
+			elem.src = "../../assets/cards/moving_characters/baba_docka.png";
+			console.log(elem);
+		},
+
 		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
@@ -476,7 +486,7 @@ export default {
 		},
 
 		udpatePlayerBoardPosition() {
-			let player = document.getElementById("vukol-character");
+			let player = document.getElementById("player-character");
 
 			player.style.left = `${this.adjustedCoordX - 20}px`;
 			player.style.top = `${this.adjustedCoordY - 120}px`;
@@ -503,20 +513,28 @@ export default {
 			this.adjustImgMapCoords();
 		},
 
-		game() {
-			if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
-				this.currentDevicePlayer = this.game.players.filter(
-					player => player.id === this.devicePlayerId
-				)[0];
-			}
+		game: {
+			handler: function() {
+				if (
+					this.game &&
+					this.game.status === "STARTED" &&
+					this.game.players &&
+					this.devicePlayerId
+				) {
+					this.currentDevicePlayer = this.game.players.filter(
+						player => player.id == this.devicePlayerId
+					)[0];
+				}
 
-			if (Object.keys(this.currentDevicePlayer).length) {
-				let deck = this.currentDevicePlayer.deck;
+				if (Object.keys(this.currentDevicePlayer).length) {
+					let deck = this.currentDevicePlayer.deck;
 
-				this.dishesDeck = deck.filter(card => card.cardType === 1);
-				this.ritualsDeck = deck.filter(card => card.cardType === 2);
-				this.stuffDeck = deck.filter(card => card.cardType === 3);
-			}
+					this.dishesDeck = deck.filter(card => card.cardType === 1);
+					this.ritualsDeck = deck.filter(card => card.cardType === 2);
+					this.stuffDeck = deck.filter(card => card.cardType === 3);
+				}
+			},
+			deep: true,
 		},
 	},
 
@@ -720,7 +738,7 @@ p {
 	font-size: 33px;
 }
 
-.vukol-character {
+.player-character {
 	position: absolute;
 	/* top: 450px;
 	left: 50px; */

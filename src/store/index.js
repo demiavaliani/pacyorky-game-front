@@ -43,15 +43,24 @@ export default new Vuex.Store({
 		},
 
 		setGameAction(context) {
-			return api.getGame().then(response => {
-				context.commit("setGameMutation", response)
-				return response
+			return new Promise((resolve) => {
+				// setTimeout(() => {
+				api.getGame().then(response => {
+					context.commit("setGameMutation", response)
+					resolve()
+				})
+				// }, 2000)
 			})
 		},
 
 		setDevicePlayerIdAction(context) {
-			api.getDevicePlayerId().then(response => {
-				context.commit("setDevicePlayerIdMutation", response)
+			return new Promise(resolve => {
+				// setTimeout(() => {
+				api.getDevicePlayerId().then(response => {
+					context.commit("setDevicePlayerIdMutation", response)
+					resolve()
+				})
+				// }, 2000)
 			})
 		}
 	},

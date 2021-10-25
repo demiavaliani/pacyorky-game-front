@@ -43,17 +43,31 @@ export default {
 
 	methods: {
 		initializeGame() {
-			let interval = setInterval(() => {
-				if (!this.game || !Object.keys(this.game).length) {
-					clearInterval(interval);
-				} else {
-					this.$store.dispatch("setGameAction");
-				}
-			}, 2000);
+			return new Promise(resolve => {
+				let interval = setInterval(() => {
+					if (!this.game || !Object.keys(this.game).length) {
+						clearInterval(interval);
+					} else {
+						this.$store.dispatch("setGameAction").then(() => {
+							resolve("TTTT");
+						});
+					}
+				}, 2000);
+			});
 		},
 
-		initializeDevicePlayerId() {
-			this.$store.dispatch("setDevicePlayerIdAction");
+		async initializeDevicePlayerId() {
+			return new Promise(resolve => {
+				this.$store.dispatch("setDevicePlayerIdAction").then(() => {
+					resolve();
+				});
+			});
+		},
+
+		setPlayerCharacter() {
+			let character = this.game.players.filter(player => player.id == this.devicePlayerId)[0]
+				.character.name;
+			this.$emit("player-character", character);
 		},
 
 		throwDice() {
@@ -76,7 +90,7 @@ export default {
 
 		getDroppedCards() {
 			if (
-				this.game &&
+				// this.game &&
 				this.gameStatus === "STARTED" &&
 				this.stepStatus === "WAITING_VOTE" &&
 				this.currentTurnPlayerId !== this.devicePlayerId
@@ -102,13 +116,17 @@ export default {
 		},
 
 		setGameStatus() {
-			if (this.game) {
-				this.gameStatus = this.game.status;
-			}
+			// if (this.game) {
+			this.gameStatus = this.game.status;
+			// }
 		},
 
 		setDeskOrder() {
-			if (this.game && this.gameStatus === "STARTED" && this.game.players) {
+			if (
+				// this.game &&
+				this.gameStatus === "STARTED"
+				// this.game.players
+			) {
 				this.deskOrder = this.game.players.filter(
 					curPlayer => curPlayer.id == this.devicePlayerId
 				)[0].currentDay.deskOrder;
@@ -117,13 +135,22 @@ export default {
 		},
 
 		identifyCurrentTurnPlayerId() {
-			if (this.game && this.gameStatus === "STARTED" && this.game.step.currentPlayer.id) {
+			if (
+				// this.game &&
+				this.gameStatus === "STARTED"
+				// this.game.step &&
+				// this.game.step.currentPlayer.id
+			) {
 				this.currentTurnPlayerId = this.game.step.currentPlayer.id;
 			}
 		},
 
 		setStepStatus() {
-			if (this.game && this.gameStatus === "STARTED" && this.game.step.status) {
+			if (
+				// this.game &&
+				this.gameStatus === "STARTED"
+				// this.game.step.status
+			) {
 				this.stepStatus = this.game.step.status;
 			}
 		},
@@ -146,34 +173,37 @@ export default {
 		},
 	},
 
-	watch: {
-		game: {
-			handler: function() {
+	watch: {},
+
+	async created() {
+		await this.$store.dispatch("setGameAction");
+		await this.initializeGame();
+		await this.initializeDevicePlayerId();
+
+		this.setPlayerCharacter();
+
+		this.$watch(
+			"game",
+			() => {
 				this.setGameStatus();
 				this.setDeskOrder();
 				this.identifyCurrentTurnPlayerId();
 				this.setStepStatus();
 			},
-			deep: true,
-		},
-		gameStatus() {
+			{ deep: true }
+		);
+
+		this.$watch("gameStatus", () => {
 			if (this.game && this.gameStatus === "FINISHED") {
 				this.$emit("show-game-ended-modal");
 			}
-		},
-		stepStatus() {
+		});
+
+		this.$watch("stepStatus", () => {
 			this.getDroppedCards();
 			this.throwDiceDisabled();
 			this.showThrowCardsModal();
-		},
-	},
-
-	async created() {
-		await this.$store.dispatch("setGameAction");
-		if (this.game && Object.keys(this.game).length) {
-			this.initializeGame();
-			this.initializeDevicePlayerId();
-		}
+		});
 	},
 };
 </script>
