@@ -171,9 +171,9 @@
 					<div class="my-progress-box">
 						<b-row class="h-100">
 							<b-col cols="6" class="left h-100">
-								<img
+								<img v-if="currentDevicePlayer && currentDevicePlayer.character"
 									class="character-img w-100 h-100"
-									src="@/assets/cards/character/baba_docka.png"
+									:src="require('@/assets/cards/character/'+ playerCharacter + '.png')"
 								/>
 							</b-col>
 
@@ -399,6 +399,10 @@ export default {
 		playerHappiness() {
 			return this.currentDevicePlayer.happiness;
 		},
+
+    playerCharacter() {
+      return this.currentDevicePlayer.character.name
+    }
 	},
 
 	methods: {
