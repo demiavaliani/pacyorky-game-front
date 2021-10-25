@@ -32,31 +32,25 @@ export default {
 			game: "gameState",
 			devicePlayerId: "devicePlayerId",
 		}),
-
-		secondsTillNextStep() {
-			// let timeNow = new Date();
-			// let nextStepAt = this.game.nextStepAt;
-			// let timeLeft = (timeNow - nextStepAt) / 1000;
-			// console.log((new Date() - this.game.nextStepAt) / 1000);
-		},
 	},
 
 	methods: {
 		initializeGame() {
 			return new Promise(resolve => {
 				let interval = setInterval(() => {
-					if (!this.game || !Object.keys(this.game).length) {
+					if (!Object.keys(this.game).length) {
+						this.$emit("show-step-time-out-modal");
 						clearInterval(interval);
 					} else {
 						this.$store.dispatch("setGameAction").then(() => {
-							resolve("TTTT");
+							resolve();
 						});
 					}
 				}, 2000);
 			});
 		},
 
-		async initializeDevicePlayerId() {
+		initializeDevicePlayerId() {
 			return new Promise(resolve => {
 				this.$store.dispatch("setDevicePlayerIdAction").then(() => {
 					resolve();
@@ -64,28 +58,12 @@ export default {
 			});
 		},
 
-		setPlayerCharacter() {
-			let character = this.game.players.filter(player => player.id == this.devicePlayerId)[0]
-				.character.name;
-			this.$emit("player-character", character);
-		},
-
 		throwDice() {
 			api.throwDice().then(() => {});
 		},
 
 		throwCards(cardsToThrow) {
-			api.throwCards(cardsToThrow).then(res => {
-				// this.getDroppedCards;
-			});
-
-			// const playerCardIDs = [];
-			// this.game.step.currentPlayer.deck
-			// 	.slice(0, 3)
-			// 	.forEach(eachId => playerCardIDs.push(eachId.id));
-			// api.throwCards(playerCardIDs).then(() => {
-			// 	this.getDroppedCards();
-			// });
+			api.throwCards(cardsToThrow).then(res => {});
 		},
 
 		getDroppedCards() {
@@ -137,9 +115,9 @@ export default {
 		identifyCurrentTurnPlayerId() {
 			if (
 				// this.game &&
-				this.gameStatus === "STARTED"
-				// this.game.step &&
-				// this.game.step.currentPlayer.id
+				this.gameStatus === "STARTED" &&
+				this.game.step &&
+				this.game.step.currentPlayer.id
 			) {
 				this.currentTurnPlayerId = this.game.step.currentPlayer.id;
 			}
@@ -148,8 +126,8 @@ export default {
 		setStepStatus() {
 			if (
 				// this.game &&
-				this.gameStatus === "STARTED"
-				// this.game.step.status
+				this.gameStatus === "STARTED" &&
+				this.game.step
 			) {
 				this.stepStatus = this.game.step.status;
 			}
@@ -179,8 +157,6 @@ export default {
 		await this.$store.dispatch("setGameAction");
 		await this.initializeGame();
 		await this.initializeDevicePlayerId();
-
-		this.setPlayerCharacter();
 
 		this.$watch(
 			"game",

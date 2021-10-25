@@ -1,11 +1,11 @@
 <template>
 	<div id="main-div">
 		<div id="player-character" class="player-character">
-			<!-- <img :src="require('@/assets/cards/moving_characters/' + playerCharacter + '.png')" /> -->
-			<!-- <img id="charImg" src="../../assets/cards/moving_characters/baba_docka.png" /> -->
-			<img class="charImg" />
+			<img
+				v-if="currentDevicePlayer && currentDevicePlayer.character"
+				:src="require('@/assets/cards/moving_characters/' + playerCharacter + '.png')"
+			/>
 		</div>
-		<b-button @click="setPlayerCharacterCard()"></b-button>
 
 		<GameLogic
 			ref="gameLogic"
@@ -15,7 +15,8 @@
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
-			@player-character="setPlayerCharacterCard($event)"
+			@player-character="setPlayerCharacterImg($event)"
+			@show-step-time-out-modal="stepTimeOutModalVisible = true"
 			class="game-logic"
 		>
 		</GameLogic>
@@ -171,9 +172,10 @@
 					<div class="my-progress-box">
 						<b-row class="h-100">
 							<b-col cols="6" class="left h-100">
-								<img v-if="currentDevicePlayer && currentDevicePlayer.character"
+								<img
+									v-if="currentDevicePlayer && currentDevicePlayer.character"
 									class="character-img w-100 h-100"
-									:src="require('@/assets/cards/character/'+ playerCharacter + '.png')"
+									:src="require('@/assets/cards/character/' + playerCharacter + '.png')"
 								/>
 							</b-col>
 
@@ -298,12 +300,7 @@
 			</template>
 		</InGameModal>
 
-		<!--
-			need to add logic to conditionally open the modal
-			condition is a return value is null when calling
-			/game (probably from GameLogic)
-		-->
-		<InGameModal :modalVisible="stepTimeOverModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false">
 			<template v-slot:upper-half>
 				<p
 					v-bind:style="{
@@ -347,7 +344,6 @@ export default {
 		return {
 			deskOrder: 101,
 			currentDevicePlayer: {},
-			playerCharacter: "",
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
@@ -384,7 +380,7 @@ export default {
 			throwCardsModalVisible: false,
 			voteModalVisible: false,
 			gameEndedModalVisible: false,
-			stepTimeOverModalVisible: false,
+			stepTimeOutModalVisible: false,
 
 			diceBtnDisabled: true,
 		};
@@ -400,18 +396,12 @@ export default {
 			return this.currentDevicePlayer.happiness;
 		},
 
-    playerCharacter() {
-      return this.currentDevicePlayer.character.name
-    }
+		playerCharacter() {
+			return this.currentDevicePlayer.character.name;
+		},
 	},
 
 	methods: {
-		setPlayerCharacterCard(character) {
-			let elem = document.getElementsByClassName("charImg")[0];
-			elem.src = "../../assets/cards/moving_characters/baba_docka.png";
-			console.log(elem);
-		},
-
 		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
@@ -491,8 +481,10 @@ export default {
 
 		udpatePlayerBoardPosition() {
 			let player = document.getElementById("player-character");
+			let elementWidth = player.getBoundingClientRect().width;
+			// let elementHeight = player.getBoundingClientRect().height;
 
-			player.style.left = `${this.adjustedCoordX - 20}px`;
+			player.style.left = `${this.adjustedCoordX - elementWidth / 2}px`;
 			player.style.top = `${this.adjustedCoordY - 120}px`;
 
 			// console.log("player.style.left", player.style.left);
