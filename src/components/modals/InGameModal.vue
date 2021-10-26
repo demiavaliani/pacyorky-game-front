@@ -9,9 +9,6 @@
 		</b-container>
 
 		<template #modal-footer>
-			<!-- <b-button @click="ok()">
-				<slot name="footer"> </slot>
-			</b-button> -->
 			<slot name="footer"></slot>
 		</template>
 	</b-modal>
@@ -52,6 +49,17 @@ export default {
 
 ::v-deep button {
 	width: 160px;
+	height: 40px;
+	border: 0;
+	border-radius: 20px;
+	background-color: #35838d;
+}
+
+::v-deep a {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 270px;
 	height: 40px;
 	border: 0;
 	border-radius: 20px;

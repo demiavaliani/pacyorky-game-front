@@ -1,7 +1,10 @@
 <template>
 	<div id="main-div">
-		<div id="vukol-character" class="vukol-character">
-			<img src="@/assets/board-game/vukol.png" />
+		<div id="player-character" class="player-character">
+			<img
+				v-if="currentDevicePlayer && currentDevicePlayer.character"
+				:src="require('@/assets/cards/moving_characters/' + playerCharacter + '.png')"
+			/>
 		</div>
 
 		<GameLogic
@@ -9,6 +12,11 @@
 			@desk-order="setDeskOrder"
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="throwCardsModalVisible = true"
+			@dropped-cards="populateVoteCardDecks($event)"
+			@show-vote-modal="voteModalVisible = true"
+			@show-game-ended-modal="gameEndedModalVisible = true"
+			@player-character="setPlayerCharacterImg($event)"
+			@show-step-time-out-modal="stepTimeOutModalVisible = true"
 			class="game-logic"
 		>
 		</GameLogic>
@@ -107,7 +115,7 @@
 
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
-					<p>{{ $ml.get("room_name") }} “{{ game.name }}”</p>
+					<p v-if="game">{{ $ml.get("room_name") }} “{{ game.name }}”</p>
 					<b-button @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
@@ -115,6 +123,7 @@
 
 				<b-col class="d-flex justify-content-end">
 					<ActiveRoomsGraph
+						v-if="game"
 						class="active-rooms-graph"
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
@@ -163,9 +172,10 @@
 					<div class="my-progress-box">
 						<b-row class="h-100">
 							<b-col cols="6" class="left h-100">
-								<img v-if="currentDevicePlayer && currentDevicePlayer.character"
+								<img
+									v-if="currentDevicePlayer && currentDevicePlayer.character"
 									class="character-img w-100 h-100"
-									:src="require('@/assets/cards/character/'+ playerCharacter + '.png')"
+									:src="require('@/assets/cards/character/' + playerCharacter + '.png')"
 								/>
 							</b-col>
 
@@ -192,16 +202,12 @@
 			</b-row>
 		</b-container>
 
-		<InGameModal
-			:modalVisible="throwCardsModalVisible"
-			:footerHidden="modalFooterHidden"
-			ref="throwCardsModal"
-		>
+		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 					<p>{{ card.id }}</p>
 				</div>
@@ -209,7 +215,7 @@
 				<div class="mx-1" v-for="card in ritualsDeck">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 					<p>{{ card.id }}</p>
 				</div>
@@ -217,7 +223,7 @@
 				<div class="mx-1" v-for="card in stuffDeck">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 					<p>{{ card.id }}</p>
 				</div>
@@ -230,6 +236,88 @@
 						{{ $ml.get("throw_cards") }}
 					</p>
 				</b-button>
+			</template>
+		</InGameModal>
+
+		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false">
+			<template v-slot:upper-half>
+				<div class="mx-1" v-for="card in dishesDeckForVote">
+					<img
+						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+
+				<div class="mx-1" v-for="card in ritualsDeckForVote">
+					<img
+						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+
+				<div class="mx-1" v-for="card in stuffDeckForVote">
+					<img
+						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+					<p>{{ card.id }}</p>
+				</div>
+				<p>{{ cardsToVote }}</p>
+			</template>
+
+			<template v-slot:footer>
+				<b-button @click="callVote()">
+					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
+						{{ $ml.get("throw_cards") }}
+					</p>
+				</b-button>
+			</template>
+		</InGameModal>
+
+		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false">
+			<template v-slot:upper-half>
+				<!-- <p style="font-family: Montserrat; font-size: 35px;"> -->
+				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
+					{{ $ml.get("game_ended") }}
+				</p>
+			</template>
+
+			<template v-slot:footer>
+				<b-button to="/">
+					<p
+						v-bind:style="{
+							color: 'white',
+							fontFamily: 'Montserrat',
+							fontWeight: '400',
+							fontSize: '18px',
+						}"
+					>
+						{{ $ml.get("go_back_to_home_page") }}
+					</p>
+				</b-button>
+			</template>
+		</InGameModal>
+
+		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false">
+			<template v-slot:upper-half>
+				<p
+					v-bind:style="{
+						color: '#E15465',
+						fontFamily: 'Montserrat',
+						fontWeight: '500',
+						fontSize: '35px',
+					}"
+				>
+					{{ $ml.get("step_time_over") }}
+				</p>
+			</template>
+
+			<template v-slot:footer>
+				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '300', fontSize: '35px' }">
+					{{ $ml.get("switching_step") }}
+				</p>
 			</template>
 		</InGameModal>
 	</div>
@@ -255,14 +343,26 @@ export default {
 	data() {
 		return {
 			deskOrder: 101,
-
+			currentDevicePlayer: {},
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 
-			currentDevicePlayer: {},
 			cardsToThrow: [],
+			cardsToVote: [],
+			dishesDeckForVote: [
+				// { id: 15, name: "med", cardType: 1 },
+				// { id: 9, name: "polunica", cardType: 1 },
+			],
+			ritualsDeckForVote: [
+				// { id: 123, name: "chitannja", cardType: 2 },
+				// { id: 152, name: "prikrashati_hati", cardType: 2 },
+			],
+			stuffDeckForVote: [
+				// { id: 193, name: "proskuri", cardType: 3 },
+				// { id: 187, name: "ptashki", cardType: 3 },
+			],
 
 			dishesDeck: [
 				// { id: 15, name: "med", cardType: 1 },
@@ -278,7 +378,9 @@ export default {
 			],
 
 			throwCardsModalVisible: false,
-			modalFooterHidden: false,
+			voteModalVisible: false,
+			gameEndedModalVisible: false,
+			stepTimeOutModalVisible: false,
 
 			diceBtnDisabled: true,
 		};
@@ -294,24 +396,23 @@ export default {
 			return this.currentDevicePlayer.happiness;
 		},
 
-    playerCharacter() {
-      return this.currentDevicePlayer.character.name
-    }
+		playerCharacter() {
+			return this.currentDevicePlayer.character.name;
+		},
 	},
 
 	methods: {
-		chooseCardToThrow(id, ev) {
+		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
-			if (!this.cardsToThrow.includes(id)) {
-				this.cardsToThrow.push(id);
+			if (!this[actionArray].includes(id)) {
+				this[actionArray].push(id);
 
 				elementStyle.position = "relative";
 				elementStyle.bottom = "30px";
 			} else {
-				let cardIndexToRemove = this.cardsToThrow.indexOf(id);
-
-				this.cardsToThrow.splice(cardIndexToRemove, 1);
+				let cardIndexToRemove = this[actionArray].indexOf(id);
+				this[actionArray].splice(cardIndexToRemove, 1);
 
 				elementStyle.position = "static";
 				elementStyle.bottom = "0";
@@ -328,8 +429,16 @@ export default {
 			this.throwCardsModalVisible = false;
 		},
 
+		populateVoteCardDecks(thrownCards) {
+			this.dishesDeckForVote = thrownCards.filter(card => card.cardType === 1);
+			this.ritualsDeckForVote = thrownCards.filter(card => card.cardType === 2);
+			this.stuffDeckForVote = thrownCards.filter(card => card.cardType === 3);
+		},
+
 		callVote() {
-			this.$refs.gameLogic.vote();
+			this.$refs.gameLogic.vote(this.cardsToVote);
+			this.cardsToVote = [];
+			this.voteModalVisible = false;
 		},
 
 		leaveRoom() {
@@ -371,9 +480,11 @@ export default {
 		},
 
 		udpatePlayerBoardPosition() {
-			let player = document.getElementById("vukol-character");
+			let player = document.getElementById("player-character");
+			let elementWidth = player.getBoundingClientRect().width;
+			// let elementHeight = player.getBoundingClientRect().height;
 
-			player.style.left = `${this.adjustedCoordX - 20}px`;
+			player.style.left = `${this.adjustedCoordX - elementWidth / 2}px`;
 			player.style.top = `${this.adjustedCoordY - 120}px`;
 
 			// console.log("player.style.left", player.style.left);
@@ -398,20 +509,28 @@ export default {
 			this.adjustImgMapCoords();
 		},
 
-		game() {
-			if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
-				this.currentDevicePlayer = this.game.players.filter(
-					player => player.id === this.devicePlayerId
-				)[0];
-			}
+		game: {
+			handler: function() {
+				if (
+					this.game &&
+					this.game.status === "STARTED" &&
+					this.game.players &&
+					this.devicePlayerId
+				) {
+					this.currentDevicePlayer = this.game.players.filter(
+						player => player.id == this.devicePlayerId
+					)[0];
+				}
 
-			if (Object.keys(this.currentDevicePlayer).length) {
-				let deck = this.currentDevicePlayer.deck;
+				if (Object.keys(this.currentDevicePlayer).length) {
+					let deck = this.currentDevicePlayer.deck;
 
-				this.dishesDeck = deck.filter(card => card.cardType === 1);
-				this.ritualsDeck = deck.filter(card => card.cardType === 2);
-				this.stuffDeck = deck.filter(card => card.cardType === 3);
-			}
+					this.dishesDeck = deck.filter(card => card.cardType === 1);
+					this.ritualsDeck = deck.filter(card => card.cardType === 2);
+					this.stuffDeck = deck.filter(card => card.cardType === 3);
+				}
+			},
+			deep: true,
 		},
 	},
 
@@ -615,7 +734,7 @@ p {
 	font-size: 33px;
 }
 
-.vukol-character {
+.player-character {
 	position: absolute;
 	/* top: 450px;
 	left: 50px; */

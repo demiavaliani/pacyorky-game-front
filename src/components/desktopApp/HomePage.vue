@@ -57,7 +57,7 @@ p {
 	width: 35vw;
 	font-size: max(21px, 1.25vw);
 	text-align: center;
-	font-weight: bold;
+	font-weight: 700;
 	color: #3c3b3b;
 }
 

@@ -265,7 +265,7 @@ p {
 }
 
 .animate-room-class {
-	font-weight: bold;
+	font-weight: 700;
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
