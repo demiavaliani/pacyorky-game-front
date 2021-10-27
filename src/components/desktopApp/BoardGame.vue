@@ -440,7 +440,7 @@ export default {
 
 	methods: {
 		timerAnimate(startAt) {
-			if (this.game && this.game.status === "WAITING") {
+			if (this.game.status === "WAITING") {
 				let msTillGameStart = new Date(startAt) - new Date();
 				console.log(msTillGameStart);
 				let timerRect = document.querySelector(".timer-rect");
@@ -449,14 +449,16 @@ export default {
 					duration: msTillGameStart,
 					fill: "forwards",
 				});
-			}
-			// else if (this.game && this.game.status === "STARTED") {
-			// 	let secondsTillNextStep = (this.game.nextStepAt - new Date()) / 1000;
-			// 	let timerRect = document.querySelector(".timer-rect");
+			} else if (this.game.status === "STARTED") {
+				let msTillNextStep = new Date(startAt) - new Date();
+				console.log(msTillNextStep);
+				let timerRect = document.querySelector(".timer-rect");
 
-			// 	timerRect.style.transition = `width ${secondsTillNextStep}s linear 0s`;
-			// 	timerRect.style.width = "0";
-			// }
+				timerRect.animate([{ width: "229px" }, { width: "0" }], {
+					duration: msTillNextStep,
+					fill: "forwards",
+				});
+			}
 		},
 
 		chooseCardsForAction(id, ev, actionArray) {
@@ -593,6 +595,13 @@ export default {
 		"game.startAt": function() {
 			console.log(this.game.startAt);
 			this.timerAnimate(this.game.startAt);
+		},
+
+		"game.nextStepAt": function() {
+			console.log(this.game.nextStepAt);
+			if (this.game.nextStepAt) {
+				this.timerAnimate(this.game.nextStepAt);
+			}
 		},
 	},
 
