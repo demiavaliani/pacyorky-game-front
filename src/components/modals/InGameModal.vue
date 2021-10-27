@@ -55,6 +55,10 @@ export default {
 	background-color: #35838d;
 }
 
+::v-deep .close {
+	background-color: transparent;
+}
+
 ::v-deep a {
 	display: flex;
 	justify-content: center;
