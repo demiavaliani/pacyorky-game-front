@@ -6,6 +6,7 @@
 			v-if="game && game.players && game.status === 'STARTED'"
 			:id="'player-character-' + player.character.name"
 			class="player-character"
+      :style="inited ? '' : 'opacity: 0'"
 		>
 			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
 		</div>
@@ -474,9 +475,7 @@ export default {
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-						playerFigure.style.left = `${this.boardX +
-							parseFloat(coordsAttrArray[0]) -
-							elementWidth / 2}px`;
+						playerFigure.style.left = `${this.boardX + parseFloat(coordsAttrArray[0]) - elementWidth / 2}px`;
 						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
 						this.inited = true;
 					}
