@@ -105,11 +105,11 @@ export default {
 				this.gameStatus === "STARTED"
 				// this.game.players
 			) {
-				this.deskOrder = this.game.players.filter(
+				/*this.deskOrder = this.game.players.filter(
 					curPlayer => curPlayer.id == this.devicePlayerId
-				)[0].currentDay.deskOrder;
+				)[0].currentDay.deskOrder;*/
 			}
-			this.$emit("desk-order", this.deskOrder || 101);
+			//this.$emit("desk-order", this.deskOrder || 101);
 		},
 
 		identifyCurrentTurnPlayerId() {
@@ -162,7 +162,6 @@ export default {
 			"game",
 			() => {
 				this.setGameStatus();
-				this.setDeskOrder();
 				this.identifyCurrentTurnPlayerId();
 				this.setStepStatus();
 			},
