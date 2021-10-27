@@ -127,6 +127,7 @@
 					<ActiveRoomsGraph
 						v-if="game"
 						class="active-rooms-graph"
+            :currentRoomFromActiveRoomsGraph="game"
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
 					></ActiveRoomsGraph>
