@@ -56,13 +56,7 @@
 									</b-button>
 									<img
 										v-if="game.step.counter"
-										:src="
-											require('@/assets/board-game/dice-' +
-												game.step.counter +
-												'-' +
-												(game.capacity > 4 ? 2 : 1) +
-												'.svg')
-										"
+										:src="require('@/assets/board-game/' + currentDiceName)"
 									/>
 								</div>
 
@@ -259,7 +253,6 @@
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeck">
@@ -267,7 +260,6 @@
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeck">
@@ -275,9 +267,7 @@
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
-				<p>{{ cardsToThrow }}</p>
 			</template>
 
 			<template v-slot:footer>
@@ -296,7 +286,6 @@
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeckForVote">
@@ -304,7 +293,6 @@
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeckForVote">
@@ -312,9 +300,7 @@
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
-				<p>{{ cardsToVote }}</p>
 			</template>
 
 			<template v-slot:footer>
@@ -437,27 +423,23 @@ export default {
 				return true;
 			}
 		},
+
+		currentDiceName() {
+			if (this.game.step.counter) {
+				return `dice-${this.game.step.counter}-${this.game.capacity > 4 ? 2 : 1}.svg`;
+			}
+		},
 	},
 
 	methods: {
 		timerAnimate(startAt) {
-			if (this.game.status === "WAITING") {
-				let msTillGameStart = new Date(startAt) - new Date();
-				let timerRect = document.querySelector(".timer-rect");
+			let msTillAction = new Date(startAt) - new Date();
+			let timerRect = document.querySelector(".timer-rect");
 
-				timerRect.animate([{ width: "229px" }, { width: "0" }], {
-					duration: msTillGameStart,
-					fill: "forwards",
-				});
-			} else if (this.game.status === "STARTED") {
-				let msTillNextStep = new Date(startAt) - new Date();
-				let timerRect = document.querySelector(".timer-rect");
-
-				timerRect.animate([{ width: "229px" }, { width: "0" }], {
-					duration: msTillNextStep,
-					fill: "forwards",
-				});
-			}
+			timerRect.animate([{ width: "229px" }, { width: "0" }], {
+				duration: msTillAction,
+				fill: "forwards",
+			});
 		},
 
 		chooseCardsForAction(id, ev, actionArray) {
@@ -584,11 +566,13 @@ export default {
 		},
 
 		"game.startAt": function() {
-			this.timerAnimate(this.game.startAt);
+			if (this.game.status === "WAITING") {
+				this.timerAnimate(this.game.startAt);
+			}
 		},
 
 		"game.nextStepAt": function() {
-			if (this.game.nextStepAt) {
+			if (this.game.status === "STARTED" && this.game.nextStepAt) {
 				this.timerAnimate(this.game.nextStepAt);
 			}
 		},
