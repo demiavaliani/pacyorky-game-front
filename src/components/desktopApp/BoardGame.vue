@@ -6,7 +6,7 @@
 			v-if="game && game.players && game.status === 'STARTED'"
 			:id="'player-character-' + player.character.name"
 			class="player-character"
-      :style="inited ? '' : 'opacity: 0'"
+			:style="inited ? '' : 'opacity: 0'"
 		>
 			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
 		</div>
@@ -158,7 +158,7 @@
 					<ActiveRoomsGraph
 						v-if="game"
 						class="active-rooms-graph"
-            :currentRoomFromActiveRoomsGraph="game"
+						:currentRoomFromActiveRoomsGraph="game"
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
 					></ActiveRoomsGraph>
@@ -354,6 +354,10 @@
 				</p>
 			</template>
 		</InGameModal>
+
+		<div v-for="path in cache" style="display: none;">
+			<img :src="path" />
+		</div>
 	</div>
 </template>
 
@@ -376,6 +380,7 @@ export default {
 
 	data() {
 		return {
+			cache: [],
 			deskOrder: 101,
 			currentDevicePlayer: {},
 			boardX: "",
@@ -535,7 +540,9 @@ export default {
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-						playerFigure.style.left = `${this.boardX + parseFloat(coordsAttrArray[0]) - elementWidth / 2}px`;
+						playerFigure.style.left = `${this.boardX +
+							parseFloat(coordsAttrArray[0]) -
+							elementWidth / 2}px`;
 						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
 						this.inited = true;
 					}
@@ -614,24 +621,27 @@ export default {
 	mounted() {
 		this.areaClick();
 	},
+
+	created() {
+		window.onload = () => {
+			document.getElementById("main-div").style.display = "block";
+		};
+
+		let imgs = require.context("../../assets/cards/dishes/", true, /\.png/);
+		imgs.keys().forEach(key => {
+			this.cache.push(require("../../assets/cards/dishes/" + key.replace("./", "")));
+		});
+	},
 };
 </script>
 
 <style scoped>
-.timer-rect {
-	width: 229px;
-	/* transition: width 10s linear 0s; */
-}
-
-.game-logic {
-	position: absolute;
-}
-
 * {
 	box-sizing: border-box;
 }
 
 #main-div {
+	display: none;
 	height: 100vh;
 	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
 	background-size: 100vw;
@@ -644,10 +654,9 @@ p {
 	color: black;
 }
 
-/* .board-game-row {
+.game-logic {
 	position: absolute;
-	left: 25%;
-} */
+}
 
 .board-game-row img {
 	width: 50vw;
@@ -680,6 +689,10 @@ p {
 
 .throw-dice-btn p {
 	font-size: 20px;
+}
+
+.timer-rect {
+	width: 229px;
 }
 
 .right-side p {
