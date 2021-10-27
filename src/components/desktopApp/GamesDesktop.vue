@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <b-container fluid class="d-flex flex-column">
     <div class="d-flex justify-content-around">
       <b-jumbotron class="m-3" style="width: 30%" v-if="hasGames" v-for="game in games" :key="game.id">
@@ -110,4 +110,4 @@ export default {
   background-color: var(--bs-light);
   border-radius: .3rem;
 }
-</style>
+</style> -->

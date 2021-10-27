@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <b-container fluid>
     <b-row>
       <b-col>
@@ -181,4 +181,4 @@ export default {
 
 <style scoped>
 
-</style>
+</style> -->

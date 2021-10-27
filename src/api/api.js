@@ -4,61 +4,61 @@ export default {
 
 	async getRooms() {
 		try {
-			return await axios.get("api/rooms/get");
+			return await axios.get("api/v1/rooms/get");
 		} catch (error) { }
 	},
 
 	async getGamesById(id) {
 		try {
-			return await axios.get(`api/rooms/get/${id}`);
+			return await axios.get(`api/v1/rooms/get/${id}`);
 		} catch (error) { }
 	},
 
 	async createRoom(roomObj) {
 		try {
-			return await axios.post("api/rooms/add", roomObj);
+			return await axios.post("api/v1/rooms/add", roomObj);
 		} catch (error) { }
 	},
 
 	async joinRoom(id) {
 		try {
-			return await axios.post(`api/rooms/join/${id}`);
+			return await axios.post(`api/v1/rooms/join/${id}`);
 		} catch (error) { }
 	},
 
 	async getDevicePlayerId(res) {
 		try {
-			return await axios.get("api/player/id");
+			return await axios.get("api/v1/player/id");
 		} catch (error) { }
 	},
 
 	async getGame() {
 		try {
-			return await axios.get("api/game");
+			return await axios.get("api/v1/game");
 		} catch (error) { }
 	},
 
 	async throwDice() {
 		try {
-			return await axios.post("api/game/throw");
+			return await axios.post("api/v1/game/throw");
 		} catch (error) { }
 	},
 
 	async throwCards(droppedCards) {
 		try {
-			return await axios.post("api/game/step", droppedCards);
+			return await axios.post("api/v1/game/step", droppedCards);
 		} catch (error) { }
 	},
 
 	async vote(voteInt) {
 		try {
-			return await axios.post("api/game/vote", voteInt);
+			return await axios.post("api/v1/game/vote", voteInt);
 		} catch (error) { }
 	},
 
 	async leaveRoom() {
 		try {
-			return await axios.delete("api/rooms/left");
+			return await axios.delete("api/v1/rooms/left");
 		} catch (error) { }
 	}
 
