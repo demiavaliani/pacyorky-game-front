@@ -1,9 +1,13 @@
 <template>
 	<div id="main-div">
-		<div :id="'player-character-'+player.character.name" class="player-character" v-if='game && game.players && game.status === "STARTED"' :style="'distplay : ' + inited ? 'block' : 'none'" v-for="player in playersInGame">
-			<img
-				:src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')"
-			/>
+		<div
+			v-for="player in playersInGame"
+			:key="player.id"
+			v-if="game && game.players && game.status === 'STARTED'"
+			:id="'player-character-' + player.character.name"
+			class="player-character"
+		>
+			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
 		</div>
 
 		<GameLogic
@@ -323,7 +327,7 @@
 <script>
 import api from "@/api/api";
 import * as imageMapResize from "@/plugins/imageMapResizer.min.js";
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
@@ -345,8 +349,8 @@ export default {
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
-      inited: false,
-      playersInGame : [],
+			inited: false,
+			playersInGame: [],
 
 			cardsToThrow: [],
 			cardsToVote: [],
@@ -459,26 +463,26 @@ export default {
 			imageMapResize();
 		},
 
-    adjustImgMapCoords(players) {
-      if (this.game && players && this.game.status === "STARTED") {
-        for (let player of players) {
-          let elem = document.querySelector(`area[alt='${player.currentDay.deskOrder}']`);
-          let coordsAttr = elem.getAttribute("coords");
-          let coordsAttrArray = coordsAttr.split(",");
+		adjustImgMapCoords(players) {
+			if (this.game && players && this.game.status === "STARTED") {
+				for (let player of players) {
+					let elem = document.querySelector(`area[alt='${player.currentDay.deskOrder}']`);
+					let coordsAttr = elem.getAttribute("coords");
+					let coordsAttrArray = coordsAttr.split(",");
 
-          
-          let playerFigure = document.getElementById("player-character-" + player.character.name);
-          if (playerFigure) {
-            let elementWidth = playerFigure.getBoundingClientRect().width;
-            
-            playerFigure.style.left = `${this.boardX + parseFloat(coordsAttrArray[0]) - elementWidth / 2}px`;
-            playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
-            this.inited = true
-          }
-        }
-      }
+					let playerFigure = document.getElementById("player-character-" + player.character.name);
+					if (playerFigure) {
+						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-    },
+						playerFigure.style.left = `${this.boardX +
+							parseFloat(coordsAttrArray[0]) -
+							elementWidth / 2}px`;
+						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+						this.inited = true;
+					}
+				}
+			}
+		},
 
 		areaClick() {
 			let area = document.getElementsByTagName("area");
@@ -518,17 +522,19 @@ export default {
 					this.ritualsDeck = deck.filter(card => card.cardType === 2);
 					this.stuffDeck = deck.filter(card => card.cardType === 3);
 				}
-        
-        if (this.game && this.game.status === "STARTED" &&
-            this.game.players) {
-          if (this.playersInGame.length === 0 || this.playersInGame.length !== this.game.players.length) {
-            this.playersInGame = this.game.players;
-            setTimeout(() => this.adjustImgMapCoords(this.playersInGame), 500);
-          }
-          if (this.game.step) {
-            this.adjustImgMapCoords([this.game.step.currentPlayer]);
-          }
-        }
+
+				if (this.game && this.game.status === "STARTED" && this.game.players) {
+					if (
+						this.playersInGame.length === 0 ||
+						this.playersInGame.length !== this.game.players.length
+					) {
+						this.playersInGame = this.game.players;
+						setTimeout(() => this.adjustImgMapCoords(this.playersInGame), 500);
+					}
+					if (this.game.step) {
+						this.adjustImgMapCoords([this.game.step.currentPlayer]);
+					}
+				}
 			},
 			deep: true,
 		},
