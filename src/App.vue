@@ -49,13 +49,7 @@ export default {
 	mounted() {
 		// this.setPlayerID();
 	},
-	methods: {
-		// setPlayerID: function() {
-		// 	axios.get("/api/player/id/").then((res) => {
-		// 		this.$cookies.set("playerid", res.data);
-		// 	});
-		// },
-	},
+	methods: {},
 	created() {
 		document.querySelector("body").style.height = "100vh";
 	},
