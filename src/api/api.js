@@ -4,7 +4,7 @@ export default {
 
 	async getRooms() {
 		try {
-			return await axios.get("api/v1/rooms/get");
+			return await axios.get("api/v2/rooms/get");
 		} catch (error) { }
 	},
 
