@@ -43,30 +43,37 @@
 
 							<b-col class="d-flex flex-grow-0">
 								<div
-									class="d-flex justify-content-between align-items-center flex-grow-1"
-									v-if="!game.step || isCurrentPlayer"
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-if="game.step"
 								>
 									<b-button
+                    v-if="isCurrentPlayer && game.step.status === 'WAITING_DICE'"
 										@click="callThrowDice"
 										:disabled="diceBtnDisabled"
 										class="throw-dice-btn"
 									>
 										<p>{{ $ml.get("throw_dice") }}</p>
 									</b-button>
-									<img src="@/assets/board-game/dice.svg" />
+									<img v-if="game.step.counter" :src="require('@/assets/board-game/dice-'+ game.step.counter+'-'+ (game.capacity > 4 ? 2 : 1) + '.svg')" />
 								</div>
 
 								<div
 									class="d-flex justify-content-center align-items-center flex-grow-1"
-									v-else-if="!isCurrentPlayer"
+									v-if="!isCurrentPlayer && game.step"
 								>
 									<p>
-										{{ this.game.step.status }}
+										{{ $ml.get(this.game.step.status) }}
 									</p>
 								</div>
+                <div
+                    class="d-flex justify-content-center align-items-center flex-grow-1"
+                    v-else-if="game.status === 'WAITING'"
+                >
+                  <p>
+                    ожидаем начала игры
+                  </p>
+                </div>
 							</b-col>
-
-							<b-button @click="timerAnimate"></b-button>
 
 							<b-col class="d-flex flex-column flex-grow-0">
 								<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
@@ -148,7 +155,7 @@
 
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
-					<p v-if="game">{{ $ml.get("room_name") }} “{{ game.name }}”</p>
+					<p v-if="game">{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
 					<b-button @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
@@ -447,7 +454,6 @@ export default {
 		timerAnimate(startAt) {
 			if (this.game.status === "WAITING") {
 				let msTillGameStart = new Date(startAt) - new Date();
-				console.log(msTillGameStart);
 				let timerRect = document.querySelector(".timer-rect");
 
 				timerRect.animate([{ width: "229px" }, { width: "0" }], {
@@ -456,7 +462,6 @@ export default {
 				});
 			} else if (this.game.status === "STARTED") {
 				let msTillNextStep = new Date(startAt) - new Date();
-				console.log(msTillNextStep);
 				let timerRect = document.querySelector(".timer-rect");
 
 				timerRect.animate([{ width: "229px" }, { width: "0" }], {
@@ -484,6 +489,7 @@ export default {
 		},
 
 		callThrowDice() {
+      this.diceBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
 		},
 
@@ -518,8 +524,6 @@ export default {
 			let board = elem.getBoundingClientRect();
 			this.boardX = board.x;
 			this.boardY = board.y;
-			// console.log("Original boardX: ", this.boardX);
-			// console.log("Original boardY: ", this.boardY);
 
 			imageMapResize();
 		},
@@ -599,12 +603,10 @@ export default {
 		},
 
 		"game.startAt": function() {
-			console.log(this.game.startAt);
 			this.timerAnimate(this.game.startAt);
 		},
 
 		"game.nextStepAt": function() {
-			console.log(this.game.nextStepAt);
 			if (this.game.nextStepAt) {
 				this.timerAnimate(this.game.nextStepAt);
 			}

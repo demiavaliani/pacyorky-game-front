@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<div><b>Game Status:</b> {{ gameStatus }}</div>
+<!--		<div><b>Game Status:</b> {{ gameStatus }}</div>
 		<div><b>Step Status:</b> {{ stepStatus }}</div>
 		<div><b>Device Player:</b> {{ devicePlayerId }}</div>
 		<div><b>Current Player:</b> {{ currentTurnPlayerId }}</div>
-		<div><b>Desk Order:</b> {{ deskOrder }}</div>
+		<div><b>Desk Order:</b> {{ deskOrder }}</div>-->
 	</div>
 </template>
 
