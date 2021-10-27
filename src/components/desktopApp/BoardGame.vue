@@ -1,21 +1,18 @@
 <template>
 	<div id="main-div">
-		<div id="player-character" class="player-character">
+		<div :id="'player-character-'+player.character.name" class="player-character" v-if='game && game.players && game.status === "STARTED"' :style="'distplay : ' + inited ? 'block' : 'none'" v-for="player in playersInGame">
 			<img
-				v-if="currentDevicePlayer && currentDevicePlayer.character"
-				:src="require('@/assets/cards/moving_characters/' + playerCharacter + '.png')"
+				:src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')"
 			/>
 		</div>
 
 		<GameLogic
 			ref="gameLogic"
-			@desk-order="setDeskOrder"
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="throwCardsModalVisible = true"
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
-			@player-character="setPlayerCharacterImg($event)"
 			@show-step-time-out-modal="stepTimeOutModalVisible = true"
 			class="game-logic"
 		>
@@ -326,7 +323,7 @@
 <script>
 import api from "@/api/api";
 import * as imageMapResize from "@/plugins/imageMapResizer.min.js";
-import { mapState } from "vuex";
+import {mapState} from "vuex";
 import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
@@ -348,6 +345,8 @@ export default {
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
+      inited: false,
+      playersInGame : [],
 
 			cardsToThrow: [],
 			cardsToVote: [],
@@ -446,7 +445,7 @@ export default {
 		},
 
 		setDeskOrder(event) {
-			this.deskOrder = event;
+			//this.deskOrder = event;
 		},
 
 		getBoardPosition() {
@@ -458,38 +457,28 @@ export default {
 			// console.log("Original boardY: ", this.boardY);
 
 			imageMapResize();
-
-			this.adjustImgMapCoords();
 		},
 
-		adjustImgMapCoords() {
-			let elem = document.querySelector(`area[alt='${this.deskOrder}']`);
-			// console.log("elem is: ", elem);
-			let coordsAttr = elem.getAttribute("coords");
-			// console.log("coords attribute is: ", coordsAttr);
-			let coordsAttrArray = coordsAttr.split(",");
-			// console.log("splitted attributes array:", coordsAttrArray);
+    adjustImgMapCoords(players) {
+      if (this.game && players && this.game.status === "STARTED") {
+        for (let player of players) {
+          let elem = document.querySelector(`area[alt='${player.currentDay.deskOrder}']`);
+          let coordsAttr = elem.getAttribute("coords");
+          let coordsAttrArray = coordsAttr.split(",");
 
-			this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
-			this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
+          
+          let playerFigure = document.getElementById("player-character-" + player.character.name);
+          if (playerFigure) {
+            let elementWidth = playerFigure.getBoundingClientRect().width;
+            
+            playerFigure.style.left = `${this.boardX + parseFloat(coordsAttrArray[0]) - elementWidth / 2}px`;
+            playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+            this.inited = true
+          }
+        }
+      }
 
-			// console.log("adjusted coordX: ", this.adjustedCoordX);
-			// console.log("adjusted coordY: ", this.adjustedCoordY);
-
-			this.udpatePlayerBoardPosition();
-		},
-
-		udpatePlayerBoardPosition() {
-			let player = document.getElementById("player-character");
-			let elementWidth = player.getBoundingClientRect().width;
-			// let elementHeight = player.getBoundingClientRect().height;
-
-			player.style.left = `${this.adjustedCoordX - elementWidth / 2}px`;
-			player.style.top = `${this.adjustedCoordY - 120}px`;
-
-			// console.log("player.style.left", player.style.left);
-			// console.log("player.style.top", player.style.top);
-		},
+    },
 
 		areaClick() {
 			let area = document.getElementsByTagName("area");
@@ -506,7 +495,7 @@ export default {
 
 	watch: {
 		deskOrder() {
-			this.adjustImgMapCoords();
+			//this.adjustImgMapCoords();
 		},
 
 		game: {
@@ -529,6 +518,17 @@ export default {
 					this.ritualsDeck = deck.filter(card => card.cardType === 2);
 					this.stuffDeck = deck.filter(card => card.cardType === 3);
 				}
+        
+        if (this.game && this.game.status === "STARTED" &&
+            this.game.players) {
+          if (this.playersInGame.length === 0 || this.playersInGame.length !== this.game.players.length) {
+            this.playersInGame = this.game.players;
+            setTimeout(() => this.adjustImgMapCoords(this.playersInGame), 500);
+          }
+          if (this.game.step) {
+            this.adjustImgMapCoords([this.game.step.currentPlayer]);
+          }
+        }
 			},
 			deep: true,
 		},
