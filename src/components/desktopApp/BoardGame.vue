@@ -30,21 +30,52 @@
 					<div class="game-controls-box">
 						<b-row class="d-flex flex-column justify-content-between h-100">
 							<b-col class="text-center flex-grow-0">
-								<p>{{ $ml.get("my_turn") }}</p>
+								<p v-if="!game.step"></p>
+								<p v-else-if="isCurrentPlayer">
+									{{ $ml.get("my_turn") }}
+								</p>
+								<p v-else-if="!isCurrentPlayer">
+									Current Player: {{ this.game.step.currentPlayer.character.name }}
+								</p>
 							</b-col>
 
-							<b-col class="d-flex justify-content-between align-items-center flex-grow-0">
-								<b-button @click="callThrowDice" :disabled="diceBtnDisabled" class="throw-dice-btn">
-									<p>{{ $ml.get("throw_dice") }}</p>
-								</b-button>
-								<img src="@/assets/board-game/dice.svg" />
+							<b-col class="d-flex flex-grow-0">
+								<div
+									class="d-flex justify-content-between align-items-center flex-grow-1"
+									v-if="!game.step || isCurrentPlayer"
+								>
+									<b-button
+										@click="callThrowDice"
+										:disabled="diceBtnDisabled"
+										class="throw-dice-btn"
+									>
+										<p>{{ $ml.get("throw_dice") }}</p>
+									</b-button>
+									<img src="@/assets/board-game/dice.svg" />
+								</div>
+
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-else-if="!isCurrentPlayer"
+								>
+									<p>
+										{{ this.game.step.status }}
+									</p>
+								</div>
 							</b-col>
+
+							<b-button @click="timerAnimate"></b-button>
 
 							<b-col class="d-flex flex-column flex-grow-0">
 								<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
 
-								<svg viewBox="0 0 229 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<rect y="0.833008" width="229" height="11" rx="5.5" fill="#04944F" />
+								<svg
+									class="timer"
+									viewBox="0 0 229 12"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<rect class="timer-rect" y="0.833008" height="11" rx="5.5" fill="#04944F" />
 								</svg>
 							</b-col>
 						</b-row>
@@ -300,7 +331,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="false" :footerHidden="false">
 			<template v-slot:upper-half>
 				<p
 					v-bind:style="{
@@ -399,9 +430,35 @@ export default {
 		playerCharacter() {
 			return this.currentDevicePlayer.character.name;
 		},
+
+		isCurrentPlayer() {
+			if (this.game.step && this.currentDevicePlayer.id === this.game.step.currentPlayer.id) {
+				return true;
+			}
+		},
 	},
 
 	methods: {
+		timerAnimate(startAt) {
+			if (this.game && this.game.status === "WAITING") {
+				let msTillGameStart = new Date(startAt) - new Date();
+				console.log(msTillGameStart);
+				let timerRect = document.querySelector(".timer-rect");
+
+				timerRect.animate([{ width: "229px" }, { width: "0" }], {
+					duration: msTillGameStart,
+					fill: "forwards",
+				});
+			}
+			// else if (this.game && this.game.status === "STARTED") {
+			// 	let secondsTillNextStep = (this.game.nextStepAt - new Date()) / 1000;
+			// 	let timerRect = document.querySelector(".timer-rect");
+
+			// 	timerRect.style.transition = `width ${secondsTillNextStep}s linear 0s`;
+			// 	timerRect.style.width = "0";
+			// }
+		},
+
 		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
@@ -532,6 +589,11 @@ export default {
 			},
 			deep: true,
 		},
+
+		"game.startAt": function() {
+			console.log(this.game.startAt);
+			this.timerAnimate(this.game.startAt);
+		},
 	},
 
 	mounted() {
@@ -541,6 +603,11 @@ export default {
 </script>
 
 <style scoped>
+.timer-rect {
+	width: 229px;
+	/* transition: width 10s linear 0s; */
+}
+
 .game-logic {
 	position: absolute;
 }

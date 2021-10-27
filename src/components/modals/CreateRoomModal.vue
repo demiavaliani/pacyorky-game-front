@@ -61,11 +61,7 @@
 				<b-col cols="2" class="d-flex justify-content-around align-items-center">
 					<b-row class="d-flex justify-content-center pt-2">
 						<b-col cols="2" class="px-0 d-flex justify-content-center">
-							<b-button
-								@click="capacityDecrease"
-								:disabled="this.tickActive == 'x'"
-								class="remove-default-button-style"
-							>
+							<b-button @click="capacityDecrease" class="remove-default-button-style">
 								<img src="@/assets/game-dashboard/component-minus.svg" />
 							</b-button>
 						</b-col>
@@ -80,11 +76,7 @@
 							</div>
 						</b-col>
 						<b-col cols="2" class="px-0 d-flex justify-content-center">
-							<b-button
-								@click="capacityIncrease"
-								:disabled="this.tickActive == 'x'"
-								class="remove-default-button-style "
-							>
+							<b-button @click="capacityIncrease" class="remove-default-button-style ">
 								<img src="@/assets/game-dashboard/component-plus.svg" />
 							</b-button>
 						</b-col>
