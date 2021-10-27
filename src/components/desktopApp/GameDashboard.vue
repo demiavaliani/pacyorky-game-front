@@ -48,7 +48,7 @@
 							v-for="item in getActiveRoomsAndSortByPlayersCountAsc"
 							:key="item.id"
 							:displayRoomName="true"
-							:activePlayersCountFromActiveRoomsGraph="item.players.length"
+							:activePlayersCountFromActiveRoomsGraph="item.playersCount"
 							:activeRoomNameFromActiveRoomsGraph="item.name"
 							:currentRoomFromActiveRoomsGraph="item"
 							:class="currentRoomId == item.id ? 'animate-room-class' : ''"
@@ -145,8 +145,8 @@ export default {
 		getActiveRoomsAndSortByPlayersCountAsc() {
 			return this.activeRooms
 				.sort((a, b) => {
-					var roomA = a.players.length;
-					var roomB = b.players.length;
+					var roomA = a.playersCount;
+					var roomB = b.playersCount;
 					if (roomB < roomA) {
 						return -1;
 					}
