@@ -38,6 +38,7 @@ export default {
         return
       }
       this.option.token = this.token;
+      this.option.channel = this.channel;
       this.rtc.joinChannel(this.option).then(() => {
         console.log({
           message: 'Join Success',
