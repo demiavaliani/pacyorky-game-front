@@ -29,8 +29,13 @@
 			class="d-flex justify-content-between align-items-center main-container px-0 h-100"
 		>
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
+        
+          <RTCClient v-if="game && game.status && game.status === 'STARTED' && !game.withComputer" 
+          :token="game.token"
+          :channel="String(game.id)"/>
+        
 				<b-col>
-					<div class="game-controls-box">
+					<div class="game-controls-box" style="min-height: 300px">
 						<b-row class="d-flex flex-column justify-content-between flex-nowrap h-100">
 							<b-col class="text-center flex-grow-0">
 								<p v-if="!game.step"></p>
@@ -379,11 +384,13 @@ import { mapState } from "vuex";
 import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
+import RTCClient from "./RTCClient";
 
 export default {
 	name: "BoardGame",
 
 	components: {
+    RTCClient,
 		GameLogic,
 		ActiveRoomsGraph,
 		InGameModal,
