@@ -453,8 +453,6 @@ export default {
 			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
 			let timerRect = document.querySelector(".timer-rect");
 
-			console.log(msTillAction);
-
 			timerRect.animate([{ width: "229px" }, { width: "0" }], {
 				duration: msTillAction,
 				fill: "forwards",
