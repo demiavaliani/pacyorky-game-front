@@ -54,6 +54,10 @@ export default {
 		throwDice() {
 			api.throwDice().then(() => {});
 		},
+    
+    startGame() {
+      api.startGame().then(() => {})
+    },
 
 		throwCards(cardsToThrow) {
 			api.throwCards(cardsToThrow).then(res => {});
@@ -140,6 +144,11 @@ export default {
 			if (this.game && this.gameStatus === "FINISHED") {
 				this.$emit("show-game-ended-modal");
 			}
+      if (this.game && this.gameStatus === 'WAITING') {
+        this.$emit("start-game-btn-disabled", false);
+      } else {
+        this.$emit("start-game-btn-disabled", true);
+      }
 		});
 
 		this.$watch("stepStatus", () => {

@@ -13,6 +13,7 @@
 
 		<GameLogic
 			ref="gameLogic"
+      @start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="throwCardsModalVisible = true"
 			@dropped-cards="populateVoteCardDecks($event)"
@@ -30,7 +31,7 @@
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
 				<b-col>
 					<div class="game-controls-box">
-						<b-row class="d-flex flex-column justify-content-between h-100">
+						<b-row class="d-flex flex-column justify-content-between flex-nowrap h-100">
 							<b-col class="text-center flex-grow-0">
 								<p v-if="!game.step"></p>
 								<p v-else-if="isCurrentPlayer">
@@ -41,7 +42,7 @@
 								</p>
 							</b-col>
 
-							<b-col class="d-flex flex-grow-0">
+							<b-col class="d-flex flex-grow-0 flex-column-reverse">
 								<div
 									class="d-flex justify-content-center align-items-center flex-grow-1"
 									v-if="game.step"
@@ -60,6 +61,19 @@
 									/>
 								</div>
 
+                <div
+                    class="d-flex justify-content-center align-items-center flex-grow-1"
+                    v-if="game && game.status === 'WAITING'"
+                >
+                  <b-button
+                      @click="callStartGame"
+                      :disabled="startGameBtnDisabled"
+                      class="throw-dice-btn"
+                  >
+                    <p>{{ $ml.get("start_game") }}</p>
+                  </b-button>
+                </div>
+
 								<div
 									class="d-flex justify-content-center align-items-center flex-grow-1"
 									v-if="!isCurrentPlayer && game.step"
@@ -70,10 +84,10 @@
 								</div>
 								<div
 									class="d-flex justify-content-center align-items-center flex-grow-1"
-									v-else-if="game.status === 'WAITING'"
+									v-else-if="game && game.status && game.status !== 'STARTED'"
 								>
 									<p>
-										ожидаем начала игры
+										{{$ml.get('GAME_'+this.game.status)}}
 									</p>
 								</div>
 							</b-col>
@@ -401,6 +415,7 @@ export default {
 			stepTimeOutModalVisible: false,
 
 			diceBtnDisabled: true,
+      startGameBtnDisabled : true
 		};
 	},
 
@@ -463,6 +478,11 @@ export default {
 			this.diceBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
 		},
+    
+    callStartGame() {
+      this.startGameBtnDisabled = true;
+      this.$refs.gameLogic.startGame();
+    },
 
 		callThrowCards() {
 			this.$refs.gameLogic.throwCards(this.cardsToThrow);

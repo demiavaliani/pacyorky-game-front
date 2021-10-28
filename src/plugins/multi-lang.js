@@ -81,7 +81,10 @@ export default new MLCreate({
             WAITING_VOTE: "Голосуем",
             WAITING_DICE: "Бросок кубика",
             WAITING_CARD: "Выбираем карты",
-            FINISHED: "Ход окончен"
+            FINISHED: "Ход окончен",
+            GAME_WAITING: "Ожидаем начала игры",
+            GAME_FINISHED: "Игра окончена",
+            GAME_CANCELLED: "Игра отменена",
 		})
 	]
 })
