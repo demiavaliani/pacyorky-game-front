@@ -13,7 +13,7 @@
 
 		<GameLogic
 			ref="gameLogic"
-      @start-game-btn-disabled="startGameBtnDisabled = $event"
+			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="throwCardsModalVisible = true"
 			@dropped-cards="populateVoteCardDecks($event)"
@@ -61,18 +61,18 @@
 									/>
 								</div>
 
-                <div
-                    class="d-flex justify-content-center align-items-center flex-grow-1"
-                    v-if="game && game.status === 'WAITING'"
-                >
-                  <b-button
-                      @click="callStartGame"
-                      :disabled="startGameBtnDisabled"
-                      class="throw-dice-btn"
-                  >
-                    <p>{{ $ml.get("start_game") }}</p>
-                  </b-button>
-                </div>
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-if="game && game.status === 'WAITING'"
+								>
+									<b-button
+										@click="callStartGame"
+										:disabled="startGameBtnDisabled"
+										class="throw-dice-btn"
+									>
+										<p>{{ $ml.get("start_game") }}</p>
+									</b-button>
+								</div>
 
 								<div
 									class="d-flex justify-content-center align-items-center flex-grow-1"
@@ -87,7 +87,7 @@
 									v-else-if="game && game.status && game.status !== 'STARTED'"
 								>
 									<p>
-										{{$ml.get('GAME_'+this.game.status)}}
+										{{ $ml.get("GAME_" + this.game.status) }}
 									</p>
 								</div>
 							</b-col>
@@ -415,7 +415,7 @@ export default {
 			stepTimeOutModalVisible: false,
 
 			diceBtnDisabled: true,
-      startGameBtnDisabled : true
+			startGameBtnDisabled: true,
 		};
 	},
 
@@ -448,8 +448,12 @@ export default {
 
 	methods: {
 		timerAnimate(startAt) {
-			let msTillAction = new Date(startAt) - new Date();
+			let actionTimeUtc = new Date(startAt).toUTCString();
+			let currentTimeUtc = new Date().toUTCString();
+			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
 			let timerRect = document.querySelector(".timer-rect");
+
+			console.log(msTillAction);
 
 			timerRect.animate([{ width: "229px" }, { width: "0" }], {
 				duration: msTillAction,
@@ -478,11 +482,11 @@ export default {
 			this.diceBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
 		},
-    
-    callStartGame() {
-      this.startGameBtnDisabled = true;
-      this.$refs.gameLogic.startGame();
-    },
+
+		callStartGame() {
+			this.startGameBtnDisabled = true;
+			this.$refs.gameLogic.startGame();
+		},
 
 		callThrowCards() {
 			this.$refs.gameLogic.throwCards(this.cardsToThrow);
