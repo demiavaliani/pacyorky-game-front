@@ -43,6 +43,12 @@ export default {
 			return await axios.post("api/v1/game/throw");
 		} catch (error) { }
 	},
+    
+    async startGame() {
+        try {
+            return await axios.post("api/v1/game/start");
+        } catch (error) { }
+    },
 
 	async throwCards(droppedCards) {
 		try {
