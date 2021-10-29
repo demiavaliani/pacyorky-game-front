@@ -1,6 +1,8 @@
 <template>
 	<div id="main-div">
-		<div id="overlay"></div>
+		<div id="overlay">
+			<progress value="0"></progress>
+		</div>
 
 		<div
 			v-for="player in playersInGame"
@@ -371,12 +373,6 @@
 				</p>
 			</template>
 		</InGameModal>
-
-		<div v-for="path in cache" style="display: none;">
-			<img :src="path" />
-		</div>
-
-		<!-- <img id="images" /> -->
 	</div>
 </template>
 
@@ -399,7 +395,6 @@ export default {
 
 	data() {
 		return {
-			cache: [],
 			currentDevicePlayer: {},
 			boardX: "",
 			boardY: "",
@@ -556,6 +551,20 @@ export default {
 				});
 			});
 		},
+
+		loaderProgress() {
+			let progress = document.querySelector("progress");
+			let images = require.context("../../assets/cards/", true, /\.png/);
+			progress.max = images.keys().length;
+
+			images.keys().forEach(key => {
+				let img = new Image();
+				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.onload = () => {
+					progress.value++;
+				};
+			});
+		},
 	},
 
 	watch: {
@@ -611,20 +620,13 @@ export default {
 
 	mounted() {
 		this.areaClick();
+		this.loaderProgress();
 	},
 
 	async created() {
 		window.onload = () => {
 			document.getElementById("overlay").style.display = "none";
 		};
-
-		let images = require.context("../../assets/cards/", true, /\.png/);
-
-		console.log(images.keys().length);
-
-		images.keys().forEach(key => {
-			this.cache.push(require("../../assets/cards/" + key.replace("./", "")));
-		});
 	},
 };
 </script>
@@ -634,19 +636,37 @@ export default {
 	box-sizing: border-box;
 }
 
+#main-div {
+	height: 100vh;
+	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
+	background-size: 100vw;
+}
+
 #overlay {
 	position: fixed;
-	display: block;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	width: 100vw;
 	height: 100vh;
 	background-color: white;
 	z-index: 999;
 }
 
-#main-div {
-	height: 100vh;
-	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
-	background-size: 100vw;
+progress {
+	appearance: none;
+	width: 300px;
+	height: 10px;
+}
+
+::-webkit-progress-bar {
+	background-color: #cecece;
+	border-radius: 50px;
+}
+
+::-webkit-progress-value {
+	background-color: #00ea40;
+	border-radius: 50px;
 }
 
 p {
