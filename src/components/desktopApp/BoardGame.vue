@@ -61,7 +61,13 @@
 									</b-button>
 									<img
 										v-if="game.step.counter"
-										:src="require('@/assets/board-game/' + currentDiceName)"
+										:src="
+											require('@/assets/board-game/dice-' +
+												game.step.counter +
+												'-' +
+												(game.capacity > 4 ? 2 : 1) +
+												'.svg')
+										"
 									/>
 								</div>
 
@@ -440,12 +446,6 @@ export default {
 		isCurrentPlayer() {
 			if (this.game.step && this.currentDevicePlayer.id === this.game.step.currentPlayer.id) {
 				return true;
-			}
-		},
-
-		currentDiceName() {
-			if (this.game.step.counter) {
-				return `dice-${this.game.step.counter}-${this.game.capacity > 4 ? 2 : 1}.svg`;
 			}
 		},
 	},
