@@ -562,6 +562,9 @@ export default {
 				img.src = require("../../assets/cards/" + key.replace("./", ""));
 				img.onload = () => {
 					progress.value++;
+					if (progress.value === images.keys().length) {
+						document.getElementById("overlay").style.display = "none";
+					}
 				};
 			});
 		},
@@ -621,12 +624,6 @@ export default {
 	mounted() {
 		this.areaClick();
 		this.loaderProgress();
-	},
-
-	async created() {
-		window.onload = () => {
-			document.getElementById("overlay").style.display = "none";
-		};
 	},
 };
 </script>
