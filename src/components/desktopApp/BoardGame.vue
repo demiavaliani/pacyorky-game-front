@@ -1,5 +1,9 @@
 <template>
 	<div id="main-div">
+		<div id="overlay">
+			<progress value="0"></progress>
+		</div>
+
 		<div
 			v-for="player in playersInGame"
 			:key="player.id"
@@ -57,7 +61,13 @@
 									</b-button>
 									<img
 										v-if="game.step.counter"
-										:src="require('@/assets/board-game/' + currentDiceName)"
+										:src="
+											require('@/assets/board-game/dice-' +
+												game.step.counter +
+												'-' +
+												(game.capacity > 4 ? 2 : 1) +
+												'.svg')
+										"
 									/>
 								</div>
 
@@ -438,12 +448,6 @@ export default {
 				return true;
 			}
 		},
-
-		currentDiceName() {
-			if (this.game.step.counter) {
-				return `dice-${this.game.step.counter}-${this.game.capacity > 4 ? 2 : 1}.svg`;
-			}
-		},
 	},
 
 	methods: {
@@ -547,6 +551,23 @@ export default {
 				});
 			});
 		},
+
+		loaderProgress() {
+			let progress = document.querySelector("progress");
+			let images = require.context("../../assets/cards/", true, /\.png/);
+			progress.max = images.keys().length;
+
+			images.keys().forEach(key => {
+				let img = new Image();
+				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.onload = () => {
+					progress.value++;
+					if (progress.value === images.keys().length) {
+						document.getElementById("overlay").style.display = "none";
+					}
+				};
+			});
+		},
 	},
 
 	watch: {
@@ -602,19 +623,12 @@ export default {
 
 	mounted() {
 		this.areaClick();
+		this.loaderProgress();
 	},
 };
 </script>
 
 <style scoped>
-.timer-rect {
-	width: 229px;
-}
-
-.game-logic {
-	position: absolute;
-}
-
 * {
 	box-sizing: border-box;
 }
@@ -623,6 +637,33 @@ export default {
 	height: 100vh;
 	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
 	background-size: 100vw;
+}
+
+#overlay {
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100vh;
+	background-color: white;
+	z-index: 999;
+}
+
+progress {
+	appearance: none;
+	width: 300px;
+	height: 10px;
+}
+
+::-webkit-progress-bar {
+	background-color: #cecece;
+	border-radius: 50px;
+}
+
+::-webkit-progress-value {
+	background-color: #00ea40;
+	border-radius: 50px;
 }
 
 p {
@@ -663,6 +704,10 @@ p {
 
 .throw-dice-btn p {
 	font-size: 20px;
+}
+
+.timer-rect {
+	width: 229px;
 }
 
 .right-side p {
