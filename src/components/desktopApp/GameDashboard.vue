@@ -204,6 +204,13 @@ export default {
 			},
 		},
 	},
+
+	mounted() {
+		// import(
+		// 	/* webpackPrefetch: true */
+		// 	"./images"
+		// );
+	},
 };
 </script>
 
@@ -265,9 +272,9 @@ p {
 }
 
 .animate-room-class {
-  border: 1px solid;
-  border-color: #5f9da5;
-  border-radius: 10px;
+	border: 1px solid;
+	border-color: #5f9da5;
+	border-radius: 10px;
 	font-weight: 700;
 }
 

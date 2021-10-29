@@ -358,6 +358,8 @@
 		<div v-for="path in cache" style="display: none;">
 			<img :src="path" />
 		</div>
+
+		<!-- <img id="images" /> -->
 	</div>
 </template>
 
@@ -620,16 +622,24 @@ export default {
 
 	mounted() {
 		this.areaClick();
+
+		// import(
+		// 	/* webpackPrefetch: true */
+		// 	"./images"
+		// );
 	},
 
-	created() {
+	async created() {
 		window.onload = () => {
 			document.getElementById("main-div").style.display = "block";
 		};
 
-		let imgs = require.context("../../assets/cards/dishes/", true, /\.png/);
+		let cache = await caches.open("imgs-cache");
+
+		let imgs = require.context("../../assets/cards/dishes/", false, /\.png/);
 		imgs.keys().forEach(key => {
 			this.cache.push(require("../../assets/cards/dishes/" + key.replace("./", "")));
+			// cache.add(new Request(require("../../assets/cards/dishes/" + key.replace("./", ""))));
 		});
 	},
 };
