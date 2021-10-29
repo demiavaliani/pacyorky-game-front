@@ -384,7 +384,7 @@ import { mapState } from "vuex";
 import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
-import RTCClient from "./RTCClient";
+import RTCClient from "./agora/RTCClient";
 
 export default {
 	name: "BoardGame",

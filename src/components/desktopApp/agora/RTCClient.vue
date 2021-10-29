@@ -3,13 +3,16 @@
     <b-button v-if="disableJoin" @click="leaveEvent">Leave voice chat</b-button>
     <b-button v-else @click="joinEvent">Join to the chat</b-button>
     <p v-if="inVoiceChat">In voice chat</p>
+    <Player v-for="(stream, index) in remoteStreams" :key="index" :stream="stream" :dom-id="stream.getId()"/>
   </b-col>
 </template>
 
 <script>
-import RTCClient from "../../agora-client";
+import RTCClient from "../../../agora-client";
+import Player from "./Player";
 export default {
   name: "RTCClient",
+  components: {Player},
   data () {
     return {
       option: {
@@ -84,6 +87,9 @@ export default {
         type: 'warning'
       });
     },
+  },
+  beforeDestroy () {
+    this.leaveEvent();
   },
   created() {
     this.rtc = new RTCClient()
