@@ -1,5 +1,7 @@
 <template>
 	<div id="main-div">
+		<div id="overlay"></div>
+
 		<div
 			v-for="player in playersInGame"
 			:key="player.id"
@@ -622,24 +624,19 @@ export default {
 
 	mounted() {
 		this.areaClick();
-
-		// import(
-		// 	/* webpackPrefetch: true */
-		// 	"./images"
-		// );
 	},
 
 	async created() {
 		window.onload = () => {
-			document.getElementById("main-div").style.display = "block";
+			document.getElementById("overlay").style.display = "none";
 		};
 
-		let cache = await caches.open("imgs-cache");
+		let images = require.context("../../assets/cards/", true, /\.png/);
 
-		let imgs = require.context("../../assets/cards/dishes/", false, /\.png/);
-		imgs.keys().forEach(key => {
-			this.cache.push(require("../../assets/cards/dishes/" + key.replace("./", "")));
-			// cache.add(new Request(require("../../assets/cards/dishes/" + key.replace("./", ""))));
+		console.log(images.keys().length);
+
+		images.keys().forEach(key => {
+			this.cache.push(require("../../assets/cards/" + key.replace("./", "")));
 		});
 	},
 };
@@ -650,8 +647,16 @@ export default {
 	box-sizing: border-box;
 }
 
+#overlay {
+	position: fixed;
+	display: block;
+	width: 100vw;
+	height: 100vh;
+	background-color: white;
+	z-index: 999;
+}
+
 #main-div {
-	display: none;
 	height: 100vh;
 	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
 	background-size: 100vw;

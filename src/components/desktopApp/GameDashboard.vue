@@ -204,13 +204,6 @@ export default {
 			},
 		},
 	},
-
-	mounted() {
-		// import(
-		// 	/* webpackPrefetch: true */
-		// 	"./images"
-		// );
-	},
 };
 </script>
 
