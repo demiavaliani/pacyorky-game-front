@@ -1,7 +1,5 @@
 import Vue from "vue";
 import Router from 'vue-router'
-import GamesDesktop from "@/components/desktopApp/GamesDesktop";
-import GameDesktop from "@/components/desktopApp/GameDesktop";
 import HomePage from "@/components/desktopApp/HomePage";
 import GameDescription from "@/components/desktopApp/GameDescription";
 import BoardGame from "@/components/desktopApp/BoardGame";
@@ -38,14 +36,5 @@ export default new Router({
 			path: "/game-dashboard",
 			component: GameDashboard,
 		},
-
-		{
-			path: '/games',
-			component: GamesDesktop,
-		},
-
-		{
-			path: '/game/:id',
-			component: GameDesktop,
-		}]
+	]
 })

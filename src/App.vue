@@ -3,13 +3,7 @@
 		<NavBar v-if="$route.name != 'boardGame'"></NavBar>
 		<router-view></router-view>
 		<MainFooter v-if="$route.name != 'boardGame'"></MainFooter>
-
-		<!-- <InGameModal></InGameModal> -->
-
 		<!-- <ErrorModal></ErrorModal> -->
-		<!-- <GameLogic></GameLogic> -->
-		<!-- <BoardGame></BoardGame> -->
-		<!-- <GameDashboard></GameDashboard> -->
 	</div>
 </template>
 
@@ -46,9 +40,7 @@ export default {
 		GameLogic,
 		InGameModal,
 	},
-	mounted() {
-		// this.setPlayerID();
-	},
+	mounted() {},
 	methods: {},
 	created() {
 		document.querySelector("body").style.height = "100vh";

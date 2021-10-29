@@ -1,11 +1,5 @@
 <template>
-	<div>
-		<div><b>Game Status:</b> {{ gameStatus }}</div>
-		<div><b>Step Status:</b> {{ stepStatus }}</div>
-		<div><b>Device Player:</b> {{ devicePlayerId }}</div>
-		<div><b>Current Player:</b> {{ currentTurnPlayerId }}</div>
-		<div><b>Desk Order:</b> {{ deskOrder }}</div>
-	</div>
+	<div></div>
 </template>
 
 <script>
@@ -21,7 +15,6 @@ export default {
 	data() {
 		return {
 			gameStatus: "",
-			deskOrder: "",
 			currentTurnPlayerId: "",
 			stepStatus: "",
 		};
@@ -61,6 +54,10 @@ export default {
 		throwDice() {
 			api.throwDice().then(() => {});
 		},
+    
+    startGame() {
+      api.startGame().then(() => {})
+    },
 
 		throwCards(cardsToThrow) {
 			api.throwCards(cardsToThrow).then(res => {});
@@ -68,7 +65,6 @@ export default {
 
 		getDroppedCards() {
 			if (
-				// this.game &&
 				this.gameStatus === "STARTED" &&
 				this.stepStatus === "WAITING_VOTE" &&
 				this.currentTurnPlayerId !== this.devicePlayerId
@@ -94,41 +90,17 @@ export default {
 		},
 
 		setGameStatus() {
-			// if (this.game) {
 			this.gameStatus = this.game.status;
-			// }
-		},
-
-		setDeskOrder() {
-			if (
-				// this.game &&
-				this.gameStatus === "STARTED"
-				// this.game.players
-			) {
-				/*this.deskOrder = this.game.players.filter(
-					curPlayer => curPlayer.id == this.devicePlayerId
-				)[0].currentDay.deskOrder;*/
-			}
-			//this.$emit("desk-order", this.deskOrder || 101);
 		},
 
 		identifyCurrentTurnPlayerId() {
-			if (
-				// this.game &&
-				this.gameStatus === "STARTED" &&
-				this.game.step &&
-				this.game.step.currentPlayer.id
-			) {
+			if (this.gameStatus === "STARTED" && this.game.step && this.game.step.currentPlayer.id) {
 				this.currentTurnPlayerId = this.game.step.currentPlayer.id;
 			}
 		},
 
 		setStepStatus() {
-			if (
-				// this.game &&
-				this.gameStatus === "STARTED" &&
-				this.game.step
-			) {
+			if (this.gameStatus === "STARTED" && this.game.step) {
 				this.stepStatus = this.game.step.status;
 			}
 		},
@@ -172,6 +144,11 @@ export default {
 			if (this.game && this.gameStatus === "FINISHED") {
 				this.$emit("show-game-ended-modal");
 			}
+      if (this.game && this.gameStatus === 'WAITING') {
+        this.$emit("start-game-btn-disabled", false);
+      } else {
+        this.$emit("start-game-btn-disabled", true);
+      }
 		});
 
 		this.$watch("stepStatus", () => {

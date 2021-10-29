@@ -70,14 +70,21 @@ export default new MLCreate({
 			my_turn: "мій ход",
 			throw_dice: "бросить кости",
 			throw_cards: "сбросить карты",
-			room_name: "кімната",
+			room_name_room: "кімната",
 			end_game: "залишити гру",
 			game_ended: "Игра завершена!",
 			deck: "комора",
 			my_character: "мій герой",
 			my_happiness: "моє щастя",
 			step_time_over: "Ваше время истекло!",
-			switching_step: "Переход хода"
+			switching_step: "Переход хода",
+            WAITING_VOTE: "Голосуем",
+            WAITING_DICE: "Бросок кубика",
+            WAITING_CARD: "Выбираем карты",
+            FINISHED: "Ход окончен",
+            GAME_WAITING: "Ожидаем начала игры",
+            GAME_FINISHED: "Игра окончена",
+            GAME_CANCELLED: "Игра отменена",
 		})
 	]
 })

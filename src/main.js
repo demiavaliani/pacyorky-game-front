@@ -12,20 +12,19 @@ import './plugins/cookie'
 Vue.config.productionTip = false
 
 axios.interceptors.response.use(response => {
-  let data = response.data;
-  return data;
+	let data = response.data;
+	return data;
 }, error => {
-  store.dispatch("setModalStatusAction", true)
-  store.dispatch("setErrorCodeAction", error.response.data.code)
-  console.log(error.response.data)
-  return Promise.reject(error);
+	store.dispatch("setModalStatusAction", true)
+	store.dispatch("setErrorCodeAction", error.response.data.code)
+	return Promise.reject(error);
 })
 
 new Vue({
-  router,
-  store,
-  render: h => h(App),
-  mounted() {
-    this.$store.dispatch("setRoomAction");
-  }
+	router,
+	store,
+	render: h => h(App),
+	mounted() {
+		this.$store.dispatch("setRoomAction");
+	}
 }).$mount('#app')

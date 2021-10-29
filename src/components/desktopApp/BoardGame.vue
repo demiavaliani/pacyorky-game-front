@@ -15,6 +15,7 @@
 
 		<GameLogic
 			ref="gameLogic"
+			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="throwCardsModalVisible = true"
 			@dropped-cards="populateVoteCardDecks($event)"
@@ -32,7 +33,7 @@
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
 				<b-col>
 					<div class="game-controls-box">
-						<b-row class="d-flex flex-column justify-content-between h-100">
+						<b-row class="d-flex flex-column justify-content-between flex-nowrap h-100">
 							<b-col class="text-center flex-grow-0">
 								<p v-if="!game.step"></p>
 								<p v-else-if="isCurrentPlayer">
@@ -43,32 +44,55 @@
 								</p>
 							</b-col>
 
-							<b-col class="d-flex flex-grow-0">
+							<b-col class="d-flex flex-grow-0 flex-column-reverse">
 								<div
-									class="d-flex justify-content-between align-items-center flex-grow-1"
-									v-if="!game.step || isCurrentPlayer"
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-if="game.step"
 								>
 									<b-button
+										v-if="isCurrentPlayer && game.step.status === 'WAITING_DICE'"
 										@click="callThrowDice"
 										:disabled="diceBtnDisabled"
 										class="throw-dice-btn"
 									>
 										<p>{{ $ml.get("throw_dice") }}</p>
 									</b-button>
-									<img src="@/assets/board-game/dice.svg" />
+									<img
+										v-if="game.step.counter"
+										:src="require('@/assets/board-game/' + currentDiceName)"
+									/>
 								</div>
 
 								<div
 									class="d-flex justify-content-center align-items-center flex-grow-1"
-									v-else-if="!isCurrentPlayer"
+									v-if="game && game.status === 'WAITING'"
+								>
+									<b-button
+										@click="callStartGame"
+										:disabled="startGameBtnDisabled"
+										class="throw-dice-btn"
+									>
+										<p>{{ $ml.get("start_game") }}</p>
+									</b-button>
+								</div>
+
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-if="!isCurrentPlayer && game.step"
 								>
 									<p>
-										{{ this.game.step.status }}
+										{{ $ml.get(this.game.step.status) }}
+									</p>
+								</div>
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-else-if="game && game.status && game.status !== 'STARTED'"
+								>
+									<p>
+										{{ $ml.get("GAME_" + this.game.status) }}
 									</p>
 								</div>
 							</b-col>
-
-							<b-button @click="timerAnimate"></b-button>
 
 							<b-col class="d-flex flex-column flex-grow-0">
 								<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
@@ -150,7 +174,7 @@
 
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
-					<p v-if="game">{{ $ml.get("room_name") }} “{{ game.name }}”</p>
+					<p v-if="game">{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
 					<b-button @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
@@ -245,7 +269,6 @@
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeck">
@@ -253,7 +276,6 @@
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeck">
@@ -261,9 +283,7 @@
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
-				<p>{{ cardsToThrow }}</p>
 			</template>
 
 			<template v-slot:footer>
@@ -282,7 +302,6 @@
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeckForVote">
@@ -290,7 +309,6 @@
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeckForVote">
@@ -298,9 +316,7 @@
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
-				<p>{{ cardsToVote }}</p>
 			</template>
 
 			<template v-slot:footer>
@@ -314,7 +330,6 @@
 
 		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false">
 			<template v-slot:upper-half>
-				<!-- <p style="font-family: Montserrat; font-size: 35px;"> -->
 				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
 					{{ $ml.get("game_ended") }}
 				</p>
@@ -385,7 +400,6 @@ export default {
 	data() {
 		return {
 			cache: [],
-			deskOrder: 101,
 			currentDevicePlayer: {},
 			boardX: "",
 			boardY: "",
@@ -396,31 +410,13 @@ export default {
 
 			cardsToThrow: [],
 			cardsToVote: [],
-			dishesDeckForVote: [
-				// { id: 15, name: "med", cardType: 1 },
-				// { id: 9, name: "polunica", cardType: 1 },
-			],
-			ritualsDeckForVote: [
-				// { id: 123, name: "chitannja", cardType: 2 },
-				// { id: 152, name: "prikrashati_hati", cardType: 2 },
-			],
-			stuffDeckForVote: [
-				// { id: 193, name: "proskuri", cardType: 3 },
-				// { id: 187, name: "ptashki", cardType: 3 },
-			],
+			dishesDeckForVote: [],
+			ritualsDeckForVote: [],
+			stuffDeckForVote: [],
 
-			dishesDeck: [
-				// { id: 15, name: "med", cardType: 1 },
-				// { id: 9, name: "polunica", cardType: 1 },
-			],
-			ritualsDeck: [
-				// { id: 123, name: "chitannja", cardType: 2 },
-				// { id: 152, name: "prikrashati_hati", cardType: 2 },
-			],
-			stuffDeck: [
-				// { id: 193, name: "proskuri", cardType: 3 },
-				// { id: 187, name: "ptashki", cardType: 3 },
-			],
+			dishesDeck: [],
+			ritualsDeck: [],
+			stuffDeck: [],
 
 			throwCardsModalVisible: false,
 			voteModalVisible: false,
@@ -428,6 +424,7 @@ export default {
 			stepTimeOutModalVisible: false,
 
 			diceBtnDisabled: true,
+			startGameBtnDisabled: true,
 		};
 	},
 
@@ -450,29 +447,25 @@ export default {
 				return true;
 			}
 		},
+
+		currentDiceName() {
+			if (this.game.step.counter) {
+				return `dice-${this.game.step.counter}-${this.game.capacity > 4 ? 2 : 1}.svg`;
+			}
+		},
 	},
 
 	methods: {
 		timerAnimate(startAt) {
-			if (this.game.status === "WAITING") {
-				let msTillGameStart = new Date(startAt) - new Date();
-				console.log(msTillGameStart);
-				let timerRect = document.querySelector(".timer-rect");
+			let actionTimeUtc = new Date(startAt).toUTCString();
+			let currentTimeUtc = new Date().toUTCString();
+			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
+			let timerRect = document.querySelector(".timer-rect");
 
-				timerRect.animate([{ width: "229px" }, { width: "0" }], {
-					duration: msTillGameStart,
-					fill: "forwards",
-				});
-			} else if (this.game.status === "STARTED") {
-				let msTillNextStep = new Date(startAt) - new Date();
-				console.log(msTillNextStep);
-				let timerRect = document.querySelector(".timer-rect");
-
-				timerRect.animate([{ width: "229px" }, { width: "0" }], {
-					duration: msTillNextStep,
-					fill: "forwards",
-				});
-			}
+			timerRect.animate([{ width: "229px" }, { width: "0" }], {
+				duration: msTillAction,
+				fill: "forwards",
+			});
 		},
 
 		chooseCardsForAction(id, ev, actionArray) {
@@ -493,7 +486,13 @@ export default {
 		},
 
 		callThrowDice() {
+			this.diceBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
+		},
+
+		callStartGame() {
+			this.startGameBtnDisabled = true;
+			this.$refs.gameLogic.startGame();
 		},
 
 		callThrowCards() {
@@ -518,17 +517,11 @@ export default {
 			api.leaveRoom().then();
 		},
 
-		setDeskOrder(event) {
-			//this.deskOrder = event;
-		},
-
 		getBoardPosition() {
 			let elem = document.querySelector("#board");
 			let board = elem.getBoundingClientRect();
 			this.boardX = board.x;
 			this.boardY = board.y;
-			// console.log("Original boardX: ", this.boardX);
-			// console.log("Original boardY: ", this.boardY);
 
 			imageMapResize();
 		},
@@ -560,18 +553,12 @@ export default {
 			area.forEach(() => {
 				addEventListener("click", event => {
 					event.preventDefault();
-					// event.stopPropagation();
-					// event.stopImmediatePropagation();
 				});
 			});
 		},
 	},
 
 	watch: {
-		deskOrder() {
-			//this.adjustImgMapCoords();
-		},
-
 		game: {
 			handler: function() {
 				if (
@@ -610,13 +597,13 @@ export default {
 		},
 
 		"game.startAt": function() {
-			console.log(this.game.startAt);
-			this.timerAnimate(this.game.startAt);
+			if (this.game.status === "WAITING") {
+				this.timerAnimate(this.game.startAt);
+			}
 		},
 
 		"game.nextStepAt": function() {
-			console.log(this.game.nextStepAt);
-			if (this.game.nextStepAt) {
+			if (this.game.status === "STARTED" && this.game.nextStepAt) {
 				this.timerAnimate(this.game.nextStepAt);
 			}
 		},
@@ -667,10 +654,6 @@ p {
 	font-family: "Amatic_SC";
 	line-height: 1;
 	color: black;
-}
-
-.game-logic {
-	position: absolute;
 }
 
 .board-game-row img {
@@ -846,8 +829,7 @@ p {
 
 .player-character {
 	position: absolute;
-	/* top: 450px;
-	left: 50px; */
+	top: 450px;
 	z-index: 1;
 }
 
