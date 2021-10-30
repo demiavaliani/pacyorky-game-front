@@ -167,6 +167,10 @@ export default {
 			},
 		},
 	},
+
+	created() {
+		this.updateActiveRoomsGraph();
+	},
 };
 </script>
 
