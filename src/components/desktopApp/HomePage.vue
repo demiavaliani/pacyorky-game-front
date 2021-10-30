@@ -39,46 +39,17 @@ export default {
 	},
 
 	data() {
-		return {
-			// game: {
-			// 	players: [
-			// 		{
-			// 			id: 1,
-			// 			happiness: 0,
-			// 			character: null,
-			// 			deck: [],
-			// 			currentDay: null,
-			// 			stepFinished: false,
-			// 			voted: false,
-			// 			lastStep: false,
-			// 			computer: false,
-			// 		},
-			// 		{
-			// 			id: 2,
-			// 			happiness: 0,
-			// 			character: null,
-			// 			deck: [],
-			// 			currentDay: null,
-			// 			stepFinished: false,
-			// 			voted: false,
-			// 			lastStep: false,
-			// 			computer: false,
-			// 		},
-			// 	],
-			// },
-		};
+		return {};
 	},
 
 	methods: {
 		checkGame() {
-			if (this.game && this.game.players) {
-				let result = this.game.players.find(({ id }) => id === this.devicePlayerId);
-				if (result) {
-					if (this.game.status !== "FINISHED") {
-						this.$router.push(`/board-game/${this.game.id}`);
-					} else if (this.game.status === "FINISHED") {
-						api.leaveRoom().then();
-					}
+			if (this.game) {
+				if (this.game.status !== "FINISHED" && this.game.status !== "CANCELLED") {
+					this.$router.push(`/board-game/${this.game.id}`);
+				}
+				if (this.game.status === "FINISHED" || this.game.status === "CANCELLED") {
+					api.leaveRoom().then();
 				}
 			}
 		},
@@ -87,7 +58,7 @@ export default {
 	async created() {
 		await this.$store.dispatch("setGameAction");
 		await this.$store.dispatch("setDevicePlayerIdAction");
-		// this.checkGame();
+		this.checkGame();
 	},
 };
 </script>

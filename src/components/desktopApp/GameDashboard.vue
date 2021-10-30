@@ -119,6 +119,7 @@ export default {
 
 	computed: {
 		...mapState({
+			game: "gameState",
 			activeRooms: "listOfActiveRooms",
 		}),
 
@@ -147,6 +148,17 @@ export default {
 		updateActiveRoomsGraph() {
 			this.$store.dispatch("setRoomAction");
 		},
+
+		checkGame() {
+			if (this.game) {
+				if (this.game.status !== "FINISHED" && this.game.status !== "CANCELLED") {
+					this.$router.push(`/board-game/${this.game.id}`);
+				}
+				if (this.game.status === "FINISHED" || this.game.status === "CANCELLED") {
+					api.leaveRoom().then();
+				}
+			}
+		},
 	},
 
 	watch: {
@@ -168,8 +180,11 @@ export default {
 		},
 	},
 
-	created() {
+	async created() {
 		this.updateActiveRoomsGraph();
+		await this.$store.dispatch("setGameAction");
+		await this.$store.dispatch("setDevicePlayerIdAction");
+		this.checkGame();
 	},
 };
 </script>
