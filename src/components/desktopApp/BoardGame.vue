@@ -270,7 +270,7 @@
 			</b-row>
 		</b-container>
 
-		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck">
 					<img
@@ -303,7 +303,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeckForVote">
 					<img
@@ -336,7 +336,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
 					{{ $ml.get("game_ended") }}
@@ -359,7 +359,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<p
 					v-bind:style="{
@@ -374,9 +374,18 @@
 			</template>
 
 			<template v-slot:footer>
-				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '300', fontSize: '35px' }">
-					{{ $ml.get("switching_step") }}
-				</p>
+				<b-button to="/">
+					<p
+						v-bind:style="{
+							color: 'white',
+							fontFamily: 'Montserrat',
+							fontWeight: '400',
+							fontSize: '18px',
+						}"
+					>
+						{{ $ml.get("go_back_to_home_page") }}
+					</p>
+				</b-button>
 			</template>
 		</InGameModal>
 	</div>
