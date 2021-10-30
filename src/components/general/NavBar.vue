@@ -41,7 +41,11 @@
 
 							<b-col cols="auto">
 								<div class="d-flex">
-									<b-dropdown text="UKR" class="lang-dropdown"></b-dropdown>
+                  <b-dropdown :text="$ml.current">
+                    <b-dropdown-item v-for="lang in $ml.list" v-if="lang!==$ml.current" :key="lang" @click="$ml.change(lang)">
+                      {{lang}}
+                    </b-dropdown-item>
+                  </b-dropdown>
 								</div>
 							</b-col>
 						</b-row>
