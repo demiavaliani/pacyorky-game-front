@@ -29,26 +29,11 @@
 					class="d-flex flex-column justify-content-start flex-grow-1 active-games-list px-3 py-1"
 				>
 					<div>
-						<!--
-							"@current-room-click" sets "currentRoomId" to the "$event.id". "$event" is the room object
-							passed from "ActiveRoomsGraph". That event is triggered when any of the item is clicked.
-							":class" attribute assigns "animate-room-class" CSS class to each "ActiveRoomsGraph" item IF:
-							"currentRoomId" from data is same as "item.id" from v-for loop below.
-						-->
-						<!--
-							"@current-room-click" also sets the "currentRoom" from data to the room object from
-							"ActiveRoomsGraph". This object is later passed to the "JoinRoom Modal".
-						 -->
-						<!--
-							"@current-room-click" also sets "roomSelected" to true. "roomSelected" value is used by
-							"join-room" button. If "roomSelected" is true, meaning the room item was clicked,
-							the "join-room" button will be active, otherwise it will be disabled.
-						  -->
 						<ActiveRoomsGraph
 							v-for="item in getActiveRoomsAndSortByPlayersCountAsc"
 							:key="item.id"
 							:displayRoomName="true"
-							:activePlayersCountFromActiveRoomsGraph="item.players.length"
+							:activePlayersCountFromActiveRoomsGraph="item.playersCount"
 							:activeRoomNameFromActiveRoomsGraph="item.name"
 							:currentRoomFromActiveRoomsGraph="item"
 							:class="currentRoomId == item.id ? 'animate-room-class' : ''"
@@ -73,12 +58,7 @@
 							{{ $ml.get("join") }}
 						</p>
 					</b-button>
-					<!--
-						tooltip below will be disabled if "disabled" data attribute is true.
-						"disabled" attribute by default is false, in case there are no rooms available.
-						If there is a room available, "disabled" attribute is adjusted by
-						"getActiveRoomsAndSortByPlayersCountAsc" watcher.
-					 -->
+
 					<b-tooltip
 						target="tooltip-trigger"
 						triggers="hover"
@@ -145,8 +125,8 @@ export default {
 		getActiveRoomsAndSortByPlayersCountAsc() {
 			return this.activeRooms
 				.sort((a, b) => {
-					var roomA = a.players.length;
-					var roomB = b.players.length;
+					var roomA = a.playersCount;
+					var roomB = b.playersCount;
 					if (roomB < roomA) {
 						return -1;
 					}
@@ -160,10 +140,6 @@ export default {
 	},
 
 	methods: {
-		/*
-		using ref="createRoomModalChildComponent" on "CreateRoomModal" we can call "randomNamePicker()"
-		method from parent component to child.
-		*/
 		triggerCreateRoomModalChildComponent() {
 			this.$refs.createRoomModalChildComponent.randomNamePicker();
 		},
@@ -174,18 +150,6 @@ export default {
 	},
 
 	watch: {
-		/*
-		"getActiveRoomsAndSortByPlayersCountAsc" watcher selects a default room item before any click.
-
-		First, TRY block is executed, if there is a room available ->
-		"currentRoomId" is set to get "animate-room-class" CSS class, giving it selection effect;
-		"currentRoom" is set so that the default room object can be passed to "JoinRoomModal";
-		"roomSelected" is set to true to enable the "join-room" button;
-		"disabled" is set to true to disable the tooltip;
-
-		IF no room is available, CATCH block is executed ->
-		"roomSelected is set to false to disable the "join-room" button;
-		*/
 		getActiveRoomsAndSortByPlayersCountAsc: {
 			immediate: true,
 			async handler() {
@@ -198,7 +162,6 @@ export default {
 					} catch (error) {
 						this.roomSelected = false;
 						this.disabled = false;
-						console.log(error);
 					}
 				}
 			},
@@ -265,7 +228,10 @@ p {
 }
 
 .animate-room-class {
-	font-weight: bold;
+	border: 1px solid;
+	border-color: #5f9da5;
+	border-radius: 10px;
+	font-weight: 700;
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {

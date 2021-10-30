@@ -1,14 +1,29 @@
 <template>
 	<div id="main-div">
-		<div id="vukol-character" class="vukol-character">
-			<img src="@/assets/board-game/vukol.png" />
+		<div id="overlay">
+			<progress value="0"></progress>
+		</div>
+
+		<div
+			v-for="player in playersInGame"
+			:key="player.id"
+			v-if="game && game.players && game.status === 'STARTED'"
+			:id="'player-character-' + player.character.name"
+			class="player-character"
+			:style="inited ? '' : 'opacity: 0'"
+		>
+			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
 		</div>
 
 		<GameLogic
 			ref="gameLogic"
-			@desk-order="setDeskOrder"
+			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="throwCardsModalVisible = true"
+			@dropped-cards="populateVoteCardDecks($event)"
+			@show-vote-modal="voteModalVisible = true"
+			@show-game-ended-modal="gameEndedModalVisible = true"
+			@show-step-time-out-modal="stepTimeOutModalVisible = true"
 			class="game-logic"
 		>
 		</GameLogic>
@@ -20,23 +35,83 @@
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
 				<b-col>
 					<div class="game-controls-box">
-						<b-row class="d-flex flex-column justify-content-between h-100">
+						<b-row class="d-flex flex-column justify-content-between flex-nowrap h-100">
 							<b-col class="text-center flex-grow-0">
-								<p>{{ $ml.get("my_turn") }}</p>
+								<p v-if="!game.step"></p>
+								<p v-else-if="isCurrentPlayer">
+									{{ $ml.get("my_turn") }}
+								</p>
+								<p v-else-if="!isCurrentPlayer">
+									Current Player: {{ this.game.step.currentPlayer.character.name }}
+								</p>
 							</b-col>
 
-							<b-col class="d-flex justify-content-between align-items-center flex-grow-0">
-								<b-button @click="callThrowDice" :disabled="diceBtnDisabled" class="throw-dice-btn">
-									<p>{{ $ml.get("throw_dice") }}</p>
-								</b-button>
-								<img src="@/assets/board-game/dice.svg" />
+							<b-col class="d-flex flex-grow-0 flex-column-reverse">
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-if="game.step"
+								>
+									<b-button
+										v-if="isCurrentPlayer && game.step.status === 'WAITING_DICE'"
+										@click="callThrowDice"
+										:disabled="diceBtnDisabled"
+										class="throw-dice-btn"
+									>
+										<p>{{ $ml.get("throw_dice") }}</p>
+									</b-button>
+									<img
+										v-if="game.step.counter"
+										:src="
+											require('@/assets/board-game/dice-' +
+												game.step.counter +
+												'-' +
+												(game.capacity > 4 ? 2 : 1) +
+												'.svg')
+										"
+									/>
+								</div>
+
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-if="game && game.status === 'WAITING'"
+								>
+									<b-button
+										@click="callStartGame"
+										:disabled="startGameBtnDisabled"
+										class="throw-dice-btn"
+									>
+										<p>{{ $ml.get("start_game") }}</p>
+									</b-button>
+								</div>
+
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-if="!isCurrentPlayer && game.step"
+								>
+									<p>
+										{{ $ml.get(this.game.step.status) }}
+									</p>
+								</div>
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-else-if="game && game.status && game.status !== 'STARTED'"
+								>
+									<p>
+										{{ $ml.get("GAME_" + this.game.status) }}
+									</p>
+								</div>
 							</b-col>
 
 							<b-col class="d-flex flex-column flex-grow-0">
 								<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
 
-								<svg viewBox="0 0 229 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<rect y="0.833008" width="229" height="11" rx="5.5" fill="#04944F" />
+								<svg
+									class="timer"
+									viewBox="0 0 229 12"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<rect class="timer-rect" y="0.833008" height="11" rx="5.5" fill="#04944F" />
 								</svg>
 							</b-col>
 						</b-row>
@@ -107,7 +182,7 @@
 
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
-					<p>{{ $ml.get("room_name") }} “{{ game.name }}”</p>
+					<p v-if="game">{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
 					<b-button @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
@@ -115,7 +190,9 @@
 
 				<b-col class="d-flex justify-content-end">
 					<ActiveRoomsGraph
+						v-if="game"
 						class="active-rooms-graph"
+						:currentRoomFromActiveRoomsGraph="game"
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
 					></ActiveRoomsGraph>
@@ -164,8 +241,9 @@
 						<b-row class="h-100">
 							<b-col cols="6" class="left h-100">
 								<img
+									v-if="currentDevicePlayer && currentDevicePlayer.character"
 									class="character-img w-100 h-100"
-									src="@/assets/cards/character/baba_docka.png"
+									:src="require('@/assets/cards/character/' + playerCharacter + '.png')"
 								/>
 							</b-col>
 
@@ -192,36 +270,28 @@
 			</b-row>
 		</b-container>
 
-		<InGameModal
-			:modalVisible="throwCardsModalVisible"
-			:footerHidden="modalFooterHidden"
-			ref="throwCardsModal"
-		>
+		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeck">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeck">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
-						@click="chooseCardToThrow(card.id, $event)"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
-					<p>{{ card.id }}</p>
 				</div>
-				<p>{{ cardsToThrow }}</p>
 			</template>
 
 			<template v-slot:footer>
@@ -230,6 +300,83 @@
 						{{ $ml.get("throw_cards") }}
 					</p>
 				</b-button>
+			</template>
+		</InGameModal>
+
+		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false">
+			<template v-slot:upper-half>
+				<div class="mx-1" v-for="card in dishesDeckForVote">
+					<img
+						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+				</div>
+
+				<div class="mx-1" v-for="card in ritualsDeckForVote">
+					<img
+						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+				</div>
+
+				<div class="mx-1" v-for="card in stuffDeckForVote">
+					<img
+						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
+					/>
+				</div>
+			</template>
+
+			<template v-slot:footer>
+				<b-button @click="callVote()">
+					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
+						{{ $ml.get("throw_cards") }}
+					</p>
+				</b-button>
+			</template>
+		</InGameModal>
+
+		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false">
+			<template v-slot:upper-half>
+				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
+					{{ $ml.get("game_ended") }}
+				</p>
+			</template>
+
+			<template v-slot:footer>
+				<b-button to="/">
+					<p
+						v-bind:style="{
+							color: 'white',
+							fontFamily: 'Montserrat',
+							fontWeight: '400',
+							fontSize: '18px',
+						}"
+					>
+						{{ $ml.get("go_back_to_home_page") }}
+					</p>
+				</b-button>
+			</template>
+		</InGameModal>
+
+		<InGameModal :modalVisible="false" :footerHidden="false">
+			<template v-slot:upper-half>
+				<p
+					v-bind:style="{
+						color: '#E15465',
+						fontFamily: 'Montserrat',
+						fontWeight: '500',
+						fontSize: '35px',
+					}"
+				>
+					{{ $ml.get("step_time_over") }}
+				</p>
+			</template>
+
+			<template v-slot:footer>
+				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '300', fontSize: '35px' }">
+					{{ $ml.get("switching_step") }}
+				</p>
 			</template>
 		</InGameModal>
 	</div>
@@ -254,33 +401,31 @@ export default {
 
 	data() {
 		return {
-			deskOrder: 101,
-
+			currentDevicePlayer: {},
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
+			inited: false,
+			playersInGame: [],
 
-			currentDevicePlayer: {},
 			cardsToThrow: [],
+			cardsToVote: [],
+			dishesDeckForVote: [],
+			ritualsDeckForVote: [],
+			stuffDeckForVote: [],
 
-			dishesDeck: [
-				// { id: 15, name: "med", cardType: 1 },
-				// { id: 9, name: "polunica", cardType: 1 },
-			],
-			ritualsDeck: [
-				// { id: 123, name: "chitannja", cardType: 2 },
-				// { id: 152, name: "prikrashati_hati", cardType: 2 },
-			],
-			stuffDeck: [
-				// { id: 193, name: "proskuri", cardType: 3 },
-				// { id: 187, name: "ptashki", cardType: 3 },
-			],
+			dishesDeck: [],
+			ritualsDeck: [],
+			stuffDeck: [],
 
 			throwCardsModalVisible: false,
-			modalFooterHidden: false,
+			voteModalVisible: false,
+			gameEndedModalVisible: false,
+			stepTimeOutModalVisible: false,
 
 			diceBtnDisabled: true,
+			startGameBtnDisabled: true,
 		};
 	},
 
@@ -293,21 +438,42 @@ export default {
 		playerHappiness() {
 			return this.currentDevicePlayer.happiness;
 		},
+
+		playerCharacter() {
+			return this.currentDevicePlayer.character.name;
+		},
+
+		isCurrentPlayer() {
+			if (this.game.step && this.currentDevicePlayer.id === this.game.step.currentPlayer.id) {
+				return true;
+			}
+		},
 	},
 
 	methods: {
-		chooseCardToThrow(id, ev) {
+		timerAnimate(startAt) {
+			let actionTimeUtc = new Date(startAt).toUTCString();
+			let currentTimeUtc = new Date().toUTCString();
+			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
+			let timerRect = document.querySelector(".timer-rect");
+
+			timerRect.animate([{ width: "229px" }, { width: "0" }], {
+				duration: msTillAction,
+				fill: "forwards",
+			});
+		},
+
+		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
-			if (!this.cardsToThrow.includes(id)) {
-				this.cardsToThrow.push(id);
+			if (!this[actionArray].includes(id)) {
+				this[actionArray].push(id);
 
 				elementStyle.position = "relative";
 				elementStyle.bottom = "30px";
 			} else {
-				let cardIndexToRemove = this.cardsToThrow.indexOf(id);
-
-				this.cardsToThrow.splice(cardIndexToRemove, 1);
+				let cardIndexToRemove = this[actionArray].indexOf(id);
+				this[actionArray].splice(cardIndexToRemove, 1);
 
 				elementStyle.position = "static";
 				elementStyle.bottom = "0";
@@ -315,7 +481,13 @@ export default {
 		},
 
 		callThrowDice() {
+			this.diceBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
+		},
+
+		callStartGame() {
+			this.startGameBtnDisabled = true;
+			this.$refs.gameLogic.startGame();
 		},
 
 		callThrowCards() {
@@ -324,16 +496,20 @@ export default {
 			this.throwCardsModalVisible = false;
 		},
 
+		populateVoteCardDecks(thrownCards) {
+			this.dishesDeckForVote = thrownCards.filter(card => card.cardType === 1);
+			this.ritualsDeckForVote = thrownCards.filter(card => card.cardType === 2);
+			this.stuffDeckForVote = thrownCards.filter(card => card.cardType === 3);
+		},
+
 		callVote() {
-			this.$refs.gameLogic.vote();
+			this.$refs.gameLogic.vote(this.cardsToVote);
+			this.cardsToVote = [];
+			this.voteModalVisible = false;
 		},
 
 		leaveRoom() {
 			api.leaveRoom().then();
-		},
-
-		setDeskOrder(event) {
-			this.deskOrder = event;
 		},
 
 		getBoardPosition() {
@@ -341,39 +517,29 @@ export default {
 			let board = elem.getBoundingClientRect();
 			this.boardX = board.x;
 			this.boardY = board.y;
-			// console.log("Original boardX: ", this.boardX);
-			// console.log("Original boardY: ", this.boardY);
 
 			imageMapResize();
-
-			this.adjustImgMapCoords();
 		},
 
-		adjustImgMapCoords() {
-			let elem = document.querySelector(`area[alt='${this.deskOrder}']`);
-			// console.log("elem is: ", elem);
-			let coordsAttr = elem.getAttribute("coords");
-			// console.log("coords attribute is: ", coordsAttr);
-			let coordsAttrArray = coordsAttr.split(",");
-			// console.log("splitted attributes array:", coordsAttrArray);
+		adjustImgMapCoords(players) {
+			if (this.game && players && this.game.status === "STARTED") {
+				for (let player of players) {
+					let elem = document.querySelector(`area[alt='${player.currentDay.deskOrder}']`);
+					let coordsAttr = elem.getAttribute("coords");
+					let coordsAttrArray = coordsAttr.split(",");
 
-			this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
-			this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
+					let playerFigure = document.getElementById("player-character-" + player.character.name);
+					if (playerFigure) {
+						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-			// console.log("adjusted coordX: ", this.adjustedCoordX);
-			// console.log("adjusted coordY: ", this.adjustedCoordY);
-
-			this.udpatePlayerBoardPosition();
-		},
-
-		udpatePlayerBoardPosition() {
-			let player = document.getElementById("vukol-character");
-
-			player.style.left = `${this.adjustedCoordX - 20}px`;
-			player.style.top = `${this.adjustedCoordY - 120}px`;
-
-			// console.log("player.style.left", player.style.left);
-			// console.log("player.style.top", player.style.top);
+						playerFigure.style.left = `${this.boardX +
+							parseFloat(coordsAttrArray[0]) -
+							elementWidth / 2}px`;
+						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+						this.inited = true;
+					}
+				}
+			}
 		},
 
 		areaClick() {
@@ -382,46 +548,87 @@ export default {
 			area.forEach(() => {
 				addEventListener("click", event => {
 					event.preventDefault();
-					// event.stopPropagation();
-					// event.stopImmediatePropagation();
 				});
+			});
+		},
+
+		loaderProgress() {
+			let progress = document.querySelector("progress");
+			let images = require.context("../../assets/cards/", true, /\.png/);
+			progress.max = images.keys().length;
+
+			images.keys().forEach(key => {
+				let img = new Image();
+				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.onload = () => {
+					progress.value++;
+					if (progress.value === images.keys().length) {
+						document.getElementById("overlay").style.display = "none";
+					}
+				};
 			});
 		},
 	},
 
 	watch: {
-		deskOrder() {
-			this.adjustImgMapCoords();
+		game: {
+			handler: function() {
+				if (
+					this.game &&
+					this.game.status === "STARTED" &&
+					this.game.players &&
+					this.devicePlayerId
+				) {
+					this.currentDevicePlayer = this.game.players.filter(
+						player => player.id == this.devicePlayerId
+					)[0];
+				}
+
+				if (Object.keys(this.currentDevicePlayer).length) {
+					let deck = this.currentDevicePlayer.deck;
+
+					this.dishesDeck = deck.filter(card => card.cardType === 1);
+					this.ritualsDeck = deck.filter(card => card.cardType === 2);
+					this.stuffDeck = deck.filter(card => card.cardType === 3);
+				}
+
+				if (this.game && this.game.status === "STARTED" && this.game.players) {
+					if (
+						this.playersInGame.length === 0 ||
+						this.playersInGame.length !== this.game.players.length
+					) {
+						this.playersInGame = this.game.players;
+						setTimeout(() => this.adjustImgMapCoords(this.playersInGame), 500);
+					}
+					if (this.game.step) {
+						this.adjustImgMapCoords([this.game.step.currentPlayer]);
+					}
+				}
+			},
+			deep: true,
 		},
 
-		game() {
-			if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
-				this.currentDevicePlayer = this.game.players.filter(
-					player => player.id === this.devicePlayerId
-				)[0];
+		"game.startAt": function() {
+			if (this.game.status === "WAITING") {
+				this.timerAnimate(this.game.startAt);
 			}
+		},
 
-			if (Object.keys(this.currentDevicePlayer).length) {
-				let deck = this.currentDevicePlayer.deck;
-
-				this.dishesDeck = deck.filter(card => card.cardType === 1);
-				this.ritualsDeck = deck.filter(card => card.cardType === 2);
-				this.stuffDeck = deck.filter(card => card.cardType === 3);
+		"game.nextStepAt": function() {
+			if (this.game.status === "STARTED" && this.game.nextStepAt) {
+				this.timerAnimate(this.game.nextStepAt);
 			}
 		},
 	},
 
 	mounted() {
 		this.areaClick();
+		this.loaderProgress();
 	},
 };
 </script>
 
 <style scoped>
-.game-logic {
-	position: absolute;
-}
-
 * {
 	box-sizing: border-box;
 }
@@ -432,17 +639,39 @@ export default {
 	background-size: 100vw;
 }
 
+#overlay {
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100vh;
+	background-color: white;
+	z-index: 999;
+}
+
+progress {
+	appearance: none;
+	width: 300px;
+	height: 10px;
+}
+
+::-webkit-progress-bar {
+	background-color: #cecece;
+	border-radius: 50px;
+}
+
+::-webkit-progress-value {
+	background-color: #00ea40;
+	border-radius: 50px;
+}
+
 p {
 	margin-bottom: 0;
 	font-family: "Amatic_SC";
 	line-height: 1;
 	color: black;
 }
-
-/* .board-game-row {
-	position: absolute;
-	left: 25%;
-} */
 
 .board-game-row img {
 	width: 50vw;
@@ -475,6 +704,10 @@ p {
 
 .throw-dice-btn p {
 	font-size: 20px;
+}
+
+.timer-rect {
+	width: 229px;
 }
 
 .right-side p {
@@ -611,10 +844,9 @@ p {
 	font-size: 33px;
 }
 
-.vukol-character {
+.player-character {
 	position: absolute;
-	/* top: 450px;
-	left: 50px; */
+	top: 450px;
 	z-index: 1;
 }
 

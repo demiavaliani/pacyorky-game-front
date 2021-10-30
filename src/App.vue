@@ -3,13 +3,7 @@
 		<NavBar v-if="$route.name != 'boardGame'"></NavBar>
 		<router-view></router-view>
 		<MainFooter v-if="$route.name != 'boardGame'"></MainFooter>
-
-		<!-- <InGameModal></InGameModal> -->
-
 		<!-- <ErrorModal></ErrorModal> -->
-		<!-- <GameLogic></GameLogic> -->
-		<!-- <BoardGame></BoardGame> -->
-		<!-- <GameDashboard></GameDashboard> -->
 	</div>
 </template>
 
@@ -46,16 +40,8 @@ export default {
 		GameLogic,
 		InGameModal,
 	},
-	mounted() {
-		// this.setPlayerID();
-	},
-	methods: {
-		// setPlayerID: function() {
-		// 	axios.get("/api/player/id/").then((res) => {
-		// 		this.$cookies.set("playerid", res.data);
-		// 	});
-		// },
-	},
+	mounted() {},
+	methods: {},
 	created() {
 		document.querySelector("body").style.height = "100vh";
 	},
@@ -80,19 +66,32 @@ export default {
 
 @font-face {
 	font-family: "Montserrat";
-	src: url("assets/fonts/MontserratAlternates-Regular.ttf") format("truetype");
+	src: url("assets/fonts/Montserrat-Light.ttf") format("truetype");
+	font-weight: 300;
 }
 
 @font-face {
 	font-family: "Montserrat";
-	src: url("assets/fonts/MontserratAlternates-Bold.ttf") format("truetype");
-	font-weight: bold;
+	src: url("assets/fonts/Montserrat-Regular.ttf") format("truetype");
+	font-weight: 400;
 }
 
 @font-face {
 	font-family: "Montserrat";
-	src: url("assets/fonts/MontserratAlternates-SemiBold.ttf") format("truetype");
+	src: url("assets/fonts/Montserrat-Medium.ttf") format("truetype");
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: "Montserrat";
+	src: url("assets/fonts/Montserrat-SemiBold.ttf") format("truetype");
 	font-weight: 600;
+}
+
+@font-face {
+	font-family: "Montserrat";
+	src: url("assets/fonts/Montserrat-Bold.ttf") format("truetype");
+	font-weight: 700;
 }
 
 @font-face {

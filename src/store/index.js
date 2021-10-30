@@ -20,17 +20,6 @@ export default new Vuex.Store({
 	},
 
 	getters: {
-		modalStatusGetter(state) {
-			return state.modalStatus;
-		},
-
-		errorCodeGetter(state) {
-			return state.errorCode;
-		},
-
-		listOfActiveRoomsGetter(state) {
-			return state.listOfActiveRooms;
-		}
 	},
 
 	actions: {
@@ -54,14 +43,20 @@ export default new Vuex.Store({
 		},
 
 		setGameAction(context) {
-			api.getGame().then(response => {
-				context.commit("setGameMutation", response)
+			return new Promise((resolve) => {
+				api.getGame().then(response => {
+					context.commit("setGameMutation", response)
+					resolve()
+				})
 			})
 		},
 
 		setDevicePlayerIdAction(context) {
-			api.getDevicePlayerId().then(response => {
-				context.commit("setDevicePlayerIdMutation", response)
+			return new Promise(resolve => {
+				api.getDevicePlayerId().then(response => {
+					context.commit("setDevicePlayerIdMutation", response)
+					resolve()
+				})
 			})
 		}
 	},

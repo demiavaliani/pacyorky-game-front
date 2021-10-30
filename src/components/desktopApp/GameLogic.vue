@@ -1,12 +1,5 @@
 <template>
-	<div>
-		<div><b>Game Status:</b> {{ gameStatus }}</div>
-		<div><b>Step Status:</b> {{ stepStatus }}</div>
-		<div><b>Device Player:</b> {{ devicePlayerId }}</div>
-		<div><b>Current Player:</b> {{ currentTurnPlayerId }}</div>
-		<div><b>Desk Order:</b> {{ deskOrder }}</div>
-		<b-button @click="vote()" :disabled="voteDisabled">Vote</b-button>
-	</div>
+	<div></div>
 </template>
 
 <script>
@@ -22,10 +15,8 @@ export default {
 	data() {
 		return {
 			gameStatus: "",
-			deskOrder: "",
 			currentTurnPlayerId: "",
 			stepStatus: "",
-			droppedCards: [],
 		};
 	},
 
@@ -34,93 +25,82 @@ export default {
 			game: "gameState",
 			devicePlayerId: "devicePlayerId",
 		}),
-
-		voteDisabled() {
-			if (this.stepStatus !== "WAITING_VOTE" || this.currentTurnPlayerId === this.devicePlayerId) {
-				return true;
-			} else false;
-		},
 	},
 
 	methods: {
-		throwDice() {
-			api.throwDice().then(() => {
-				// console.log("Threw Dice!!!");
-			});
-		},
-
-		// currently for testing - passing random card IDs
-		throwCards(cardsToThrow) {
-			console.log(cardsToThrow);
-
-			api.throwCards(cardsToThrow).then(res => {
-				console.log("res", res);
-				this.getDroppedCards;
-			});
-
-			// const playerCardIDs = [];
-			// this.game.step.currentPlayer.deck
-			// 	.slice(0, 3)
-			// 	.forEach(eachId => playerCardIDs.push(eachId.id));
-			// api.throwCards(playerCardIDs).then(() => {
-			// 	this.getDroppedCards();
-			// });
-		},
-
-		getDroppedCards() {
-			if (this.game && this.gameStatus === "STARTED" && this.stepStatus === "WAITING_VOTE") {
-				api.getGame().then(res => {
-					let cards = res.step.stepCards;
-					let cardIdArr = [];
-					for (let item of cards) {
-						cardIdArr.push(item.card.id);
-					}
-					this.droppedCards = cardIdArr;
-				});
-			}
-		},
-
-		vote() {
-			api.vote(this.droppedCards).then(res => {
-				// console.log("Vote given!!!");
-				// console.log(res);
-			});
-		},
-
 		initializeGame() {
-			this.$store.dispatch("setGameAction");
-			setInterval(() => {
-				this.$store.dispatch("setGameAction");
-			}, 2000);
+			return new Promise(resolve => {
+				let interval = setInterval(() => {
+					if (!Object.keys(this.game).length) {
+						this.$emit("show-step-time-out-modal");
+						clearInterval(interval);
+					} else {
+						this.$store.dispatch("setGameAction").then(() => {
+							resolve();
+						});
+					}
+				}, 2000);
+			});
 		},
 
 		initializeDevicePlayerId() {
-			this.$store.dispatch("setDevicePlayerIdAction");
+			return new Promise(resolve => {
+				this.$store.dispatch("setDevicePlayerIdAction").then(() => {
+					resolve();
+				});
+			});
+		},
+
+		throwDice() {
+			api.throwDice().then(() => {});
+		},
+    
+    startGame() {
+      api.startGame().then(() => {})
+    },
+
+		throwCards(cardsToThrow) {
+			api.throwCards(cardsToThrow).then(res => {});
+		},
+
+		getDroppedCards() {
+			if (
+				this.gameStatus === "STARTED" &&
+				this.stepStatus === "WAITING_VOTE" &&
+				this.currentTurnPlayerId !== this.devicePlayerId
+			) {
+				api
+					.getGame()
+					.then(res => {
+						let cards = res.step.stepCards;
+						let cardsArray = [];
+						for (let item of cards) {
+							cardsArray.push(item.card);
+						}
+						this.$emit("dropped-cards", cardsArray);
+					})
+					.then(() => {
+						this.$emit("show-vote-modal");
+					});
+			}
+		},
+
+		vote(cardsToVote) {
+			api.vote(cardsToVote).then(res => {});
 		},
 
 		setGameStatus() {
-			if (this.game) {
-				this.gameStatus = this.game.status;
-			}
-		},
-
-		setDeskOrder() {
-			if (this.game && this.gameStatus === "STARTED" && this.game.players) {
-				this.deskOrder = this.game.players.filter(
-					curPlayer => curPlayer.id == this.devicePlayerId
-				)[0].currentDay.deskOrder;
-			}
-			this.$emit("desk-order", this.deskOrder || 101);
+			this.gameStatus = this.game.status;
 		},
 
 		identifyCurrentTurnPlayerId() {
-			if (this.game && this.gameStatus === "STARTED" && this.game.step.currentPlayer.id) {
+			if (this.gameStatus === "STARTED" && this.game.step && this.game.step.currentPlayer.id) {
 				this.currentTurnPlayerId = this.game.step.currentPlayer.id;
 			}
 		},
 
 		setStepStatus() {
-			if (this.game && this.gameStatus === "STARTED" && this.game.step.status) {
+			if (this.gameStatus === "STARTED" && this.game.step) {
 				this.stepStatus = this.game.step.status;
 			}
 		},
@@ -143,25 +123,39 @@ export default {
 		},
 	},
 
-	watch: {
-		game() {
-			this.setGameStatus();
-			this.setDeskOrder();
+	watch: {},
 
-			this.identifyCurrentTurnPlayerId();
-			this.setStepStatus();
+	async created() {
+		await this.$store.dispatch("setGameAction");
+		await this.initializeGame();
+		await this.initializeDevicePlayerId();
+
+		this.$watch(
+			"game",
+			() => {
+				this.setGameStatus();
+				this.identifyCurrentTurnPlayerId();
+				this.setStepStatus();
+			},
+			{ deep: true }
+		);
+
+		this.$watch("gameStatus", () => {
+			if (this.game && this.gameStatus === "FINISHED") {
+				this.$emit("show-game-ended-modal");
+			}
+      if (this.game && this.gameStatus === 'WAITING') {
+        this.$emit("start-game-btn-disabled", false);
+      } else {
+        this.$emit("start-game-btn-disabled", true);
+      }
+		});
+
+		this.$watch("stepStatus", () => {
 			this.getDroppedCards();
-		},
-
-		stepStatus() {
 			this.throwDiceDisabled();
 			this.showThrowCardsModal();
-		},
-	},
-
-	created() {
-		// this.initializeGame();
-		// this.initializeDevicePlayerId();
+		});
 	},
 };
 </script>
