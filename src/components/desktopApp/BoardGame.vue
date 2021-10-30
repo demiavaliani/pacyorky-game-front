@@ -380,24 +380,19 @@
 			</template>
 		</InGameModal>
 
-    <InGameModal :modalVisible="dayDescription" :footerHidden="false">
+    <InGameModal :modalVisible="dayDescription" :footerHidden="true">
       <template v-slot:upper-half>
+        <div class="flex-column">
         <p
             v-bind:style="{
-						color: '#E15465',
-						fontFamily: 'Montserrat',
-						fontWeight: '500',
-						fontSize: '35px',
+						fontFamily: 'Montserrat'
 					}"
         >
-          {{ $ml.get(modalDay) }}
+          {{ $ml.get('day_'+modalDay) }}
         </p>
-      </template>
-
-      <template v-slot:footer>
-        <p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '300', fontSize: '35px' }">
-          {{ $ml.get("close") }}
-        </p>
+        <br>
+        <b-button @click="dayDescription = false">Close</b-button>
+        </div>
       </template>
     </InGameModal>
 
@@ -573,8 +568,23 @@ export default {
 				addEventListener("click", event => {
 					event.preventDefault();
           let dayName = event.target.dataset.name;
+          if (!dayName) {
+            return;
+          }
           if (dayName === 'day') {
-            dayName = "dsadsad";
+            if (this.game && this.game.players) {
+              if (this.game.step && this.game.step.currentPlayer && this.game.step.currentPlayer.currentDay && this.game.step.currentPlayer.currentDay.holiday
+                  && this.game.step.currentPlayer.currentDay.deskOrder == event.target.alt) {
+                dayName = this.game.step.currentPlayer.currentDay.name;
+              } else if (this.currentDevicePlayer.currentDay && this.currentDevicePlayer.currentDay.holiday && this.currentDevicePlayer.currentDay.deskOrder == event.target.alt) {
+                dayName = this.currentDevicePlayer.currentDay.name
+              } else {
+                let players = this.game.players.filter(player => player.currentDay && player.currentDay.deskOrder == event.target.alt && player.currentDay.holiday);
+                if (players.length > 0) {
+                  dayName = players[0].currentDay.name;
+                }
+              }
+            }
           }
           this.modalDay = dayName;
           this.dayDescription = true;

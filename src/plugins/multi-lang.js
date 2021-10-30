@@ -125,6 +125,7 @@ export default new MLCreate({
 			day_vhodini : 'holiday day description',
 			day_buden : 'holiday day description',
 			day_day: 'day not defined',
+			close: 'zakrit'
 		}),
 	]
 })
