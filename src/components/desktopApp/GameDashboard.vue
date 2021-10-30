@@ -91,6 +91,7 @@
 
 <script>
 import { mapState } from "vuex";
+import api from "@/api/api";
 import ActiveRoomsGraph from "./ActiveRoomsGraph";
 import CreateRoomModal from "../modals/CreateRoomModal.vue";
 import JoinRoomModal from "../modals/JoinRoomModal";
