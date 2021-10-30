@@ -129,54 +129,54 @@
 				/>
 
 				<map name="image-map">
-					<area alt="101" href="" coords="513,682,19" shape="circle" />
-					<area alt="106" href="" coords="558,670,21" shape="circle" />
-					<area alt="107" href="" coords="607,691,20" shape="circle" />
-					<area alt="113" href="" coords="571,731,20" shape="circle" />
-					<area alt="114" href="" coords="545,775,19" shape="circle" />
-					<area alt="118" href="" coords="597,790,20" shape="circle" />
-					<area alt="119" href="" coords="642,764,20" shape="circle" />
-					<area alt="201" href="" coords="696,726,23" shape="circle" />
-					<area alt="215" href="" coords="702,676,20" shape="circle" />
-					<area alt="216" href="" coords="737,639,23" shape="circle" />
-					<area alt="217" href="" coords="795,654,22" shape="circle" />
-					<area alt="301" href="" coords="847,600,22" shape="circle" />
-					<area alt="314" href="" coords="828,545,20" shape="circle" />
-					<area alt="322" href="" coords="890,537,20" shape="circle" />
-					<area alt="330" href="" coords="863,485,20" shape="circle" />
-					<area alt="407" href="" coords="900,411,20" shape="circle" />
-					<area alt="408" href="" coords="860,376,20" shape="circle" />
-					<area alt="409" href="" coords="903,337,20" shape="circle" />
-					<area alt="410" href="" coords="857,306,22" shape="circle" />
-					<area alt="505" href="" coords="825,256,19" shape="circle" />
-					<area alt="506" href="" coords="779,228,21" shape="circle" />
-					<area alt="522" href="" coords="771,179,20" shape="circle" />
-					<area alt="523" href="" coords="723,162,20" shape="circle" />
-					<area alt="601" href="" coords="678,122,23" shape="circle" />
-					<area alt="602" href="" coords="625,142,21" shape="circle" />
-					<area alt="603" href="" coords="596,97,22" shape="circle" />
-					<area alt="604" href="" coords="543,121,23" shape="circle" />
-					<area alt="701" href="" coords="475,108,23" shape="circle" />
-					<area alt="707" href="" coords="425,148,20" shape="circle" />
-					<area alt="712" href="" coords="371,118,20" shape="circle" />
-					<area alt="802" href="" coords="309,155,21" shape="circle" />
-					<area alt="814" href="" coords="295,213,20" shape="circle" />
-					<area alt="819" href="" coords="240,225,20" shape="circle" />
-					<area alt="901" href="" coords="188,290,23" shape="circle" />
-					<area alt="927" href="" coords="210,336,20" shape="circle" />
-					<area alt="928" href="" coords="151,370,22" shape="circle" />
-					<area alt="1014" href="" coords="148,440,19" shape="circle" />
-					<area alt="1015" href="" coords="132,487,22" shape="circle" />
-					<area alt="1016" href="" coords="181,509,22" shape="circle" />
-					<area alt="1017" href="" coords="141,557,22" shape="circle" />
-					<area alt="1101" href="" coords="193,597,22" shape="circle" />
-					<area alt="1121" href="" coords="200,652,20" shape="circle" />
-					<area alt="1122" href="" coords="255,639,22" shape="circle" />
-					<area alt="1123" href="" coords="276,698,22" shape="circle" />
-					<area alt="1204" href="" coords="335,724,19" shape="circle" />
-					<area alt="1207" href="" coords="359,764,20" shape="circle" />
-					<area alt="1213" href="" coords="415,768,20" shape="circle" />
-					<area alt="1219" href="" coords="449,733,20" shape="circle" />
+					<area alt="101" href="" data-name="day" coords="513,682,19" shape="circle" />
+					<area alt="106" href="" data-name="svjatvechir" coords="558,670,21" shape="circle" />
+					<area alt="107" href="" data-name="rizdvo" coords="607,691,20" shape="circle" />
+					<area alt="113" href="" data-name="malanki" coords="571,731,20" shape="circle" />
+					<area alt="114" href="" data-name="vasilja" coords="545,775,19" shape="circle" />
+					<area alt="118" href="" data-name="golodna_kutja" coords="597,790,20" shape="circle" />
+					<area alt="119" href="" data-name="vodohresha" coords="642,764,20" shape="circle" />
+					<area alt="201" href="" data-name="day" coords="696,726,23" shape="circle" />
+					<area alt="215" href="" data-name="stritennja" coords="702,676,20" shape="circle" />
+					<area alt="216" href="" data-name="maslenica" coords="737,639,23" shape="circle" />
+					<area alt="217" href="" data-name="day" coords="795,654,22" shape="circle" />
+					<area alt="301" href="" data-name="day" coords="847,600,22" shape="circle" />
+					<area alt="314" href="" data-name="javdohi" coords="828,545,20" shape="circle" />
+					<area alt="322" href="" data-name="sorok_svjatih" coords="890,537,20" shape="circle" />
+					<area alt="330" href="" data-name="oleksi" coords="863,485,20" shape="circle" />
+					<area alt="407" href="" data-name="blagoveshinnja" coords="900,411,20" shape="circle" />
+					<area alt="408" href="" data-name="verbna_nedelja" coords="860,376,20" shape="circle" />
+					<area alt="409" href="" data-name="velikden" coords="903,337,20" shape="circle" />
+					<area alt="410" href="" data-name="day" coords="857,306,22" shape="circle" />
+					<area alt="505" href="" data-name="ljalja" coords="825,256,19" shape="circle" />
+					<area alt="506" href="" data-name="jurija" coords="779,228,21" shape="circle" />
+					<area alt="522" href="" data-name="mikolaja_leto" coords="771,179,20" shape="circle" />
+					<area alt="523" href="" data-name="trijcja" coords="723,162,20" shape="circle" />
+					<area alt="601" href="" data-name="day" coords="678,122,23" shape="circle" />
+					<area alt="602" href="" data-name="day" coords="625,142,21" shape="circle" />
+					<area alt="603" href="" data-name="day" coords="596,97,22" shape="circle" />
+					<area alt="604" href="" data-name="day" coords="543,121,23" shape="circle" />
+					<area alt="701" href="" data-name="day" coords="475,108,23" shape="circle" />
+					<area alt="707" href="" data-name="ivana_kupala" coords="425,148,20" shape="circle" />
+					<area alt="712" href="" data-name="petra_i_pavla" coords="371,118,20" shape="circle" />
+					<area alt="802" href="" data-name="illi" coords="309,155,21" shape="circle" />
+					<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
+					<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
+					<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
+					<area alt="927" href="" data-name="vozdvizhennja_hrista" coords="210,336,20" shape="circle" />
+					<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
+					<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
+					<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
+					<area alt="1016" href="" data-name="day" coords="181,509,22" shape="circle" />
+					<area alt="1017" href="" data-name="day" coords="141,557,22" shape="circle" />
+					<area alt="1101" href="" data-name="day" coords="193,597,22" shape="circle" />
+					<area alt="1121" href="" data-name="mihajla" coords="200,652,20" shape="circle" />
+					<area alt="1122" href="" data-name="day" coords="255,639,22" shape="circle" />
+					<area alt="1123" href="" data-name="day" coords="276,698,22" shape="circle" />
+					<area alt="1204" href="" data-name="vvedenja" coords="335,724,19" shape="circle" />
+					<area alt="1207" href="" data-name="katerini" coords="359,764,20" shape="circle" />
+					<area alt="1213" href="" data-name="andria" coords="415,768,20" shape="circle" />
+					<area alt="1219" href="" data-name="mikolaja_zima" coords="449,733,20" shape="circle" />
 				</map>
 			</div>
 
@@ -379,6 +379,28 @@
 				</p>
 			</template>
 		</InGameModal>
+
+    <InGameModal :modalVisible="dayDescription" :footerHidden="false">
+      <template v-slot:upper-half>
+        <p
+            v-bind:style="{
+						color: '#E15465',
+						fontFamily: 'Montserrat',
+						fontWeight: '500',
+						fontSize: '35px',
+					}"
+        >
+          {{ $ml.get(modalDay) }}
+        </p>
+      </template>
+
+      <template v-slot:footer>
+        <p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '300', fontSize: '35px' }">
+          {{ $ml.get("close") }}
+        </p>
+      </template>
+    </InGameModal>
+
 	</div>
 </template>
 
@@ -426,6 +448,8 @@ export default {
 
 			diceBtnDisabled: true,
 			startGameBtnDisabled: true,
+      modalDay: 'day',
+      dayDescription: false
 		};
 	},
 
@@ -548,6 +572,12 @@ export default {
 			area.forEach(() => {
 				addEventListener("click", event => {
 					event.preventDefault();
+          let dayName = event.target.dataset.name;
+          if (dayName === 'day') {
+            dayName = "dsadsad";
+          }
+          this.modalDay = dayName;
+          this.dayDescription = true;
 				});
 			});
 		},
