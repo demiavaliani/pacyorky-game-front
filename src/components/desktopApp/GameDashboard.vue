@@ -147,7 +147,9 @@ export default {
 		},
 
 		updateActiveRoomsGraph() {
-			this.$store.dispatch("setRoomAction");
+			setInterval(() => {
+				this.$store.dispatch("setRoomAction");
+			}, 1000);
 		},
 
 		checkGame() {
