@@ -1,5 +1,9 @@
 <template>
 	<div id="main-div">
+		<div id="overlay">
+			<progress value="0"></progress>
+		</div>
+
 		<div
 			v-for="player in playersInGame"
 			:key="player.id"
@@ -13,7 +17,7 @@
 
 		<GameLogic
 			ref="gameLogic"
-      @start-game-btn-disabled="startGameBtnDisabled = $event"
+			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="throwCardsModalVisible = true"
 			@dropped-cards="populateVoteCardDecks($event)"
@@ -62,22 +66,28 @@
 									</b-button>
 									<img
 										v-if="game.step.counter"
-										:src="require('@/assets/board-game/' + currentDiceName)"
+										:src="
+											require('@/assets/board-game/dice-' +
+												game.step.counter +
+												'-' +
+												(game.capacity > 4 ? 2 : 1) +
+												'.svg')
+										"
 									/>
 								</div>
 
-                <div
-                    class="d-flex justify-content-center align-items-center flex-grow-1"
-                    v-if="game && game.status === 'WAITING'"
-                >
-                  <b-button
-                      @click="callStartGame"
-                      :disabled="startGameBtnDisabled"
-                      class="throw-dice-btn"
-                  >
-                    <p>{{ $ml.get("start_game") }}</p>
-                  </b-button>
-                </div>
+								<div
+									class="d-flex justify-content-center align-items-center flex-grow-1"
+									v-if="game && game.status === 'WAITING'"
+								>
+									<b-button
+										@click="callStartGame"
+										:disabled="startGameBtnDisabled"
+										class="throw-dice-btn"
+									>
+										<p>{{ $ml.get("start_game") }}</p>
+									</b-button>
+								</div>
 
 								<div
 									class="d-flex justify-content-center align-items-center flex-grow-1"
@@ -92,7 +102,7 @@
 									v-else-if="game && game.status && game.status !== 'STARTED'"
 								>
 									<p>
-										{{$ml.get('GAME_'+this.game.status)}}
+										{{ $ml.get("GAME_" + this.game.status) }}
 									</p>
 								</div>
 							</b-col>
@@ -422,7 +432,7 @@ export default {
 			stepTimeOutModalVisible: false,
 
 			diceBtnDisabled: true,
-      startGameBtnDisabled : true
+			startGameBtnDisabled: true,
 		};
 	},
 
@@ -445,17 +455,13 @@ export default {
 				return true;
 			}
 		},
-
-		currentDiceName() {
-			if (this.game.step.counter) {
-				return `dice-${this.game.step.counter}-${this.game.capacity > 4 ? 2 : 1}.svg`;
-			}
-		},
 	},
 
 	methods: {
 		timerAnimate(startAt) {
-			let msTillAction = new Date(startAt) - new Date();
+			let actionTimeUtc = new Date(startAt).toUTCString();
+			let currentTimeUtc = new Date().toUTCString();
+			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
 			let timerRect = document.querySelector(".timer-rect");
 
 			timerRect.animate([{ width: "229px" }, { width: "0" }], {
@@ -485,11 +491,11 @@ export default {
 			this.diceBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
 		},
-    
-    callStartGame() {
-      this.startGameBtnDisabled = true;
-      this.$refs.gameLogic.startGame();
-    },
+
+		callStartGame() {
+			this.startGameBtnDisabled = true;
+			this.$refs.gameLogic.startGame();
+		},
 
 		callThrowCards() {
 			this.$refs.gameLogic.throwCards(this.cardsToThrow);
@@ -552,6 +558,23 @@ export default {
 				});
 			});
 		},
+
+		loaderProgress() {
+			let progress = document.querySelector("progress");
+			let images = require.context("../../assets/cards/", true, /\.png/);
+			progress.max = images.keys().length;
+
+			images.keys().forEach(key => {
+				let img = new Image();
+				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.onload = () => {
+					progress.value++;
+					if (progress.value === images.keys().length) {
+						document.getElementById("overlay").style.display = "none";
+					}
+				};
+			});
+		},
 	},
 
 	watch: {
@@ -607,19 +630,12 @@ export default {
 
 	mounted() {
 		this.areaClick();
+		this.loaderProgress();
 	},
 };
 </script>
 
 <style scoped>
-.timer-rect {
-	width: 229px;
-}
-
-.game-logic {
-	position: absolute;
-}
-
 * {
 	box-sizing: border-box;
 }
@@ -628,6 +644,33 @@ export default {
 	height: 100vh;
 	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
 	background-size: 100vw;
+}
+
+#overlay {
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100vh;
+	background-color: white;
+	z-index: 999;
+}
+
+progress {
+	appearance: none;
+	width: 300px;
+	height: 10px;
+}
+
+::-webkit-progress-bar {
+	background-color: #cecece;
+	border-radius: 50px;
+}
+
+::-webkit-progress-value {
+	background-color: #00ea40;
+	border-radius: 50px;
 }
 
 p {
@@ -668,6 +711,10 @@ p {
 
 .throw-dice-btn p {
 	font-size: 20px;
+}
+
+.timer-rect {
+	width: 229px;
 }
 
 .right-side p {
