@@ -34,7 +34,7 @@
 		>
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
         
-          <RTCClient v-if="(game && game.status && game.status === 'STARTED' && !game.withComputer)" 
+          <RTCClient v-if="(game && game.token && game.token !== '')"
           :token="game.token"
           :channel="String(game.id)"/>
         
