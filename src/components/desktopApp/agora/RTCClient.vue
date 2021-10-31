@@ -1,8 +1,8 @@
 <template>
   <b-col class="game-controls-box d-flex justify-content-center align-content-center flex-column" style="height: auto">
-    <b-button v-if="disableJoin" @click="leaveEvent">Leave voice chat</b-button>
-    <b-button v-else @click="joinEvent">Join to the chat</b-button>
-    <p v-if="inVoiceChat">In voice chat</p>
+    <b-button v-if="disableJoin" @click="leaveEvent">	{{ $ml.get("left_chat") }}</b-button>
+    <b-button v-else @click="joinEvent">	{{ $ml.get("join_chat") }}</b-button>
+    <p v-if="inVoiceChat">	{{ $ml.get("in_chat") }}</p>
     <Player v-for="(stream, index) in remoteStreams" :key="index" :stream="stream" :dom-id="stream.getId()"/>
   </b-col>
 </template>

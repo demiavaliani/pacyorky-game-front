@@ -47,7 +47,7 @@
 									{{ $ml.get("my_turn") }}
 								</p>
 								<p v-else-if="!isCurrentPlayer">
-									Current Player: {{ this.game.step.currentPlayer.character.name }}
+                  {{ $ml.get("current_player") }} {{ this.game.step.currentPlayer.character.name }}
 								</p>
 							</b-col>
 
@@ -187,6 +187,11 @@
 
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
+          <b-dropdown :text="$ml.current">
+            <b-dropdown-item v-for="lang in $ml.list" v-if="lang!==$ml.current" :key="lang" @click="$ml.change(lang)">
+              {{lang}}
+            </b-dropdown-item>
+          </b-dropdown>
 					<p v-if="game">{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
 					<b-button @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
@@ -895,6 +900,13 @@ p {
 	position: absolute;
 	top: 450px;
 	z-index: 1;
+}
+::v-deep .btn.dropdown-toggle {
+  border: 0;
+  font-size: max(13px, 0.73vw);
+  background-color: transparent !important;
+  font-family: "Montserrat";
+  color: black !important;
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
