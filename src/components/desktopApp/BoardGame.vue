@@ -198,7 +198,7 @@
 
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
-					<p v-if="game">{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
+					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
 
 					<b-button v-if="gameState === 'default'" @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
@@ -815,6 +815,11 @@ p {
 }
 
 .right-side button p {
+	font-family: "Montserrat";
+	font-size: 18px;
+}
+
+.right-side a p {
 	font-family: "Montserrat";
 	font-size: 18px;
 }
