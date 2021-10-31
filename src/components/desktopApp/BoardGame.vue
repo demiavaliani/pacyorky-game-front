@@ -208,11 +208,11 @@
 					</b-button>
 
 					<b-button v-else-if="gameState === 'spectator'" to="/game-dashboard">
-						<p>{{ $ml.get("back_to_room_list") }}</p>
+						<p>{{ $ml.get("go_to_home_page") }}</p>
 					</b-button>
 
 					<b-button v-else-if="gameState === 'game-finished-cancelled'" to="/game-dashboard">
-						<p>{{ $ml.get("back_to_room_list") }}</p>
+						<p>{{ $ml.get("go_to_home_page") }}</p>
 					</b-button>
 				</b-col>
 
