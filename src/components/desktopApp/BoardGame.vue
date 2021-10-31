@@ -666,7 +666,7 @@ export default {
 		},
 
 		joinRoom() {
-			api.joinRoom(this.currentRoom.id).then();
+			api.joinRoom(this.$route.params.id).then();
 		},
 	},
 
