@@ -17,6 +17,7 @@ export default {
 			gameStatus: "",
 			currentTurnPlayerId: "",
 			stepStatus: "",
+			interval: "",
 		};
 	},
 
@@ -30,10 +31,10 @@ export default {
 	methods: {
 		initializeGame() {
 			return new Promise(resolve => {
-				let interval = setInterval(() => {
+				this.interval = setInterval(() => {
 					if (!Object.keys(this.game).length) {
 						// this.$emit("show-step-time-out-modal");
-						// clearInterval(interval);
+						// clearInterval(this.interval);
 						this.$store
 							.dispatch("getGamesByIdAction", this.$route.params.id)
 							.then(async response => {
@@ -43,12 +44,12 @@ export default {
 									this.$emit("game-started-player-not-in-game");
 								} else if (response.status === "FINISHED" || response.status === "CANCELLED") {
 									this.$emit("game-finished-or-cancelled");
-									clearInterval(interval);
+									clearInterval(this.interval);
 								}
 							});
 					} else if (this.gameStatus === "FINISHED" || this.gameStatus === "CANCELLED") {
 						this.$emit("game-finished-or-cancelled");
-						clearInterval(interval);
+						clearInterval(this.interval);
 					} else {
 						this.$store.dispatch("setGameAction").then(() => {
 							this.$emit("player-in-game");
@@ -172,6 +173,10 @@ export default {
 			this.throwDiceDisabled();
 			this.showThrowCardsModal();
 		});
+	},
+
+	beforeDestroy() {
+		clearInterval(this.interval);
 	},
 };
 </script>

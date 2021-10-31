@@ -115,6 +115,7 @@ export default {
 			currentRoomId: 0,
 			roomSelected: false,
 			disabled: true,
+			interval: "",
 		};
 	},
 
@@ -147,7 +148,7 @@ export default {
 		},
 
 		updateActiveRoomsGraph() {
-			setInterval(() => {
+			this.interval = setInterval(() => {
 				this.$store.dispatch("setRoomAction");
 			}, 1000);
 		},
@@ -188,6 +189,10 @@ export default {
 		await this.$store.dispatch("setGameAction");
 		await this.$store.dispatch("setDevicePlayerIdAction");
 		this.checkGame();
+	},
+
+	beforeDestroy() {
+		clearInterval(this.interval);
 	},
 };
 </script>
