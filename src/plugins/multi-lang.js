@@ -126,7 +126,7 @@ export default new MLCreate({
 			close: 'zakrit',
 			back_to_room_list: "к списку комнат",
 			exit: 'Выйти из игры',
-			join_room: 'войти в комнату',
+			join_room: 'Войти в комнату',
 		}),
 	]
 })

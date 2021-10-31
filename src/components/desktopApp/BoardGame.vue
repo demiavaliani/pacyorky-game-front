@@ -204,8 +204,16 @@
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
 
-					<b-button v-if="gameState === 'game-not-started'">
-						<p></p>
+					<b-button v-else-if="gameState === 'game-not-started'" @click="joinRoom()">
+						<p>{{ $ml.get("join_room") }}</p>
+					</b-button>
+
+					<b-button v-else-if="gameState === 'spectator'" to="/game-dashboard">
+						<p>{{ $ml.get("back_to_room_list") }}</p>
+					</b-button>
+
+					<b-button v-else-if="gameState === 'game-finished-cancelled'" to="/game-dashboard">
+						<p>{{ $ml.get("back_to_room_list") }}</p>
 					</b-button>
 				</b-col>
 
@@ -655,6 +663,10 @@ export default {
 					}
 				};
 			});
+		},
+
+		joinRoom() {
+			api.joinRoom(this.currentRoom.id).then();
 		},
 	},
 
