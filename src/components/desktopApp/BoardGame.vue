@@ -52,7 +52,7 @@
 									{{ $ml.get("my_turn") }}
 								</p>
 								<p v-else-if="!isCurrentPlayer">
-									Current Player: {{ this.game.step.currentPlayer.character.name }}
+                  {{ $ml.get("current_player") }} {{ this.game.step.currentPlayer.character.name }}
 								</p>
 							</b-col>
 
@@ -173,13 +173,7 @@
 					<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
 					<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
 					<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
-					<area
-						alt="927"
-						href=""
-						data-name="vozdvizhennja_hrista"
-						coords="210,336,20"
-						shape="circle"
-					/>
+					<area alt="927" href="" data-name="vozdvizhennja_hrista" coords="210,336,20" shape="circle" />
 					<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
 					<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
 					<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
@@ -198,6 +192,11 @@
 
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
+          <b-dropdown :text="$ml.current">
+            <b-dropdown-item v-for="lang in $ml.list" v-if="lang!==$ml.current" :key="lang" @click="$ml.change(lang)">
+              {{lang}}
+            </b-dropdown-item>
+          </b-dropdown>
 					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
 
 					<b-button v-if="gameState === 'default'" @click="leaveRoom()">
@@ -209,11 +208,11 @@
 					</b-button>
 
 					<b-button v-else-if="gameState === 'spectator'" to="/game-dashboard">
-						<p>{{ $ml.get("back_to_room_list") }}</p>
+						<p>{{ $ml.get("go_to_home_page") }}</p>
 					</b-button>
 
 					<b-button v-else-if="gameState === 'game-finished-cancelled'" to="/game-dashboard">
-						<p>{{ $ml.get("back_to_room_list") }}</p>
+						<p>{{ $ml.get("go_to_home_page") }}</p>
 					</b-button>
 				</b-col>
 
@@ -953,6 +952,13 @@ p {
 	position: absolute;
 	top: 450px;
 	z-index: 1;
+}
+::v-deep .btn.dropdown-toggle {
+  border: 0;
+  font-size: max(13px, 0.73vw);
+  background-color: transparent !important;
+  font-family: "Montserrat";
+  color: black !important;
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
