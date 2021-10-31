@@ -26,9 +26,40 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import api from "@/api/api";
 export default {
 	name: "HomePage",
 	components: {},
+	computed: {
+		...mapState({
+			game: "gameState",
+			devicePlayerId: "devicePlayerId",
+		}),
+	},
+
+	data() {
+		return {};
+	},
+
+	methods: {
+		checkGame() {
+			if (this.game) {
+				if (this.game.status !== "FINISHED" && this.game.status !== "CANCELLED") {
+					this.$router.push({ name: "boardGame", params: { id: this.game.id } });
+				}
+				if (this.game.status === "FINISHED" || this.game.status === "CANCELLED") {
+					api.leaveRoom().then();
+				}
+			}
+		},
+	},
+
+	async created() {
+		await this.$store.dispatch("setGameAction");
+		await this.$store.dispatch("setDevicePlayerIdAction");
+		this.checkGame();
+	},
 };
 </script>
 

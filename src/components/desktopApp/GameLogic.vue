@@ -17,6 +17,7 @@ export default {
 			gameStatus: "",
 			currentTurnPlayerId: "",
 			stepStatus: "",
+			interval: "",
 		};
 	},
 
@@ -30,12 +31,28 @@ export default {
 	methods: {
 		initializeGame() {
 			return new Promise(resolve => {
-				let interval = setInterval(() => {
+				this.interval = setInterval(() => {
 					if (!Object.keys(this.game).length) {
-						this.$emit("show-step-time-out-modal");
-						clearInterval(interval);
+						// this.$emit("show-step-time-out-modal");
+						// clearInterval(this.interval);
+						this.$store
+							.dispatch("getGamesByIdAction", this.$route.params.id)
+							.then(async response => {
+								if (response.status === "WAITING") {
+									this.$emit("game-waiting-player-not-in-game");
+								} else if (response.status === "STARTED") {
+									this.$emit("game-started-player-not-in-game");
+								} else if (response.status === "FINISHED" || response.status === "CANCELLED") {
+									this.$emit("game-finished-or-cancelled");
+									clearInterval(this.interval);
+								}
+							});
+					} else if (this.gameStatus === "FINISHED" || this.gameStatus === "CANCELLED") {
+						this.$emit("game-finished-or-cancelled");
+						clearInterval(this.interval);
 					} else {
 						this.$store.dispatch("setGameAction").then(() => {
+							this.$emit("player-in-game");
 							resolve();
 						});
 					}
@@ -54,10 +71,10 @@ export default {
 		throwDice() {
 			api.throwDice().then(() => {});
 		},
-    
-    startGame() {
-      api.startGame().then(() => {})
-    },
+
+		startGame() {
+			api.startGame().then(() => {});
+		},
 
 		throwCards(cardsToThrow) {
 			api.throwCards(cardsToThrow).then(res => {});
@@ -141,14 +158,14 @@ export default {
 		);
 
 		this.$watch("gameStatus", () => {
-			if (this.game && this.gameStatus === "FINISHED") {
+			if (this.game && (this.gameStatus === "FINISHED" || this.gameStatus === "CANCELLED")) {
 				this.$emit("show-game-ended-modal");
 			}
-      if (this.game && this.gameStatus === 'WAITING') {
-        this.$emit("start-game-btn-disabled", false);
-      } else {
-        this.$emit("start-game-btn-disabled", true);
-      }
+			if (this.game && this.gameStatus === "WAITING") {
+				this.$emit("start-game-btn-disabled", false);
+			} else {
+				this.$emit("start-game-btn-disabled", true);
+			}
 		});
 
 		this.$watch("stepStatus", () => {
@@ -156,6 +173,10 @@ export default {
 			this.throwDiceDisabled();
 			this.showThrowCardsModal();
 		});
+	},
+
+	beforeDestroy() {
+		clearInterval(this.interval);
 	},
 };
 </script>
