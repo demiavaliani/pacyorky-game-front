@@ -11,7 +11,8 @@ export default {
 	async getGamesById(id) {
 		try {
 			return await axios.get(`/api/v1/rooms/get/${id}`);
-		} catch (error) { }
+		} catch (error) {
+		}
 	},
 
 	async createRoom(roomObj) {

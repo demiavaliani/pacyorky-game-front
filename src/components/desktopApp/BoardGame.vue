@@ -24,6 +24,10 @@
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
 			@show-step-time-out-modal="stepTimeOutModalVisible = true"
+			@game-waiting-player-not-in-game="gameState = 'game-not-started'"
+			@game-started-player-not-in-game="gameState = 'spectator'"
+			@game-finished-or-cancelled="gameState = 'game-finished-cancelled'"
+			@player-in-game="gameState = 'default'"
 			class="game-logic"
 		>
 		</GameLogic>
@@ -33,11 +37,12 @@
 			class="d-flex justify-content-between align-items-center main-container px-0 h-100"
 		>
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
-        
-          <RTCClient v-if="(game && game.token && game.token !== '')"
-          :token="game.token"
-          :channel="String(game.id)"/>
-        
+				<RTCClient
+					v-if="game && game.token && game.token !== ''"
+					:token="game.token"
+					:channel="String(game.id)"
+				/>
+
 				<b-col>
 					<div class="game-controls-box" style="min-height: 300px">
 						<b-row class="d-flex flex-column justify-content-between flex-nowrap h-100">
@@ -168,7 +173,13 @@
 					<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
 					<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
 					<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
-					<area alt="927" href="" data-name="vozdvizhennja_hrista" coords="210,336,20" shape="circle" />
+					<area
+						alt="927"
+						href=""
+						data-name="vozdvizhennja_hrista"
+						coords="210,336,20"
+						shape="circle"
+					/>
 					<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
 					<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
 					<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
@@ -188,8 +199,13 @@
 			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
 					<p v-if="game">{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
-					<b-button @click="leaveRoom()">
+
+					<b-button v-if="gameState === 'default'" @click="leaveRoom()">
 						<p>{{ $ml.get("end_game") }}</p>
+					</b-button>
+
+					<b-button v-if="gameState === 'game-not-started'">
+						<p></p>
 					</b-button>
 				</b-col>
 
@@ -349,7 +365,7 @@
 			</template>
 
 			<template v-slot:footer>
-				<b-button to="/">
+				<b-button @click="gameEndedModalVisible = false">
 					<p
 						v-bind:style="{
 							color: 'white',
@@ -358,7 +374,7 @@
 							fontSize: '18px',
 						}"
 					>
-						{{ $ml.get("go_back_to_home_page") }}
+						OK
 					</p>
 				</b-button>
 			</template>
@@ -379,28 +395,36 @@
 			</template>
 
 			<template v-slot:footer>
-				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '300', fontSize: '35px' }">
-					{{ $ml.get("switching_step") }}
-				</p>
+				<b-button @click="stepTimeOutModalVisible = false">
+					<p
+						v-bind:style="{
+							color: 'white',
+							fontFamily: 'Montserrat',
+							fontWeight: '400',
+							fontSize: '18px',
+						}"
+					>
+						OK
+					</p>
+				</b-button>
 			</template>
 		</InGameModal>
 
-    <InGameModal :modalVisible="dayDescription" :footerHidden="true">
-      <template v-slot:upper-half>
-        <div class="flex-column">
-        <p
-            v-bind:style="{
-						fontFamily: 'Montserrat'
-					}"
-        >
-          {{ $ml.get('day_'+modalDay) }}
-        </p>
-        <br>
-        <b-button @click="dayDescription = false">Close</b-button>
-        </div>
-      </template>
-    </InGameModal>
-
+		<InGameModal :modalVisible="dayDescription" :footerHidden="true">
+			<template v-slot:upper-half>
+				<div class="flex-column">
+					<p
+						v-bind:style="{
+							fontFamily: 'Montserrat',
+						}"
+					>
+						{{ $ml.get("day_" + modalDay) }}
+					</p>
+					<br />
+					<b-button @click="dayDescription = false">Close</b-button>
+				</div>
+			</template>
+		</InGameModal>
 	</div>
 </template>
 
@@ -417,7 +441,7 @@ export default {
 	name: "BoardGame",
 
 	components: {
-    RTCClient,
+		RTCClient,
 		GameLogic,
 		ActiveRoomsGraph,
 		InGameModal,
@@ -450,8 +474,11 @@ export default {
 
 			diceBtnDisabled: true,
 			startGameBtnDisabled: true,
-      modalDay: 'day',
-      dayDescription: false
+
+			modalDay: "day",
+			dayDescription: false,
+
+			gameState: "",
 		};
 	},
 
@@ -574,27 +601,41 @@ export default {
 			area.forEach(() => {
 				addEventListener("click", event => {
 					event.preventDefault();
-          let dayName = event.target.dataset.name;
-          if (!dayName) {
-            return;
-          }
-          if (dayName === 'day') {
-            if (this.game && this.game.players) {
-              if (this.game.step && this.game.step.currentPlayer && this.game.step.currentPlayer.currentDay && this.game.step.currentPlayer.currentDay.holiday
-                  && this.game.step.currentPlayer.currentDay.deskOrder == event.target.alt) {
-                dayName = this.game.step.currentPlayer.currentDay.name;
-              } else if (this.currentDevicePlayer.currentDay && this.currentDevicePlayer.currentDay.holiday && this.currentDevicePlayer.currentDay.deskOrder == event.target.alt) {
-                dayName = this.currentDevicePlayer.currentDay.name
-              } else {
-                let players = this.game.players.filter(player => player.currentDay && player.currentDay.deskOrder == event.target.alt && player.currentDay.holiday);
-                if (players.length > 0) {
-                  dayName = players[0].currentDay.name;
-                }
-              }
-            }
-          }
-          this.modalDay = dayName;
-          this.dayDescription = true;
+					let dayName = event.target.dataset.name;
+					if (!dayName) {
+						return;
+					}
+					if (dayName === "day") {
+						if (this.game && this.game.players) {
+							if (
+								this.game.step &&
+								this.game.step.currentPlayer &&
+								this.game.step.currentPlayer.currentDay &&
+								this.game.step.currentPlayer.currentDay.holiday &&
+								this.game.step.currentPlayer.currentDay.deskOrder == event.target.alt
+							) {
+								dayName = this.game.step.currentPlayer.currentDay.name;
+							} else if (
+								this.currentDevicePlayer.currentDay &&
+								this.currentDevicePlayer.currentDay.holiday &&
+								this.currentDevicePlayer.currentDay.deskOrder == event.target.alt
+							) {
+								dayName = this.currentDevicePlayer.currentDay.name;
+							} else {
+								let players = this.game.players.filter(
+									player =>
+										player.currentDay &&
+										player.currentDay.deskOrder == event.target.alt &&
+										player.currentDay.holiday
+								);
+								if (players.length > 0) {
+									dayName = players[0].currentDay.name;
+								}
+							}
+						}
+					}
+					this.modalDay = dayName;
+					this.dayDescription = true;
 				});
 			});
 		},

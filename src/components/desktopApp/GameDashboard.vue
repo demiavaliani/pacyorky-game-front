@@ -153,7 +153,7 @@ export default {
 		checkGame() {
 			if (this.game) {
 				if (this.game.status !== "FINISHED" && this.game.status !== "CANCELLED") {
-					this.$router.push(`/board-game/${this.game.id}`);
+					this.$router.push({ name: "boardGame", params: { id: this.game.id } });
 				}
 				if (this.game.status === "FINISHED" || this.game.status === "CANCELLED") {
 					api.leaveRoom().then();

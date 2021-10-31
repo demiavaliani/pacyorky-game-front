@@ -32,12 +32,33 @@ export default {
 			return new Promise(resolve => {
 				let interval = setInterval(() => {
 					if (!Object.keys(this.game).length) {
-						this.$emit("show-step-time-out-modal");
-						clearInterval(interval);
+						// this.$emit("show-step-time-out-modal");
+						// clearInterval(interval);
+						console.log("Game object empty");
+						this.$store
+							.dispatch("getGamesByIdAction", this.$route.params.id)
+							.then(async response => {
+								console.log("Room action response", response);
+								await this.$store.dispatch("setDevicePlayerIdAction");
+								let result = response.players.find(({ id }) => id === this.devicePlayerId);
+
+								if (response.status === "WAITING" && !result) {
+									console.log("Room: ", console.log(response.status));
+									this.$emit("game-waiting-player-not-in-game");
+								} else if (response.status === "STARTED" && !result) {
+									console.log("Room: ", console.log(response.status));
+									this.$emit("game-started-player-not-in-game");
+								} else if (response.status === "FINISHED" || response.status === "CANCELLED") {
+									this.$emit("game-finished-or-cancelled");
+									clearInterval(interval);
+								}
+							});
 					} else if (this.gameStatus === "FINISHED" || this.gameStatus === "CANCELLED") {
+						this.$emit("game-finished-or-cancelled");
 						clearInterval(interval);
 					} else {
 						this.$store.dispatch("setGameAction").then(() => {
+							this.$emit("player-in-game");
 							resolve();
 						});
 					}
