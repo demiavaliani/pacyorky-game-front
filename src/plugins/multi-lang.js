@@ -268,8 +268,6 @@ export default new MLCreate({
 			current_players: 'Игроков сейчас',
 			create_new_room: "создать комнату",
 			join: "присоедениться",
-			join_room: 'войти в комнату',
-			exit: 'Выйти из игры',
 			INTERNAL_SERVER_ERROR: 'Произошла ошибка сервера. Пожалуйста, перезагрузите страницу!',
 			CAPACITY_LIMIT_REACHED: 'Достигнуто максимальное количество игроков',
 			PLAYER_ALREADY_IN_GAME: 'Игрок уже в игре',

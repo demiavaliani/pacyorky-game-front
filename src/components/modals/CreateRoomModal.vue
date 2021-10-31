@@ -149,8 +149,6 @@ export default {
 				privateRoom: true,
 				password: "",
 				name: "",
-				secondsBeforeStart: 15,
-				secondsForStep: 30,
 			},
 		};
 	},

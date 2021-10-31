@@ -1,13 +1,13 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import api from "@/api/api"
-import roomModule from "./modules/roomModule"
+import Vue from "vue";
+import Vuex from "vuex";
+import api from "@/api/api";
+import roomModule from "./modules/roomModule";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
 	modules: {
-		roomModule
+		roomModule,
 	},
 
 	state: {
@@ -16,16 +16,17 @@ export default new Vuex.Store({
 		listOfActiveRooms: [],
 		gameState: {},
 		devicePlayerId: "",
-
 	},
 
-	getters: {
-	},
+	getters: {},
 
 	actions: {
-		getGamesByIdAction() {
-			api.getGamesById().then(response => {
-			})
+		getGamesByIdAction(context, id) {
+			return new Promise(resolve => {
+				api.getGamesById(id).then(response => {
+					resolve(response);
+				});
+			});
 		},
 
 		setModalStatusAction(context, status) {
@@ -38,27 +39,27 @@ export default new Vuex.Store({
 
 		setRoomAction(context) {
 			api.getRooms().then(response => {
-				context.commit("setRoomMutation", response)
-			})
+				context.commit("setRoomMutation", response);
+			});
 		},
 
 		setGameAction(context) {
-			return new Promise((resolve) => {
+			return new Promise(resolve => {
 				api.getGame().then(response => {
-					context.commit("setGameMutation", response)
-					resolve()
-				})
-			})
+					context.commit("setGameMutation", response);
+					resolve();
+				});
+			});
 		},
 
 		setDevicePlayerIdAction(context) {
 			return new Promise(resolve => {
 				api.getDevicePlayerId().then(response => {
-					context.commit("setDevicePlayerIdMutation", response)
-					resolve()
-				})
-			})
-		}
+					context.commit("setDevicePlayerIdMutation", response);
+					resolve();
+				});
+			});
+		},
 	},
 
 	mutations: {
@@ -80,6 +81,6 @@ export default new Vuex.Store({
 
 		setDevicePlayerIdMutation(state, id) {
 			state.devicePlayerId = id;
-		}
+		},
 	},
-})
+});
