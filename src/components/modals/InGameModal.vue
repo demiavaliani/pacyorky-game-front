@@ -1,5 +1,14 @@
 <template>
-	<b-modal v-model="modalVisible" v-bind:hide-footer="footerHidden" size="lg" centered ok-only>
+	<b-modal
+		v-model="modalVisible"
+		:hide-footer="footerHidden"
+		:hide-header-close="headerHidden"
+		no-close-on-esc
+		no-close-on-backdrop
+		size="lg"
+		centered
+		ok-only
+	>
 		<b-container fluid>
 			<b-row class="d-flex flex-column text-center">
 				<b-col class="d-flex flex-row justify-content-center">
@@ -18,7 +27,7 @@
 export default {
 	name: "InGameModal",
 
-	props: ["footerHidden", "modalVisible"],
+	props: ["modalVisible", "footerHidden", "headerHidden"],
 
 	data() {
 		return {};

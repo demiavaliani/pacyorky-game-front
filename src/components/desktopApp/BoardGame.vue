@@ -299,7 +299,7 @@
 			</b-row>
 		</b-container>
 
-		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck">
 					<img
@@ -332,7 +332,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeckForVote">
 					<img
@@ -365,7 +365,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
 					{{ $ml.get("game_ended") }}
@@ -388,7 +388,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false">
+		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<p
 					v-bind:style="{
