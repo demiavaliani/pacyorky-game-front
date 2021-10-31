@@ -27,7 +27,7 @@ export default new Router({
 		},
 
 		{
-			path: "/board-game",
+			path: "/board-game/:id",
 			component: BoardGame,
 			name: 'boardGame'
 		},

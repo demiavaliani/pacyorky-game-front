@@ -91,6 +91,7 @@
 
 <script>
 import { mapState } from "vuex";
+import api from "@/api/api";
 import ActiveRoomsGraph from "./ActiveRoomsGraph";
 import CreateRoomModal from "../modals/CreateRoomModal.vue";
 import JoinRoomModal from "../modals/JoinRoomModal";
@@ -119,6 +120,7 @@ export default {
 
 	computed: {
 		...mapState({
+			game: "gameState",
 			activeRooms: "listOfActiveRooms",
 		}),
 
@@ -147,6 +149,17 @@ export default {
 		updateActiveRoomsGraph() {
 			this.$store.dispatch("setRoomAction");
 		},
+
+		checkGame() {
+			if (this.game) {
+				if (this.game.status !== "FINISHED" && this.game.status !== "CANCELLED") {
+					this.$router.push(`/board-game/${this.game.id}`);
+				}
+				if (this.game.status === "FINISHED" || this.game.status === "CANCELLED") {
+					api.leaveRoom().then();
+				}
+			}
+		},
 	},
 
 	watch: {
@@ -166,6 +179,13 @@ export default {
 				}
 			},
 		},
+	},
+
+	async created() {
+		this.updateActiveRoomsGraph();
+		await this.$store.dispatch("setGameAction");
+		await this.$store.dispatch("setDevicePlayerIdAction");
+		this.checkGame();
 	},
 };
 </script>

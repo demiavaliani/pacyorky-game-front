@@ -34,6 +34,8 @@ export default {
 					if (!Object.keys(this.game).length) {
 						this.$emit("show-step-time-out-modal");
 						clearInterval(interval);
+					} else if (this.gameStatus === "FINISHED" || this.gameStatus === "CANCELLED") {
+						clearInterval(interval);
 					} else {
 						this.$store.dispatch("setGameAction").then(() => {
 							resolve();
@@ -54,10 +56,10 @@ export default {
 		throwDice() {
 			api.throwDice().then(() => {});
 		},
-    
-    startGame() {
-      api.startGame().then(() => {})
-    },
+
+		startGame() {
+			api.startGame().then(() => {});
+		},
 
 		throwCards(cardsToThrow) {
 			api.throwCards(cardsToThrow).then(res => {});
@@ -141,14 +143,14 @@ export default {
 		);
 
 		this.$watch("gameStatus", () => {
-			if (this.game && this.gameStatus === "FINISHED") {
+			if (this.game && (this.gameStatus === "FINISHED" || this.gameStatus === "CANCELLED")) {
 				this.$emit("show-game-ended-modal");
 			}
-      if (this.game && this.gameStatus === 'WAITING') {
-        this.$emit("start-game-btn-disabled", false);
-      } else {
-        this.$emit("start-game-btn-disabled", true);
-      }
+			if (this.game && this.gameStatus === "WAITING") {
+				this.$emit("start-game-btn-disabled", false);
+			} else {
+				this.$emit("start-game-btn-disabled", true);
+			}
 		});
 
 		this.$watch("stepStatus", () => {

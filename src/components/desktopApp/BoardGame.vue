@@ -359,7 +359,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="false" :footerHidden="false">
+		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false">
 			<template v-slot:upper-half>
 				<p
 					v-bind:style="{
