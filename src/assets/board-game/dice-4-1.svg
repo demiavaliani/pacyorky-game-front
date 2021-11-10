@@ -1,7 +1,7 @@
-<svg width="45" height="73" viewBox="9.5 15 25 83" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="0.5" y="38.522" width="43.1055" height="43.1055" rx="9.5" fill="white" stroke="#CDCDCD"/>
-    <circle cx="11.0268" cy="49.0483" r="4.94286" fill="#C4C4C4"/>
-    <circle cx="11.0268" cy="71.1011" r="4.94286" fill="#C4C4C4"/>
-    <circle cx="33.0796" cy="49.0483" r="4.94286" fill="#C4C4C4"/>
-    <circle cx="33.0796" cy="71.1011" r="4.94286" fill="#C4C4C4"/>
+<svg width="38.792" height="38.792" version="1.1" viewBox="9.5 15 19.09 44.106" xmlns="http://www.w3.org/2000/svg">
+ <rect x="-2.5076" y="15.5" width="43.105" height="43.105" rx="9.5" fill="#fff" stroke="#cdcdcd"/>
+ <circle cx="8.0192" cy="26.026" r="4.9429" fill="#c4c4c4"/>
+ <circle cx="8.0192" cy="48.079" r="4.9429" fill="#c4c4c4"/>
+ <circle cx="30.072" cy="26.026" r="4.9429" fill="#c4c4c4"/>
+ <circle cx="30.072" cy="48.079" r="4.9429" fill="#c4c4c4"/>
 </svg>
