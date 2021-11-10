@@ -184,15 +184,16 @@ export default {
 		},
 	},
 
+	beforeRouteLeave(to, from, next) {
+		clearInterval(this.interval);
+		next();
+	},
+
 	async created() {
 		this.updateActiveRoomsGraph();
 		await this.$store.dispatch("setGameAction");
 		await this.$store.dispatch("setDevicePlayerIdAction");
 		this.checkGame();
-	},
-
-	beforeDestroy() {
-		clearInterval(this.interval);
 	},
 };
 </script>
