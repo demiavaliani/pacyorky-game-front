@@ -19,7 +19,7 @@
 			ref="gameLogic"
 			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
-			@show-throw-cards-modal="showThrowCardsModalBtnDisabled = $event"
+			@show-throw-cards-modal="showThrowCardsModalBtnDisabled = false"
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
