@@ -12,9 +12,7 @@
 			class="player-character"
 			:style="inited ? '' : 'opacity: 0'"
 		>
-			<img
-				:src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')"
-			/>
+			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
 		</div>
 
 		<GameLogic
@@ -34,10 +32,7 @@
 		>
 		</GameLogic>
 
-		<b-container
-			fluid
-			class="d-flex justify-content-between align-items-center main-container px-0 h-100"
-		>
+		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
 				<RTCClient
 					v-if="game && game.token && game.token !== ''"
@@ -124,13 +119,7 @@
 									fill="none"
 									xmlns="http://www.w3.org/2000/svg"
 								>
-									<rect
-										class="timer-rect"
-										y="0.833008"
-										height="11"
-										rx="5.5"
-										fill="#04944F"
-									/>
+									<rect class="timer-rect" y="0.833008" height="11" rx="5.5" fill="#04944F" />
 								</svg>
 							</b-col>
 						</b-row>
@@ -153,13 +142,7 @@
 					<area alt="107" href="" data-name="rizdvo" coords="607,691,20" shape="circle" />
 					<area alt="113" href="" data-name="malanki" coords="571,731,20" shape="circle" />
 					<area alt="114" href="" data-name="vasilja" coords="545,775,19" shape="circle" />
-					<area
-						alt="118"
-						href=""
-						data-name="golodna_kutja"
-						coords="597,790,20"
-						shape="circle"
-					/>
+					<area alt="118" href="" data-name="golodna_kutja" coords="597,790,20" shape="circle" />
 					<area alt="119" href="" data-name="vodohresha" coords="642,764,20" shape="circle" />
 					<area alt="201" href="" data-name="day" coords="696,726,23" shape="circle" />
 					<area alt="215" href="" data-name="stritennja" coords="702,676,20" shape="circle" />
@@ -167,76 +150,28 @@
 					<area alt="217" href="" data-name="day" coords="795,654,22" shape="circle" />
 					<area alt="301" href="" data-name="day" coords="847,600,22" shape="circle" />
 					<area alt="314" href="" data-name="javdohi" coords="828,545,20" shape="circle" />
-					<area
-						alt="322"
-						href=""
-						data-name="sorok_svjatih"
-						coords="890,537,20"
-						shape="circle"
-					/>
+					<area alt="322" href="" data-name="sorok_svjatih" coords="890,537,20" shape="circle" />
 					<area alt="330" href="" data-name="oleksi" coords="863,485,20" shape="circle" />
-					<area
-						alt="407"
-						href=""
-						data-name="blagoveshinnja"
-						coords="900,411,20"
-						shape="circle"
-					/>
-					<area
-						alt="408"
-						href=""
-						data-name="verbna_nedelja"
-						coords="860,376,20"
-						shape="circle"
-					/>
+					<area alt="407" href="" data-name="blagoveshinnja" coords="900,411,20" shape="circle" />
+					<area alt="408" href="" data-name="verbna_nedelja" coords="860,376,20" shape="circle" />
 					<area alt="409" href="" data-name="velikden" coords="903,337,20" shape="circle" />
 					<area alt="410" href="" data-name="day" coords="857,306,22" shape="circle" />
 					<area alt="505" href="" data-name="ljalja" coords="825,256,19" shape="circle" />
 					<area alt="506" href="" data-name="jurija" coords="779,228,21" shape="circle" />
-					<area
-						alt="522"
-						href=""
-						data-name="mikolaja_leto"
-						coords="771,179,20"
-						shape="circle"
-					/>
+					<area alt="522" href="" data-name="mikolaja_leto" coords="771,179,20" shape="circle" />
 					<area alt="523" href="" data-name="trijcja" coords="723,162,20" shape="circle" />
 					<area alt="601" href="" data-name="day" coords="678,122,23" shape="circle" />
 					<area alt="602" href="" data-name="day" coords="625,142,21" shape="circle" />
 					<area alt="603" href="" data-name="day" coords="596,97,22" shape="circle" />
 					<area alt="604" href="" data-name="day" coords="543,121,23" shape="circle" />
 					<area alt="701" href="" data-name="day" coords="475,108,23" shape="circle" />
-					<area
-						alt="707"
-						href=""
-						data-name="ivana_kupala"
-						coords="425,148,20"
-						shape="circle"
-					/>
-					<area
-						alt="712"
-						href=""
-						data-name="petra_i_pavla"
-						coords="371,118,20"
-						shape="circle"
-					/>
+					<area alt="707" href="" data-name="ivana_kupala" coords="425,148,20" shape="circle" />
+					<area alt="712" href="" data-name="petra_i_pavla" coords="371,118,20" shape="circle" />
 					<area alt="802" href="" data-name="illi" coords="309,155,21" shape="circle" />
 					<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
-					<area
-						alt="819"
-						href=""
-						data-name="velikii_spas"
-						coords="240,225,20"
-						shape="circle"
-					/>
+					<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
 					<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
-					<area
-						alt="927"
-						href=""
-						data-name="vozdvizhennja_hrista"
-						coords="210,336,20"
-						shape="circle"
-					/>
+					<area alt="927" href="" data-name="vozdvizhennja_hrista" coords="210,336,20" shape="circle" />
 					<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
 					<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
 					<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
@@ -249,13 +184,7 @@
 					<area alt="1204" href="" data-name="vvedenja" coords="335,724,19" shape="circle" />
 					<area alt="1207" href="" data-name="katerini" coords="359,764,20" shape="circle" />
 					<area alt="1213" href="" data-name="andria" coords="415,768,20" shape="circle" />
-					<area
-						alt="1219"
-						href=""
-						data-name="mikolaja_zima"
-						coords="449,733,20"
-						shape="circle"
-					/>
+					<area alt="1219" href="" data-name="mikolaja_zima" coords="449,733,20" shape="circle" />
 				</map>
 			</div>
 
@@ -313,11 +242,7 @@
 
 							<b-col cols="12" class="pl-0 pr-4">
 								<b-row class="cards mx-auto">
-									<div
-										class="p-0"
-										style="width: 53px; height: 73px;"
-										v-for="card in dishesDeck"
-									>
+									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in dishesDeck">
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
 									</div>
 								</b-row>
@@ -325,11 +250,7 @@
 
 							<b-col cols="12" class="pl-0 pr-4">
 								<b-row class="cards mx-auto">
-									<div
-										class="p-0"
-										style="width: 53px; height: 73px;"
-										v-for="card in ritualsDeck"
-									>
+									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in ritualsDeck">
 										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
 									</div>
 								</b-row>
@@ -337,11 +258,7 @@
 
 							<b-col cols="12" class="pl-0 pr-4">
 								<b-row class="cards mx-auto">
-									<div
-										class="p-0"
-										style="width: 53px; height: 73px;"
-										v-for="card in stuffDeck"
-									>
+									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in stuffDeck">
 										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
 									</div>
 								</b-row>
@@ -384,11 +301,7 @@
 			</b-row>
 		</b-container>
 
-		<InGameModal
-			:modalVisible="throwCardsModalVisible"
-			:footerHidden="false"
-			:headerHidden="true"
-		>
+		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck">
 					<img
@@ -483,11 +396,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal
-			:modalVisible="stepTimeOutModalVisible"
-			:footerHidden="false"
-			:headerHidden="true"
-		>
+		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<p
 					v-bind:style="{
@@ -688,18 +597,14 @@ export default {
 					let coordsAttr = elem.getAttribute("coords");
 					let coordsAttrArray = coordsAttr.split(",");
 
-					let playerFigure = document.getElementById(
-						"player-character-" + player.character.name
-					);
+					let playerFigure = document.getElementById("player-character-" + player.character.name);
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
 						playerFigure.style.left = `${this.boardX +
 							parseFloat(coordsAttrArray[0]) -
 							elementWidth / 2}px`;
-						playerFigure.style.top = `${this.boardY +
-							parseFloat(coordsAttrArray[1]) -
-							120}px`;
+						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
 						this.inited = true;
 					}
 				}
@@ -776,12 +681,7 @@ export default {
 	watch: {
 		game: {
 			handler: function() {
-				if (
-					this.game &&
-					this.game.status === "STARTED" &&
-					this.game.players &&
-					this.devicePlayerId
-				) {
+				if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
 					this.currentDevicePlayer = this.game.players.filter(
 						player => player.id == this.devicePlayerId
 					)[0];
