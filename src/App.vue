@@ -3,7 +3,7 @@
 		<NavBar v-if="$route.name != 'boardGame'"></NavBar>
 		<router-view></router-view>
 		<MainFooter v-if="$route.name != 'boardGame'"></MainFooter>
-		<!-- <ErrorModal></ErrorModal> -->
+		<ErrorModal></ErrorModal>
 	</div>
 </template>
 
