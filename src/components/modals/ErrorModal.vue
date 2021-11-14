@@ -1,27 +1,26 @@
 <template>
 	<b-modal
-	v-model="modalStatus"
-	@hidden="modalHidden"
-	:hide-header-close=true
-	footer-class="justify-content-center"
-	no-close-on-esc
-	no-close-on-backdrop
+		v-model="modalStatus"
+		@hidden="modalHidden"
+		:hide-header-close="true"
+		footer-class="justify-content-center"
+		no-close-on-esc
+		no-close-on-backdrop
 	>
 		<b-container fluid>
 			<div class="d-block text-center">
 				<h3>Hello from My Modal!</h3>
-				<!-- <h4>Error happened: {{ $ml.get("errorCode") }}</h4> -->
+				<h4>Error happened: {{ $ml.get("errorCode") }}</h4>
 			</div>
 		</b-container>
 
 		<template #modal-footer="{ ok }">
-			<b-button>
+			<b-button @click="ok">
 				<p class="mb-0 text-center">
-				{{ $ml.get("close") }}
-			</p>
-		</b-button>
+					{{ $ml.get("close") }}
+				</p>
+			</b-button>
 		</template>
-
 	</b-modal>
 </template>
 
@@ -32,18 +31,14 @@ export default {
 	name: "ErrorModal",
 
 	data() {
-		return {
-			modalStatus: true
-		};
+		return {};
 	},
 
 	computed: {
 		...mapState({
-			// modalStatus: "modalStatus",
+			modalStatus: "modalStatus",
 			errorCode: "errorCode",
 		}),
-
-
 	},
 
 	methods: {
@@ -55,11 +50,12 @@ export default {
 </script>
 
 <style scoped>
-	::v-deep .modal-header {
+::v-deep .modal-header,
+::v-deep .modal-footer {
 	border-color: transparent;
 }
 
-	::v-deep button {
+::v-deep button {
 	width: 160px;
 	height: 40px;
 	border: 0;
