@@ -135,7 +135,7 @@ export default {
 
 		showThrowCardsModal() {
 			if (this.stepStatus === "WAITING_CARD" && this.currentTurnPlayerId === this.devicePlayerId) {
-				this.$emit("show-throw-cards-modal", false);
+				this.$emit("show-throw-cards-modal");
 			}
 		},
 	},
