@@ -240,7 +240,7 @@
 				<b-col cols="12" class="d-flex justify-content-end">
 					<div class="my-cards-box">
 						<b-row class="d-flex justify-content-end align-items-start h-100 mx-auto">
-							<b-col cols="auto" class="d-flex flex-column">
+							<b-col cols="auto" class="d-flex flex-column pr-0">
 								<p>{{ $ml.get("deck") }}</p>
 							</b-col>
 
@@ -248,27 +248,27 @@
 								<img src="@/assets/board-game/info-sign.svg" width="18" />
 							</b-col>
 
-							<b-col cols="12" class="pl-0 pr-4">
+							<b-col cols="12" class="">
 								<b-row class="cards mx-auto">
-									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in dishesDeck">
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
-									</div>
+									</b-col>
 								</b-row>
 							</b-col>
 
-							<b-col cols="12" class="pl-0 pr-4">
+							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in ritualsDeck">
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in ritualsDeck">
 										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
-									</div>
+									</b-col>
 								</b-row>
 							</b-col>
 
-							<b-col cols="12" class="pl-0 pr-4">
+							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in stuffDeck">
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in stuffDeck">
 										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
-									</div>
+									</b-col>
 								</b-row>
 							</b-col>
 						</b-row>
@@ -839,7 +839,7 @@ p {
 }
 
 .my-cards-box {
-	width: 198px;
+	width: 35%;
 	height: 380px;
 	padding: 10px;
 	border: 1px solid #e4e4e4;
@@ -862,7 +862,7 @@ p {
 }
 
 .my-cards-box .cards img {
-	width: 53px;
+	width: 60px;
 }
 
 .cards .p-0:hover img {
@@ -872,58 +872,10 @@ p {
 	z-index: 9999;
 }
 
-.cards :nth-child(10) {
-	position: absolute;
-	top: 3px;
-	left: 108px;
-}
-
-.cards :nth-child(9) {
-	position: absolute;
-	top: 3px;
-	left: 96px;
-}
-
-.cards :nth-child(8) {
-	position: absolute;
-	top: 6px;
-	left: 84px;
-}
-
-.cards :nth-child(7) {
-	position: absolute;
-	top: 9px;
-	left: 72px;
-}
-
-.cards :nth-child(6) {
-	position: absolute;
-	top: 12px;
-	left: 60px;
-}
-
-.cards :nth-child(5) {
-	position: absolute;
-	top: 15px;
-	left: 48px;
-}
-
-.cards :nth-child(4) {
-	position: absolute;
-	top: 18px;
-	left: 36px;
-}
-
-.cards :nth-child(3) {
-	position: absolute;
-	top: 21px;
-	left: 24px;
-}
-
 .cards :nth-child(2) {
 	position: absolute;
-	top: 24px;
-	left: 12px;
+	top: 15px;
+	left: 55px;
 }
 
 .cards > :nth-child(1) {
