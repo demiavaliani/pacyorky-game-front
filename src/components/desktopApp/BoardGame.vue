@@ -32,10 +32,7 @@
 		>
 		</GameLogic>
 
-		<b-container
-			fluid
-			class="d-flex justify-content-between align-items-center main-container px-0 h-100"
-		>
+		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
 				<RTCClient
 					v-if="game && game.token && game.token !== ''"
@@ -173,13 +170,7 @@
 					<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
 					<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
 					<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
-					<area
-						alt="927"
-						href=""
-						data-name="vozdvizhennja_hrista"
-						coords="210,336,20"
-						shape="circle"
-					/>
+					<area alt="927" href="" data-name="vozdvizhennja_hrista" coords="210,336,20" shape="circle" />
 					<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
 					<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
 					<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
@@ -210,19 +201,22 @@
 					</b-dropdown>
 					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
 
-					<b-button v-if="gameState === 'default'" @click="leaveRoom()">
+					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
 
-					<b-button v-else-if="gameState === 'game-not-started'" @click="joinRoom()">
+					<b-button
+						v-else-if="gameState === 'game-not-started'"
+						@click="joinRoom()"
+						:disabled="joinRoomBtnDisabled"
+					>
 						<p>{{ $ml.get("join_room") }}</p>
 					</b-button>
 
-					<b-button v-else-if="gameState === 'spectator'" to="/game-dashboard">
-						<p>{{ $ml.get("go_to_home_page") }}</p>
-					</b-button>
-
-					<b-button v-else-if="gameState === 'game-finished-cancelled'" to="/game-dashboard">
+					<b-button
+						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
+						to="/game-dashboard"
+					>
 						<p>{{ $ml.get("go_to_home_page") }}</p>
 					</b-button>
 				</b-col>
@@ -492,6 +486,8 @@ export default {
 
 			diceBtnDisabled: true,
 			startGameBtnDisabled: true,
+			endGameBtnDisabled: false,
+			joinRoomBtnDisabled: false,
 
 			modalDay: "day",
 			dayDescription: false,
@@ -580,7 +576,15 @@ export default {
 		},
 
 		leaveRoom() {
+			this.endGameBtnDisabled = true;
+			this.joinRoomBtnDisabled = false;
 			api.leaveRoom().then();
+		},
+
+		joinRoom() {
+			this.joinRoomBtnDisabled = true;
+			this.endGameBtnDisabled = false;
+			api.joinRoom(this.$route.params.id).then(() => this.$store.dispatch("setGameAction"));
 		},
 
 		getBoardPosition() {
@@ -674,21 +678,12 @@ export default {
 				};
 			});
 		},
-
-		joinRoom() {
-			api.joinRoom(this.$route.params.id).then();
-		},
 	},
 
 	watch: {
 		game: {
 			handler: function() {
-				if (
-					this.game &&
-					this.game.status === "STARTED" &&
-					this.game.players &&
-					this.devicePlayerId
-				) {
+				if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
 					this.currentDevicePlayer = this.game.players.filter(
 						player => player.id == this.devicePlayerId
 					)[0];
