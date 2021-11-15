@@ -6,7 +6,6 @@
 	],
 	"settings": {
 		"liveServer.settings.port": 5501,
-		"vetur.format.enable": false,
-		"prettier.printWidth": 110
+		"vetur.format.enable": false
 	}
 }
