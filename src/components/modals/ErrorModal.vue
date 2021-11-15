@@ -9,13 +9,12 @@
 	>
 		<b-container fluid>
 			<div class="d-block text-center">
-				<h3>Hello from My Modal!</h3>
-				<h4>Error happened: {{ $ml.get("errorCode") }}</h4>
+				<h4>{{ $ml.get(errorCode) }}</h4>
 			</div>
 		</b-container>
 
-		<template #modal-footer="{ ok }">
-			<b-button @click="ok">
+		<template #modal-footer>
+			<b-button @click="modalHidden">
 				<p class="mb-0 text-center">
 					{{ $ml.get("close") }}
 				</p>

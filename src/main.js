@@ -16,7 +16,11 @@ axios.interceptors.response.use(response => {
 	return data;
 }, error => {
 	store.dispatch("setModalStatusAction", true)
-	store.dispatch("setErrorCodeAction", error.response.data.code)
+	if (error.response.data.code) {
+		store.dispatch("setErrorCodeAction", error.response.data.code)
+	} else if (error.response.data.code == undefined) {
+		store.dispatch("setErrorCodeAction", "UNDEFINED_ERROR")
+	}
 	return Promise.reject(error);
 })
 
