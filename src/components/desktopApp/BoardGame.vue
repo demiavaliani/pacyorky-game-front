@@ -86,6 +86,7 @@
 												(game.capacity > 4 ? 2 : 1) +
 												'.svg')
 										"
+										:style="{ width: '39px' }"
 										v-if="game.step.counter"
 									/>
 								</div>
