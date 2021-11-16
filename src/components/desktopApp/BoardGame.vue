@@ -254,7 +254,7 @@
 								<img src="@/assets/board-game/info-sign.svg" width="18" />
 							</b-col>
 
-							<b-col cols="12" class="">
+							<b-col cols="12" class="first-row-deck">
 								<b-row class="cards mx-auto">
 									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
@@ -881,9 +881,14 @@ p {
 
 .cards .p-0:hover img {
 	position: absolute;
-	width: 110px;
+	width: 10vw;
+	left: -75px;
 	bottom: 100px;
 	z-index: 9999;
+}
+
+.first-row-deck .p-0:hover img {
+	bottom: 60px;
 }
 
 .cards :nth-child(2) {
