@@ -213,19 +213,22 @@
 					</b-dropdown>
 					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
 
-					<b-button v-if="gameState === 'default'" @click="leaveRoom()">
+					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
 
-					<b-button v-else-if="gameState === 'game-not-started'" @click="joinRoom()">
+					<b-button
+						v-else-if="gameState === 'game-not-started'"
+						@click="joinRoom()"
+						:disabled="joinRoomBtnDisabled"
+					>
 						<p>{{ $ml.get("join_room") }}</p>
 					</b-button>
 
-					<b-button v-else-if="gameState === 'spectator'" to="/game-dashboard">
-						<p>{{ $ml.get("go_to_home_page") }}</p>
-					</b-button>
-
-					<b-button v-else-if="gameState === 'game-finished-cancelled'" to="/game-dashboard">
+					<b-button
+						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
+						to="/game-dashboard"
+					>
 						<p>{{ $ml.get("go_to_home_page") }}</p>
 					</b-button>
 				</b-col>
@@ -502,6 +505,8 @@ export default {
 
 			diceBtnDisabled: true,
 			startGameBtnDisabled: true,
+			endGameBtnDisabled: false,
+			joinRoomBtnDisabled: false,
 
 			modalDay: "day",
 			dayDescription: false,
@@ -590,7 +595,15 @@ export default {
 		},
 
 		leaveRoom() {
+			this.endGameBtnDisabled = true;
+			this.joinRoomBtnDisabled = false;
 			api.leaveRoom().then();
+		},
+
+		joinRoom() {
+			this.joinRoomBtnDisabled = true;
+			this.endGameBtnDisabled = false;
+			api.joinRoom(this.$route.params.id).then(() => this.$store.dispatch("setGameAction"));
 		},
 
 		getBoardPosition() {
@@ -683,10 +696,6 @@ export default {
 					}
 				};
 			});
-		},
-
-		joinRoom() {
-			api.joinRoom(this.$route.params.id).then();
 		},
 	},
 
