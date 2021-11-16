@@ -246,12 +246,12 @@
 
 				<b-col cols="12" class="d-flex justify-content-end">
 					<div class="my-cards-box">
-						<b-row class="d-flex justify-content-end align-items-start h-100 mx-auto">
-							<b-col cols="auto" class="d-flex flex-column pr-0">
+						<b-row class="d-flex justify-content-start align-items-start h-100 mx-auto">
+							<b-col cols="11" class="text-center pr-0">
 								<p>{{ $ml.get("deck") }}</p>
 							</b-col>
 
-							<b-col cols="auto" class="pr-0 d-flex flex-column">
+							<b-col cols="1" class="d-flex px-0">
 								<img src="@/assets/board-game/info-sign.svg" width="18" />
 							</b-col>
 
@@ -854,7 +854,7 @@ p {
 }
 
 .my-cards-box {
-	width: 35%;
+	width: 10vw;
 	height: 380px;
 	padding: 10px;
 	border: 1px solid #e4e4e4;
