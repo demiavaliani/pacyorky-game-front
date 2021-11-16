@@ -43,7 +43,7 @@
 								<div class="d-flex">
                   <b-dropdown :text="$ml.current">
                     <b-dropdown-item v-for="lang in $ml.list" v-if="lang!==$ml.current" :key="lang" @click="$ml.change(lang)">
-                      {{lang}}
+                      <img class="w-25 m-2" :src="require('@/assets/navbar/'+lang+'.svg')"/>{{lang}}
                     </b-dropdown-item>
                   </b-dropdown>
 								</div>
