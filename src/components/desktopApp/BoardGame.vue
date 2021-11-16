@@ -32,10 +32,7 @@
 		>
 		</GameLogic>
 
-		<b-container
-			fluid
-			class="d-flex justify-content-between align-items-center main-container px-0 h-100"
-		>
+		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
 				<RTCClient
 					v-if="game && game.token && game.token !== ''"
@@ -52,7 +49,8 @@
 									{{ $ml.get("my_turn") }}
 								</p>
 								<p v-else-if="!isCurrentPlayer">
-									{{ $ml.get("current_player") }} {{ this.game.step.currentPlayer.character.name }}
+									{{ $ml.get("current_player") }}
+									{{ this.game.step.currentPlayer.character.name }}
 								</p>
 							</b-col>
 
@@ -173,13 +171,7 @@
 					<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
 					<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
 					<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
-					<area
-						alt="927"
-						href=""
-						data-name="vozdvizhennja_hrista"
-						coords="210,336,20"
-						shape="circle"
-					/>
+					<area alt="927" href="" data-name="vozdvizhennja_hrista" coords="210,336,20" shape="circle" />
 					<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
 					<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
 					<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
@@ -377,7 +369,13 @@
 
 		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
+				<p
+					v-bind:style="{
+						fontFamily: 'Montserrat',
+						fontWeight: '500',
+						fontSize: '35px',
+					}"
+				>
 					{{ $ml.get("game_ended") }}
 				</p>
 			</template>
@@ -683,12 +681,7 @@ export default {
 	watch: {
 		game: {
 			handler: function() {
-				if (
-					this.game &&
-					this.game.status === "STARTED" &&
-					this.game.players &&
-					this.devicePlayerId
-				) {
+				if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
 					this.currentDevicePlayer = this.game.players.filter(
 						player => player.id == this.devicePlayerId
 					)[0];
