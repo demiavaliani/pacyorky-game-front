@@ -19,7 +19,7 @@
 			ref="gameLogic"
 			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
-			@show-throw-cards-modal="throwCardsModalVisible = true"
+			@show-throw-cards-modal="showThrowCardsModalBtnDisabled = false"
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
@@ -67,8 +67,18 @@
 									>
 										<p>{{ $ml.get("throw_dice") }}</p>
 									</b-button>
+									<b-button
+										class="throw-dice-btn mr-3"
+										:disabled="showThrowCardsModalBtnDisabled"
+										@click="
+											throwCardsModalVisible = true;
+											showThrowCardsModalBtnDisabled = true;
+										"
+										v-else-if="isCurrentPlayer && game.step.status === 'WAITING_CARD'"
+									>
+										<p>{{ $ml.get("throw_cards") }}</p>
+									</b-button>
 									<img
-										v-if="game.step.counter"
 										:src="
 											require('@/assets/board-game/dice-' +
 												game.step.counter +
@@ -76,6 +86,7 @@
 												(game.capacity > 4 ? 2 : 1) +
 												'.svg')
 										"
+										v-if="game.step.counter"
 									/>
 								</div>
 
@@ -484,6 +495,7 @@ export default {
 			stuffDeck: [],
 
 			throwCardsModalVisible: false,
+			showThrowCardsModalBtnDisabled: false,
 			voteModalVisible: false,
 			gameEndedModalVisible: false,
 			stepTimeOutModalVisible: false,
