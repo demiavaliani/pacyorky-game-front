@@ -67,6 +67,12 @@ export default {
 		try {
 			return await axios.delete("/api/v1/rooms/left");
 		} catch (error) { }
-	}
+	},
+
+    async attachAgoraId(uid) {
+        try {
+            return await axios.get("/api/v1/moderate/agoraId?agoraId="+uid);
+        } catch (error) { }
+    }
 
 }

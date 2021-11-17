@@ -35,9 +35,10 @@
 		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
 			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
 				<RTCClient
-					v-if="game && game.token && game.token !== ''"
-					:token="game.token"
+					v-if="game && currentDevicePlayer && currentDevicePlayer.voiceToken && currentDevicePlayer.voiceToken !== ''"
+					:token="currentDevicePlayer.voiceToken"
 					:channel="String(game.id)"
+          :uid="currentDevicePlayer.id"
 				/>
 
 				<b-col>
@@ -702,7 +703,7 @@ export default {
 	watch: {
 		game: {
 			handler: function() {
-				if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
+				if (this.game && this.game.players && this.devicePlayerId) {
 					this.currentDevicePlayer = this.game.players.filter(
 						player => player.id == this.devicePlayerId
 					)[0];

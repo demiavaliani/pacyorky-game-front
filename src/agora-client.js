@@ -22,7 +22,7 @@ export default class RTCClient {
             this.client.init(option.appid, () => {
                 console.log("init success")
                 this.clientListener()
-                this.client.join(option.token ? option.token : null, option.channel, null, (uid) => {
+                this.client.join(option.token ? option.token : null, option.channel, option.uid, (uid) => {
                     console.log("join channel: " + this.option.channel + " success, uid: ", uid)
                     this.option = {
                         appid: option.appid,
@@ -30,7 +30,7 @@ export default class RTCClient {
                         channel: option.channel,
                         uid: uid,
                     }
-                    resolve()
+                    resolve(this.client.joinInfo.uid)
                 }, (err) => {
                     console.error("client join failed", err)
                 })
