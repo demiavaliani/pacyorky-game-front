@@ -208,7 +208,7 @@
 							:key="lang"
 							@click="$ml.change(lang)"
 						>
-							{{ lang }}
+              <img class="w-25 m-2" :src="require('@/assets/navbar/'+lang+'.svg')"/>{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
 					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
