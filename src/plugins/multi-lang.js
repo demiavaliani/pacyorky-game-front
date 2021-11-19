@@ -31,7 +31,7 @@ export default new MLCreate({
 			game_rules: "правила гри",
 			board_game: "настільна гра",
 			start_game: "почати гру",
-			contacts: "контактт",
+			contacts: "контакт",
 			sponsors: "нас підтримують",
 			home_page_text_middle: "Гра «Пацьорки» знайомить з українськими традиціями, народними та родинними святами",
 			copyright_footer: "©2021 Українське Земляцтво Сілламяе «Водограй»",

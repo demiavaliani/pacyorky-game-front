@@ -32,10 +32,8 @@
 							</b-col>
 
 							<b-col cols="auto">
-								<b-nav-item>
-									<a href="https://pacyorky.ee/#game">
+								<b-nav-item target="_blank" href="https://pacyorky.ee/#game">
 										<p>{{ $ml.get("board_game") }}</p>
-									</a>
 								</b-nav-item>
 							</b-col>
 
