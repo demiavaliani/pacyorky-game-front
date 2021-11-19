@@ -759,8 +759,8 @@ export default {
 
 #main-div {
 	height: 100vh;
-	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
-	background-size: 100vw;
+  background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
+  background-size: 100vw;
 }
 
 #overlay {
