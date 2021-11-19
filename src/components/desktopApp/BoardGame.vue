@@ -375,7 +375,7 @@
 			<template v-slot:footer>
 				<b-button @click="callVote()">
 					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
-						{{ $ml.get("throw_cards") }}
+						{{ $ml.get("WAITING_VOTE") }}
 					</p>
 				</b-button>
 			</template>
