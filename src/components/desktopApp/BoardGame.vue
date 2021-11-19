@@ -12,7 +12,9 @@
 			class="player-character"
 			:style="inited ? '' : 'opacity: 0'"
 		>
-			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
+			<img
+				:src="require('@/assets/board-game/cards/moving_characters/' + player.character.name + '.png')"
+			/>
 		</div>
 
 		<GameLogic
@@ -141,8 +143,8 @@
 			<div class="board-game-row">
 				<img
 					id="board"
-					src="@/assets/board-game/board-1.svg"
 					class="board-game-img"
+					:src="boardLanguage"
 					usemap="#image-map"
 					@load="getBoardPosition"
 				/>
@@ -206,9 +208,12 @@
 							v-for="lang in $ml.list"
 							v-if="lang !== $ml.current"
 							:key="lang"
-							@click="$ml.change(lang)"
+							@click="
+								$ml.change(lang);
+								currentLanguage = $ml.current.toLowerCase();
+							"
 						>
-              <img class="w-25 m-2" :src="require('@/assets/navbar/'+lang+'.svg')"/>{{ lang }}
+							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
 					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
@@ -257,7 +262,7 @@
 							<b-col cols="12" class="">
 								<b-row class="cards mx-auto">
 									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
-										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
+										<img :src="require('@/assets/board-game/cards/dishes/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
 							</b-col>
@@ -265,7 +270,9 @@
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
 									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in ritualsDeck">
-										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
+										<img
+											:src="require('@/assets/board-game/cards/rituals/' + card.name + '.png')"
+										/>
 									</b-col>
 								</b-row>
 							</b-col>
@@ -273,7 +280,7 @@
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
 									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in stuffDeck">
-										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
+										<img :src="require('@/assets/board-game/cards/stuff/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
 							</b-col>
@@ -288,7 +295,7 @@
 								<img
 									v-if="currentDevicePlayer && currentDevicePlayer.character"
 									class="character-img w-100 h-100"
-									:src="require('@/assets/cards/character/' + playerCharacter + '.png')"
+									:src="require('@/assets/board-game/cards/character/' + playerCharacter + '.png')"
 								/>
 							</b-col>
 
@@ -319,21 +326,21 @@
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck">
 					<img
-						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeck">
 					<img
-						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeck">
 					<img
-						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
@@ -352,21 +359,21 @@
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeckForVote">
 					<img
-						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeckForVote">
 					<img
-						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeckForVote">
 					<img
-						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
@@ -512,6 +519,7 @@ export default {
 			dayDescription: false,
 
 			gameState: "",
+			currentLanguage: "",
 		};
 	},
 
@@ -533,6 +541,11 @@ export default {
 			if (this.game.step && this.currentDevicePlayer.id === this.game.step.currentPlayer.id) {
 				return true;
 			}
+		},
+
+		boardLanguage() {
+			let boardSrc = require(`../../assets/board-game/board-${this.currentLanguage}.svg`);
+			return boardSrc;
 		},
 	},
 
@@ -683,12 +696,12 @@ export default {
 
 		loaderProgress() {
 			let progress = document.querySelector("progress");
-			let images = require.context("../../assets/cards/", true, /\.png/);
+			let images = require.context("../../assets/board-game/", true);
 			progress.max = images.keys().length;
 
 			images.keys().forEach(key => {
 				let img = new Image();
-				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.src = require("../../assets/board-game/" + key.replace("./", ""));
 				img.onload = () => {
 					progress.value++;
 					if (progress.value === images.keys().length) {
@@ -745,6 +758,10 @@ export default {
 		},
 	},
 
+	created() {
+		this.currentLanguage = this.$ml.current.toLowerCase();
+	},
+
 	mounted() {
 		this.areaClick();
 		this.loaderProgress();
@@ -759,8 +776,8 @@ export default {
 
 #main-div {
 	height: 100vh;
-  background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
-  background-size: 100vw;
+	background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
+	background-size: 100vw;
 }
 
 #overlay {
