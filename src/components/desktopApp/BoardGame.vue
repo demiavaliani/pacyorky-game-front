@@ -208,7 +208,7 @@
 							:key="lang"
 							@click="$ml.change(lang)"
 						>
-              <img class="w-25 m-2" :src="require('@/assets/navbar/'+lang+'.svg')"/>{{ lang }}
+							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
 					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
@@ -759,8 +759,8 @@ export default {
 
 #main-div {
 	height: 100vh;
-  background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
-  background-size: 100vw;
+	background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
+	background-size: 100vw;
 }
 
 #overlay {
@@ -929,6 +929,8 @@ p {
 	position: absolute;
 	top: 450px;
 	z-index: 1;
+	transition-duration: 1s;
+	transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 }
 ::v-deep .btn.dropdown-toggle {
 	border: 0;
