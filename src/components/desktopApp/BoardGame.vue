@@ -78,7 +78,7 @@
 									>
 										<p>{{ $ml.get("throw_cards") }}</p>
 									</b-button>
-									<img
+									<!-- <img
 										:src="
 											require('@/assets/board-game/dice-' +
 												game.step.counter +
@@ -87,7 +87,8 @@
 												'.svg')
 										"
 										v-if="game.step.counter"
-									/>
+									/> -->
+									<img class="dice-svg" :src="diceUrl" v-if="game.step.counter" />
 								</div>
 
 								<div
@@ -512,6 +513,8 @@ export default {
 			dayDescription: false,
 
 			gameState: "",
+			intervalDice: "",
+			diceUrl: "",
 		};
 	},
 
@@ -537,6 +540,37 @@ export default {
 	},
 
 	methods: {
+		diceAnimate() {
+			let count = 0;
+
+			if (this.game && this.game.step.counter != null) {
+				this.intervalDice = setInterval(() => {
+					if (count >= 20) {
+						clearInterval(this.intervalDice);
+						this.diceUrl = require("@/assets/board-game/dice-" +
+							this.game.step.counter +
+							"-" +
+							(this.game.capacity > 4 ? 2 : 1) +
+							".svg");
+					} else {
+						// let dice = document.querySelector(".dice-svg");
+						// console.log(dice);
+						// dice.classList.add("dice-transition");
+
+						count++;
+						console.log(count);
+
+						let random = Math.floor(Math.random() * 6) + 1;
+						this.diceUrl = require("@/assets/board-game/dice-" +
+							random +
+							"-" +
+							(this.game.capacity > 4 ? 2 : 1) +
+							".svg");
+					}
+				}, 100);
+			}
+		},
+
 		timerAnimate(startAt) {
 			let actionTimeUtc = new Date(startAt).toUTCString();
 			let currentTimeUtc = new Date().toUTCString();
@@ -743,6 +777,22 @@ export default {
 				this.timerAnimate(this.game.nextStepAt);
 			}
 		},
+
+		"game.step.counter": function() {
+			if (this.game.step.counter != null) {
+				if (this.isCurrentPlayer) {
+					console.log("game.step.counter");
+					this.diceAnimate();
+				} else {
+					clearInterval(this.intervalDice);
+					this.diceUrl = require("@/assets/board-game/dice-" +
+						this.game.step.counter +
+						"-" +
+						(this.game.capacity > 4 ? 2 : 1) +
+						".svg");
+				}
+			}
+		},
 	},
 
 	mounted() {
@@ -753,6 +803,18 @@ export default {
 </script>
 
 <style scoped>
+.dice-svg {
+	transform: rotateX(720deg);
+}
+
+.dice-transition {
+	transition: transform 1.5s;
+}
+
+/* .dice-transition:hover .dice-svg {
+	transition: transform 1.5s;
+} */
+
 * {
 	box-sizing: border-box;
 }
