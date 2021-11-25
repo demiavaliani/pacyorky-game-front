@@ -505,6 +505,8 @@ export default {
 			gameState: "",
 			intervalDice: "",
 			diceUrl: "",
+
+			seasonNumber: 0,
 		};
 	},
 
@@ -530,43 +532,6 @@ export default {
 	},
 
 	methods: {
-		diceAnimate() {
-			let count = 0;
-
-			if (this.game && this.game.step.counter != null) {
-				this.intervalDice = setInterval(() => {
-					if (count >= 30) {
-						clearInterval(this.intervalDice);
-						this.diceUrl = require("@/assets/board-game/dice-" +
-							this.game.step.counter +
-							"-" +
-							(this.game.capacity > 4 ? 2 : 1) +
-							".svg");
-					} else {
-						count++;
-						let random = Math.floor(Math.random() * 6) + 1;
-						this.diceUrl = require("@/assets/board-game/dice-" +
-							random +
-							"-" +
-							(this.game.capacity > 4 ? 2 : 1) +
-							".svg");
-					}
-				}, 100);
-			}
-		},
-
-		timerAnimate(startAt) {
-			let actionTimeUtc = new Date(startAt).toUTCString();
-			let currentTimeUtc = new Date().toUTCString();
-			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
-			let timerRect = document.querySelector(".timer-rect");
-
-			timerRect.animate([{ width: "229px" }, { width: "0" }], {
-				duration: msTillAction,
-				fill: "forwards",
-			});
-		},
-
 		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
@@ -715,6 +680,79 @@ export default {
 				};
 			});
 		},
+
+		diceAnimate() {
+			let count = 0;
+
+			if (this.game && this.game.step.counter != null) {
+				this.intervalDice = setInterval(() => {
+					if (count >= 30) {
+						clearInterval(this.intervalDice);
+						this.diceUrl = require("@/assets/board-game/dice-" +
+							this.game.step.counter +
+							"-" +
+							(this.game.capacity > 4 ? 2 : 1) +
+							".svg");
+					} else {
+						count++;
+						let random = Math.floor(Math.random() * 6) + 1;
+						this.diceUrl = require("@/assets/board-game/dice-" +
+							random +
+							"-" +
+							(this.game.capacity > 4 ? 2 : 1) +
+							".svg");
+					}
+				}, 100);
+			}
+		},
+
+		timerAnimate(startAt) {
+			let actionTimeUtc = new Date(startAt).toUTCString();
+			let currentTimeUtc = new Date().toUTCString();
+			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
+			let timerRect = document.querySelector(".timer-rect");
+
+			timerRect.animate([{ width: "229px" }, { width: "0" }], {
+				duration: msTillAction,
+				fill: "forwards",
+			});
+		},
+
+		seasonChanged() {
+			let day = this.currentDevicePlayer.currentDay.deskOrder;
+			console.log("Season Number BEFORE: " + this.seasonNumber);
+
+			switch (true) {
+				case day >= 301 && day <= 523:
+					if (this.seasonNumber < 301 || this.seasonNumber > 523) {
+						console.log("Change season 1");
+						this.seasonNumber = day;
+						console.log("Season Number AFTER: " + this.seasonNumber);
+					}
+					break;
+				case day >= 601 && day <= 819:
+					if (this.seasonNumber < 601 || this.seasonNumber > 819) {
+						console.log("Change season 2");
+						this.seasonNumber = day;
+						console.log("Season Number AFTER: " + this.seasonNumber);
+					}
+					break;
+				case day >= 901 && day <= 1123:
+					if (this.seasonNumber < 901 || this.seasonNumber > 1123) {
+						console.log("Change season 3");
+						this.seasonNumber = day;
+						console.log("Season Number AFTER: " + this.seasonNumber);
+					}
+					break;
+				case day >= 1204 && day <= 1219:
+					if (this.seasonNumber < 1204 || this.seasonNumber > 1219) {
+						console.log("Change season 4");
+						this.seasonNumber = day;
+						console.log("Season Number AFTER: " + this.seasonNumber);
+					}
+					break;
+			}
+		},
 	},
 
 	watch: {
@@ -763,7 +801,7 @@ export default {
 		},
 
 		"game.step.counter": function() {
-			if (this.game.step.counter != null) {
+			if (this.game && this.game.step.counter != null) {
 				if (this.isCurrentPlayer) {
 					this.diceAnimate();
 				} else {
@@ -774,6 +812,12 @@ export default {
 						(this.game.capacity > 4 ? 2 : 1) +
 						".svg");
 				}
+			}
+		},
+
+		"currentDevicePlayer.currentDay.deskOrder": function() {
+			if (this.isCurrentPlayer && this.currentDevicePlayer.currentDay.deskOrder != null) {
+				this.seasonChanged();
 			}
 		},
 	},
