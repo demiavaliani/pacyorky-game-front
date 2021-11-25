@@ -190,7 +190,6 @@ export default {
 			if (this.roomForm.name) {
 				api.createRoom(this.roomForm).then(response => {
 					if (response) {
-						this.$emit("update-active-rooms-graph");
 						this.$router.push({ name: "boardGame", params: { id: response.id } });
 						this.$emit("close");
 					}
@@ -204,10 +203,7 @@ export default {
 			if (this.usedRoomNamesArray.length < 20 && !this.usedRoomNamesArray.includes(roomName)) {
 				this.roomForm.name = this.$ml.get(roomName);
 				this.usedRoomNamesArray.push(roomName);
-			} else if (
-				this.usedRoomNamesArray.length < 20 &&
-				this.usedRoomNamesArray.includes(roomName)
-			) {
+			} else if (this.usedRoomNamesArray.length < 20 && this.usedRoomNamesArray.includes(roomName)) {
 				do {
 					roomName = this.roomNameArray[Math.floor(Math.random() * this.roomNameArray.length)];
 				} while (this.usedRoomNamesArray.includes(roomName));
@@ -250,9 +246,9 @@ p {
 .validation-def-style {
 	color: #dc3545;
 	font-size: 80%;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-		"Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-		"Segoe UI Symbol", "Noto Color Emoji";
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+		"Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+		"Noto Color Emoji";
 }
 
 .men-img {
