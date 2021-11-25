@@ -78,17 +78,7 @@
 									>
 										<p>{{ $ml.get("throw_cards") }}</p>
 									</b-button>
-									<!-- <img
-										:src="
-											require('@/assets/board-game/dice-' +
-												game.step.counter +
-												'-' +
-												(game.capacity > 4 ? 2 : 1) +
-												'.svg')
-										"
-										v-if="game.step.counter"
-									/> -->
-									<img class="dice-svg" :src="diceUrl" v-if="game.step.counter" />
+									<img :src="diceUrl" v-if="game.step.counter" />
 								</div>
 
 								<div
@@ -545,7 +535,7 @@ export default {
 
 			if (this.game && this.game.step.counter != null) {
 				this.intervalDice = setInterval(() => {
-					if (count >= 20) {
+					if (count >= 30) {
 						clearInterval(this.intervalDice);
 						this.diceUrl = require("@/assets/board-game/dice-" +
 							this.game.step.counter +
@@ -553,13 +543,7 @@ export default {
 							(this.game.capacity > 4 ? 2 : 1) +
 							".svg");
 					} else {
-						// let dice = document.querySelector(".dice-svg");
-						// console.log(dice);
-						// dice.classList.add("dice-transition");
-
 						count++;
-						console.log(count);
-
 						let random = Math.floor(Math.random() * 6) + 1;
 						this.diceUrl = require("@/assets/board-game/dice-" +
 							random +
@@ -781,7 +765,6 @@ export default {
 		"game.step.counter": function() {
 			if (this.game.step.counter != null) {
 				if (this.isCurrentPlayer) {
-					console.log("game.step.counter");
 					this.diceAnimate();
 				} else {
 					clearInterval(this.intervalDice);
@@ -803,18 +786,6 @@ export default {
 </script>
 
 <style scoped>
-.dice-svg {
-	transform: rotateX(720deg);
-}
-
-.dice-transition {
-	transition: transform 1.5s;
-}
-
-/* .dice-transition:hover .dice-svg {
-	transition: transform 1.5s;
-} */
-
 * {
 	box-sizing: border-box;
 }
