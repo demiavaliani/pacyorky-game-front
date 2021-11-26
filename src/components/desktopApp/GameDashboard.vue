@@ -1,8 +1,5 @@
 <template>
-	<b-container
-		id="game-dashboard"
-		class="d-flex flex-column justify-content-center align-items-center h-75"
-	>
+	<b-container id="game-dashboard" class="d-flex flex-column justify-content-center align-items-center h-75">
 		<b-row class="d-flex justify-content-center">
 			<b-col cols="auto" class="d-flex flex-column pr-4">
 				<div class="middle-gif"></div>
@@ -25,9 +22,7 @@
 					{{ $ml.get("active_games_list") }}
 				</p>
 
-				<div
-					class="d-flex flex-column justify-content-start flex-grow-1 active-games-list px-3 py-1"
-				>
+				<div class="d-flex flex-column justify-content-start flex-grow-1 active-games-list px-3 py-1">
 					<div>
 						<ActiveRoomsGraph
 							v-for="item in getActiveRoomsAndSortByPlayersCountAsc"
@@ -86,6 +81,8 @@
 			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</JoinRoomModal>
+
+		<div id="snow"></div>
 	</b-container>
 </template>
 
@@ -95,6 +92,7 @@ import api from "@/api/api";
 import ActiveRoomsGraph from "./ActiveRoomsGraph";
 import CreateRoomModal from "../modals/CreateRoomModal.vue";
 import JoinRoomModal from "../modals/JoinRoomModal";
+import * as Snow from "../../plugins/snow.js";
 
 export default {
 	name: "GameDashboard",
@@ -195,6 +193,21 @@ export default {
 		await this.$store.dispatch("setDevicePlayerIdAction");
 		this.checkGame();
 	},
+
+	mounted() {
+		window.onload = function() {
+			var snow = new Snow.default({
+				id: "snow",
+				min_size: 10,
+				max_size: 20,
+				image: require("../../assets/snowflake.svg"),
+			});
+
+			document.querySelector("body").onclick = function() {
+				snow.toggle();
+			};
+		};
+	},
 };
 </script>
 
@@ -236,9 +249,9 @@ p {
 	position: absolute;
 	top: 355px;
 	color: #dc3545;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-		"Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-		"Segoe UI Symbol", "Noto Color Emoji";
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+		"Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+		"Noto Color Emoji";
 }
 
 .active-games-list {
