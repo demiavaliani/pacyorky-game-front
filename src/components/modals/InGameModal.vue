@@ -27,7 +27,11 @@
 export default {
 	name: "InGameModal",
 
-	props: ["modalVisible", "footerHidden", "headerHidden"],
+	props: {
+		modalVisible: { required: false },
+		footerHidden: { required: false },
+		headerHidden: { required: false },
+	},
 
 	data() {
 		return {};

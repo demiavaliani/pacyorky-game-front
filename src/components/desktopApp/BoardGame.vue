@@ -208,10 +208,10 @@
 							:key="lang"
 							@click="$ml.change(lang)"
 						>
-              <img class="w-25 m-2" :src="require('@/assets/navbar/'+lang+'.svg')"/>{{ lang }}
+							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
-					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
+					<p>{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”</p>
 
 					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
 						<p>{{ $ml.get("end_game") }}</p>
@@ -241,6 +241,14 @@
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
 					></ActiveRoomsGraph>
+
+					<ActiveRoomsGraph
+						v-else-if="roomDetails.players"
+						class="active-rooms-graph"
+						:currentRoomFromActiveRoomsGraph="roomDetails"
+						:displayRoomName="false"
+						:activePlayersCountFromActiveRoomsGraph="roomDetails.players.length"
+					></ActiveRoomsGraph>
 				</b-col>
 
 				<b-col cols="12" class="d-flex justify-content-end">
@@ -256,7 +264,12 @@
 
 							<b-col cols="12" class="">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in dishesDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -264,7 +277,12 @@
 
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in ritualsDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in ritualsDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -272,7 +290,12 @@
 
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in stuffDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in stuffDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -317,21 +340,21 @@
 
 		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeck">
+				<div class="mx-1" v-for="card in dishesDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in ritualsDeck">
+				<div class="mx-1" v-for="card in ritualsDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in stuffDeck">
+				<div class="mx-1" v-for="card in stuffDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
@@ -350,21 +373,21 @@
 
 		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeckForVote">
+				<div class="mx-1" v-for="card in dishesDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in ritualsDeckForVote">
+				<div class="mx-1" v-for="card in ritualsDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in stuffDeckForVote">
+				<div class="mx-1" v-for="card in stuffDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
@@ -479,13 +502,11 @@ export default {
 
 	data() {
 		return {
-			currentDevicePlayer: {},
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 			inited: false,
-			playersInGame: [],
 
 			cardsToThrow: [],
 			cardsToVote: [],
@@ -512,6 +533,9 @@ export default {
 			dayDescription: false,
 
 			gameState: "",
+			playersInGame: [],
+			currentDevicePlayer: {},
+			roomDetails: Object,
 		};
 	},
 
@@ -697,6 +721,12 @@ export default {
 				};
 			});
 		},
+
+		setRoomDetails() {
+			this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then(response => {
+				this.roomDetails = response;
+			});
+		},
 	},
 
 	watch: {
@@ -746,6 +776,7 @@ export default {
 	},
 
 	mounted() {
+		this.setRoomDetails();
 		this.areaClick();
 		this.loaderProgress();
 	},
@@ -759,8 +790,8 @@ export default {
 
 #main-div {
 	height: 100vh;
-  background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
-  background-size: 100vw;
+	background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
+	background-size: 100vw;
 }
 
 #overlay {
