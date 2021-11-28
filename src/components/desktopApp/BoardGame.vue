@@ -1,5 +1,7 @@
 <template>
 	<div id="main-div">
+		<div id="snow"></div>
+
 		<div id="overlay">
 			<progress value="0"></progress>
 		</div>
@@ -457,6 +459,7 @@ import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
 import RTCClient from "./agora/RTCClient";
+import * as Snow from "../../plugins/snow.js";
 
 export default {
 	name: "BoardGame",
@@ -507,6 +510,7 @@ export default {
 			diceUrl: "",
 
 			seasonNumber: 0,
+			snow: Object,
 		};
 	},
 
@@ -720,35 +724,66 @@ export default {
 
 		seasonChanged() {
 			let day = this.currentDevicePlayer.currentDay.deskOrder;
-			console.log("Season Number BEFORE: " + this.seasonNumber);
 
 			switch (true) {
 				case day >= 301 && day <= 523:
 					if (this.seasonNumber < 301 || this.seasonNumber > 523) {
-						console.log("Change season 1");
 						this.seasonNumber = day;
-						console.log("Season Number AFTER: " + this.seasonNumber);
+						this.snow = new Snow.default({
+							id: "snow",
+							min_size: 15,
+							max_size: 25,
+							image: require("../../assets/board-game/spring.svg"),
+						});
+						this.snow.toggle();
+						setTimeout(() => {
+							this.snow.toggle();
+						}, 8000);
 					}
 					break;
 				case day >= 601 && day <= 819:
 					if (this.seasonNumber < 601 || this.seasonNumber > 819) {
-						console.log("Change season 2");
 						this.seasonNumber = day;
-						console.log("Season Number AFTER: " + this.seasonNumber);
+						this.snow = new Snow.default({
+							id: "snow",
+							min_size: 15,
+							max_size: 25,
+							image: require("../../assets/board-game/summer.svg"),
+						});
+						this.snow.toggle();
+						setTimeout(() => {
+							this.snow.toggle();
+						}, 8000);
 					}
 					break;
 				case day >= 901 && day <= 1123:
 					if (this.seasonNumber < 901 || this.seasonNumber > 1123) {
-						console.log("Change season 3");
 						this.seasonNumber = day;
-						console.log("Season Number AFTER: " + this.seasonNumber);
+						this.snow = new Snow.default({
+							id: "snow",
+							min_size: 15,
+							max_size: 25,
+							image: require("../../assets/board-game/autumn.svg"),
+						});
+						this.snow.toggle();
+						setTimeout(() => {
+							this.snow.toggle();
+						}, 8000);
 					}
 					break;
 				case day >= 1204 && day <= 1219:
 					if (this.seasonNumber < 1204 || this.seasonNumber > 1219) {
-						console.log("Change season 4");
 						this.seasonNumber = day;
-						console.log("Season Number AFTER: " + this.seasonNumber);
+						this.snow = new Snow.default({
+							id: "snow",
+							min_size: 15,
+							max_size: 25,
+							image: require("../../assets/board-game/winter.svg"),
+						});
+						this.snow.toggle();
+						setTimeout(() => {
+							this.snow.toggle();
+						}, 8000);
 					}
 					break;
 			}

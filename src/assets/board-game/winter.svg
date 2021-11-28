@@ -1,0 +1,30 @@
+<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M21.8134 18.3608L29.6225 19.09" stroke="black"/>
+<path d="M25.9202 18.7961L29.3141 15.9476" stroke="black"/>
+<path d="M25.1367 18.7039C25.3081 18.8361 27.1622 20.9501 28.0678 21.9906" stroke="black"/>
+<path d="M20.4441 13.7158L24.9062 7.93286" stroke="black"/>
+<path d="M22.0974 11.574C22.3348 11.6205 24.9401 11.4325 26.2131 11.3327" stroke="black"/>
+<path d="M22.3443 11.2528L22.4824 7.08813" stroke="black"/>
+<path d="M16.5021 13.0667L13.957 5.29395" stroke="black"/>
+<path d="M15.0747 8.71792L17.2754 4.09448" stroke="black"/>
+<path d="M15.1222 9.09755L10.5569 6.60007" stroke="black"/>
+<path d="M13.7702 15.0584L6.69291 10.2809" stroke="black"/>
+<path d="M10.9269 13.2064L10.3398 8.65308" stroke="black"/>
+<path d="M10.3912 12.7935L5.63882 14.0812" stroke="black"/>
+<path d="M19.6895 21.335C20.1676 21.8406 22.9727 25.5199 24.3155 27.2964" stroke="black"/>
+<path d="M21.4187 23.5234L25.978 24.4786" stroke="black"/>
+<path d="M21.4199 23.5232L20.2168 28.4038" stroke="black"/>
+<path d="M16.5137 22.1301L12.6359 28.7057" stroke="black"/>
+<path d="M14.9348 24.8412L10.9566 26.8971" stroke="black"/>
+<path d="M15.3223 24.116L15.7929 29.263" stroke="black"/>
+<path d="M13.6072 19.0333L4.97776 20.9173" stroke="black"/>
+<path d="M10.0273 19.6877L7.38311 23.1147" stroke="black"/>
+<path d="M10.1343 19.7703L6.64919 17.4229" stroke="black"/>
+<path d="M20.6573 13.8807C16.7529 10.5265 9.67752 15.4889 15.0382 21.1631C18.4236 24.7466 24.8242 17.7796 20.6573 13.8807Z" fill="url(#paint0_radial_723_29)" stroke="black"/>
+<defs>
+<radialGradient id="paint0_radial_723_29" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(17.4782 17.2609) rotate(127.654) scale(4.62467 4.41421)">
+<stop stop-color="#47A1F5" stop-opacity="0.47"/>
+<stop offset="1" stop-color="#33C1EE"/>
+</radialGradient>
+</defs>
+</svg>

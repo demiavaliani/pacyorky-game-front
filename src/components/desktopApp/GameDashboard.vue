@@ -81,8 +81,6 @@
 			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</JoinRoomModal>
-
-		<div id="snow"></div>
 	</b-container>
 </template>
 
@@ -92,7 +90,6 @@ import api from "@/api/api";
 import ActiveRoomsGraph from "./ActiveRoomsGraph";
 import CreateRoomModal from "../modals/CreateRoomModal.vue";
 import JoinRoomModal from "../modals/JoinRoomModal";
-import * as Snow from "../../plugins/snow.js";
 
 export default {
 	name: "GameDashboard",
@@ -192,21 +189,6 @@ export default {
 		await this.$store.dispatch("setGameAction");
 		await this.$store.dispatch("setDevicePlayerIdAction");
 		this.checkGame();
-	},
-
-	mounted() {
-		window.onload = function() {
-			var snow = new Snow.default({
-				id: "snow",
-				min_size: 10,
-				max_size: 20,
-				image: require("../../assets/snowflake.svg"),
-			});
-
-			document.querySelector("body").onclick = function() {
-				snow.toggle();
-			};
-		};
 	},
 };
 </script>

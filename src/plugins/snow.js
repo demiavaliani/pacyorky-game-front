@@ -4,10 +4,11 @@ var Snow = function (options) {
 	document.getElementById(options.id).style.left = 0;
 	document.getElementById(options.id).style.zIndex = 1000;
 	document.getElementById(options.id).style.pointerEvents = "none";
+	var snowflakeImage;
 
 	//snowflake image to use
 	if (options.image) {
-		var snowflakeImage = document.createElement("img")
+		snowflakeImage = document.createElement("img")
 		snowflakeImage.src = options.image
 		snowflakeImage.id = "snowflake"
 		snowflakeImage.style.display = "none"
@@ -34,7 +35,7 @@ var Snow = function (options) {
 		return Math.random() * (max - min) + min;
 	}
 
-	let go = true;
+	let go = false;
 	let snowflakes = []
 	let animation;
 	let context;
@@ -58,7 +59,6 @@ var Snow = function (options) {
 			}
 		}
 		else if (!go) {
-			console.log("STILL GOING")
 			// clear canvas
 			context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -72,13 +72,12 @@ var Snow = function (options) {
 		}
 	}
 
-	snowfall();
+	// snowfall();
 
 	this.toggle = function () {
 		go = !go;
 
 		if (go) {
-			// createSnowflakes()
 			snowfall();
 		} else if (!go) {
 			setTimeout(() => {
