@@ -167,7 +167,7 @@ export default {
 		},
 
 		roomNameState() {
-			return this.roomForm.name.length > 2 && this.roomForm.name.length <= 11;
+			return this.roomForm.name.length > 2;
 		},
 
 		fullFormValidity() {

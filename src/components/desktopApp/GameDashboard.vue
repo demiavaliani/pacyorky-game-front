@@ -164,8 +164,6 @@ export default {
 			async handler() {
 				if (this.getActiveRoomsAndSortByPlayersCountAsc.length > 0) {
 					try {
-						this.currentRoomId = await this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
-						this.currentRoom = await this.getActiveRoomsAndSortByPlayersCountAsc[0];
 						this.roomSelected = true;
 						this.disabled = true;
 					} catch (error) {
