@@ -79,13 +79,8 @@ export default {
 		},
 
 		onJoinRoom() {
-			api.joinRoom(this.currentRoom.id).then(response => {
-				if (response) {
-					this.$emit("update-active-rooms-graph");
-					this.$router.push({ name: "boardGame", params: { id: response.id } });
-					this.$emit("close");
-				}
-			});
+			this.$router.push({ name: "boardGame", params: { id: this.currentRoom.id } });
+			this.$emit("close");
 		},
 	},
 };
