@@ -79,7 +79,6 @@ export default {
 		},
 
 		onJoinRoom() {
-			this.$emit("update-active-rooms-graph");
 			this.$router.push({ name: "boardGame", params: { id: this.currentRoom.id } });
 			this.$emit("close");
 		},
