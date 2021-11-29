@@ -12,7 +12,9 @@
 			class="player-character"
 			:style="inited ? '' : 'opacity: 0'"
 		>
-			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
+			<img
+				:src="require('@/assets/board-game/cards/moving_characters/' + player.character.name + '.png')"
+			/>
 		</div>
 
 		<GameLogic
@@ -170,8 +172,8 @@
 			<div class="board-game-row">
 				<img
 					id="board"
-					src="@/assets/board-game/board-1.svg"
 					class="board-game-img"
+					:src="boardLanguage"
 					usemap="#image-map"
 					@load="getBoardPosition"
 				/>
@@ -235,7 +237,10 @@
 							v-for="lang in $ml.list"
 							v-if="lang !== $ml.current"
 							:key="lang"
-							@click="$ml.change(lang)"
+							@click="
+								$ml.change(lang);
+								currentLanguage = $ml.current.toLowerCase();
+							"
 						>
 							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
@@ -340,7 +345,7 @@
 								<img
 									v-if="currentDevicePlayer && currentDevicePlayer.character"
 									class="character-img w-100 h-100"
-									:src="require('@/assets/cards/character/' + playerCharacter + '.png')"
+									:src="require('@/assets/board-game/cards/character/' + playerCharacter + '.png')"
 								/>
 							</b-col>
 
@@ -371,21 +376,21 @@
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck" :key="card.id">
 					<img
-						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeck" :key="card.id">
 					<img
-						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeck" :key="card.id">
 					<img
-						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
@@ -404,21 +409,21 @@
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeckForVote" :key="card.id">
 					<img
-						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeckForVote" :key="card.id">
 					<img
-						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeckForVote" :key="card.id">
 					<img
-						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
+						:src="require('@/assets/board-game/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
@@ -562,6 +567,7 @@ export default {
 			dayDescription: false,
 
 			gameState: "",
+			currentLanguage: "",
 			playersInGame: [],
 			currentDevicePlayer: {},
 			roomDetails: Object,
@@ -586,6 +592,11 @@ export default {
 			if (this.game.step && this.currentDevicePlayer.id === this.game.step.currentPlayer.id) {
 				return true;
 			}
+		},
+
+		boardLanguage() {
+			let boardSrc = require(`../../assets/board-game/board-${this.currentLanguage}.svg`);
+			return boardSrc;
 		},
 	},
 
@@ -736,12 +747,12 @@ export default {
 
 		loaderProgress() {
 			let progress = document.querySelector("progress");
-			let images = require.context("../../assets/cards/", true, /\.png/);
+			let images = require.context("../../assets/board-game/", true);
 			progress.max = images.keys().length;
 
 			images.keys().forEach(key => {
 				let img = new Image();
-				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.src = require("../../assets/board-game/" + key.replace("./", ""));
 				img.onload = () => {
 					progress.value++;
 					if (progress.value === images.keys().length) {
@@ -802,6 +813,10 @@ export default {
 				this.timerAnimate(this.game.nextStepAt);
 			}
 		},
+	},
+
+	created() {
+		this.currentLanguage = this.$ml.current.toLowerCase();
 	},
 
 	mounted() {
