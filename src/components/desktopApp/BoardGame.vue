@@ -33,12 +33,40 @@
 		</GameLogic>
 
 		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
-			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
-				<RTCClient
-					v-if="game && game.token && game.token !== ''"
-					:token="game.token"
-					:channel="String(game.id)"
-				/>
+			<b-row class="left-side ml-3 mb-5 pt-5 h-100 d-flex align-content-between">
+				<b-col class="h-25">
+					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
+						<p>{{ $ml.get("end_game") }}</p>
+					</b-button>
+
+					<div
+						v-else-if="gameState === 'game-not-started'"
+						class="d-flex flex-column justify-content-around h-100"
+					>
+						<b-button @click="joinRoom()" :disabled="joinRoomBtnDisabled">
+							<p>{{ $ml.get("join_room") }}</p>
+						</b-button>
+
+						<b-button to="/game-dashboard">
+							<p>{{ $ml.get("go_to_home_page") }}</p>
+						</b-button>
+					</div>
+
+					<b-button
+						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
+						to="/game-dashboard"
+					>
+						<p>{{ $ml.get("go_to_home_page") }}</p>
+					</b-button>
+				</b-col>
+
+				<b-col>
+					<RTCClient
+						v-if="game && game.token && game.token !== ''"
+						:token="game.token"
+						:channel="String(game.id)"
+					/>
+				</b-col>
 
 				<b-col>
 					<div class="game-controls-box" style="min-height: 300px">
@@ -212,25 +240,6 @@
 						</b-dropdown-item>
 					</b-dropdown>
 					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
-
-					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
-						<p>{{ $ml.get("end_game") }}</p>
-					</b-button>
-
-					<b-button
-						v-else-if="gameState === 'game-not-started'"
-						@click="joinRoom()"
-						:disabled="joinRoomBtnDisabled"
-					>
-						<p>{{ $ml.get("join_room") }}</p>
-					</b-button>
-
-					<b-button
-						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
-						to="/game-dashboard"
-					>
-						<p>{{ $ml.get("go_to_home_page") }}</p>
-					</b-button>
 				</b-col>
 
 				<b-col class="d-flex justify-content-end">
@@ -797,8 +806,10 @@ p {
 	color: black;
 }
 
-.board-game-row img {
-	width: 50vw;
+.left-side .col:first-child button p,
+.left-side .col:first-child a p {
+	font-family: "Montserrat";
+	font-size: 18px;
 }
 
 .game-controls-box {
@@ -834,13 +845,12 @@ p {
 	width: 229px;
 }
 
-.right-side p {
-	font-size: 50px;
+.board-game-row img {
+	width: 50vw;
 }
 
-.right-side button p {
-	font-family: "Montserrat";
-	font-size: 18px;
+.right-side p {
+	font-size: 50px;
 }
 
 .right-side a p {
