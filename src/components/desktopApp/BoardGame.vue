@@ -228,7 +228,7 @@
 				</map>
 			</div>
 
-			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
+			<b-row class="d-flex justify-content-end align-items-center right-side mr-0 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
 					<b-dropdown :text="$ml.current">
 						<b-dropdown-item
@@ -237,10 +237,30 @@
 							:key="lang"
 							@click="$ml.change(lang)"
 						>
-              <img class="w-25 m-2" :src="require('@/assets/navbar/'+lang+'.svg')"/>{{ lang }}
+							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
-					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
+
+					<p class="room-name">{{ $ml.get("room_name_room") }} “{{ this.game.name }}”</p>
+
+					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
+						<p>{{ $ml.get("end_game") }}</p>
+					</b-button>
+
+					<b-button
+						v-else-if="gameState === 'game-not-started'"
+						@click="joinRoom()"
+						:disabled="joinRoomBtnDisabled"
+					>
+						<p>{{ $ml.get("join_room") }}</p>
+					</b-button>
+
+					<b-button
+						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
+						to="/game-dashboard"
+					>
+						<p>{{ $ml.get("go_to_home_page") }}</p>
+					</b-button>
 				</b-col>
 
 				<b-col class="d-flex justify-content-end">
@@ -769,8 +789,8 @@ export default {
 
 #main-div {
 	height: 100vh;
-  background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
-  background-size: 100vw;
+	background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
+	background-size: 100vw;
 }
 
 #overlay {
@@ -857,6 +877,15 @@ p {
 .right-side a p {
 	font-family: "Montserrat";
 	font-size: 18px;
+}
+
+.room-name {
+	width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
 }
 
 ::v-deep .men-img {
