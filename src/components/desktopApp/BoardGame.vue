@@ -12,9 +12,7 @@
 			class="player-character"
 			:style="inited ? '' : 'opacity: 0'"
 		>
-			<img
-				:src="require('@/assets/board-game/cards/moving_characters/' + player.character.name + '.png')"
-			/>
+			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
 		</div>
 
 		<GameLogic
@@ -345,7 +343,7 @@
 								<img
 									v-if="currentDevicePlayer && currentDevicePlayer.character"
 									class="character-img w-100 h-100"
-									:src="require('@/assets/board-game/cards/character/' + playerCharacter + '.png')"
+									:src="require('@/assets/cards/character/' + playerCharacter + '.png')"
 								/>
 							</b-col>
 
@@ -376,21 +374,21 @@
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeck" :key="card.id">
 					<img
-						:src="require('@/assets/board-game/cards/dishes/' + card.name + '.png')"
+						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeck" :key="card.id">
 					<img
-						:src="require('@/assets/board-game/cards/rituals/' + card.name + '.png')"
+						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeck" :key="card.id">
 					<img
-						:src="require('@/assets/board-game/cards/stuff/' + card.name + '.png')"
+						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
@@ -409,21 +407,21 @@
 			<template v-slot:upper-half>
 				<div class="mx-1" v-for="card in dishesDeckForVote" :key="card.id">
 					<img
-						:src="require('@/assets/board-game/cards/dishes/' + card.name + '.png')"
+						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in ritualsDeckForVote" :key="card.id">
 					<img
-						:src="require('@/assets/board-game/cards/rituals/' + card.name + '.png')"
+						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
 				<div class="mx-1" v-for="card in stuffDeckForVote" :key="card.id">
 					<img
-						:src="require('@/assets/board-game/cards/stuff/' + card.name + '.png')"
+						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
