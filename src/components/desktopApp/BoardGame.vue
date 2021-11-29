@@ -917,6 +917,11 @@ p {
 	font-size: 50px;
 }
 
+.right-side button p {
+	font-family: "Montserrat";
+	font-size: 18px;
+}
+
 .right-side a p {
 	font-family: "Montserrat";
 	font-size: 18px;
