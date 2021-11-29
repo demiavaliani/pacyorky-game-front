@@ -33,12 +33,40 @@
 		</GameLogic>
 
 		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
-			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
-				<RTCClient
-					v-if="game && game.token && game.token !== ''"
-					:token="game.token"
-					:channel="String(game.id)"
-				/>
+			<b-row class="left-side ml-3 mb-5 pt-5 h-100 d-flex align-content-between">
+				<b-col class="h-25">
+					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
+						<p>{{ $ml.get("end_game") }}</p>
+					</b-button>
+
+					<div
+						v-else-if="gameState === 'game-not-started'"
+						class="d-flex flex-column justify-content-around h-100"
+					>
+						<b-button @click="joinRoom()" :disabled="joinRoomBtnDisabled">
+							<p>{{ $ml.get("join_room") }}</p>
+						</b-button>
+
+						<b-button to="/game-dashboard">
+							<p>{{ $ml.get("go_to_home_page") }}</p>
+						</b-button>
+					</div>
+
+					<b-button
+						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
+						to="/game-dashboard"
+					>
+						<p>{{ $ml.get("go_to_home_page") }}</p>
+					</b-button>
+				</b-col>
+
+				<b-col>
+					<RTCClient
+						v-if="game && game.token && game.token !== ''"
+						:token="game.token"
+						:channel="String(game.id)"
+					/>
+				</b-col>
 
 				<b-col>
 					<div class="game-controls-box" style="min-height: 300px">
@@ -86,6 +114,7 @@
 												(game.capacity > 4 ? 2 : 1) +
 												'.svg')
 										"
+										:style="{ width: '39px' }"
 										v-if="game.step.counter"
 									/>
 								</div>
@@ -246,16 +275,16 @@
 
 				<b-col cols="12" class="d-flex justify-content-end">
 					<div class="my-cards-box">
-						<b-row class="d-flex justify-content-end align-items-start h-100 mx-auto">
-							<b-col cols="auto" class="d-flex flex-column pr-0">
+						<b-row class="d-flex justify-content-start align-items-start h-100 mx-auto">
+							<b-col cols="11" class="text-center pr-0">
 								<p>{{ $ml.get("deck") }}</p>
 							</b-col>
 
-							<b-col cols="auto" class="pr-0 d-flex flex-column">
+							<b-col cols="1" class="d-flex px-0">
 								<img src="@/assets/board-game/info-sign.svg" width="18" />
 							</b-col>
 
-							<b-col cols="12" class="">
+							<b-col cols="12" class="first-row-deck">
 								<b-row class="cards mx-auto">
 									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
@@ -798,8 +827,10 @@ p {
 	color: black;
 }
 
-.board-game-row img {
-	width: 50vw;
+.left-side .col:first-child button p,
+.left-side .col:first-child a p {
+	font-family: "Montserrat";
+	font-size: 18px;
 }
 
 .game-controls-box {
@@ -835,13 +866,12 @@ p {
 	width: 229px;
 }
 
-.right-side p {
-	font-size: 50px;
+.board-game-row img {
+	width: 50vw;
 }
 
-.right-side button p {
-	font-family: "Montserrat";
-	font-size: 18px;
+.right-side p {
+	font-size: 50px;
 }
 
 .right-side a p {
@@ -863,7 +893,7 @@ p {
 }
 
 .my-cards-box {
-	width: 35%;
+	width: 10vw;
 	height: 380px;
 	padding: 10px;
 	border: 1px solid #e4e4e4;
@@ -891,9 +921,14 @@ p {
 
 .cards .p-0:hover img {
 	position: absolute;
-	width: 110px;
+	width: 10vw;
+	left: -75px;
 	bottom: 100px;
 	z-index: 9999;
+}
+
+.first-row-deck .p-0:hover img {
+	bottom: 60px;
 }
 
 .cards :nth-child(2) {
