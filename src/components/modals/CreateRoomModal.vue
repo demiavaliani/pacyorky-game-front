@@ -85,7 +85,7 @@
 						size="lg"
 					></b-form-input>
 					<b-form-invalid-feedback>
-						{{ $ml.get("name_3_11_characters_long") }}
+						{{ $ml.get("name_min_3_characters_long") }}
 					</b-form-invalid-feedback>
 				</b-col>
 			</b-row>
