@@ -1,8 +1,5 @@
 <template>
-	<b-container
-		id="game-dashboard"
-		class="d-flex flex-column justify-content-center align-items-center h-75"
-	>
+	<b-container id="game-dashboard" class="d-flex flex-column justify-content-center align-items-center h-75">
 		<b-row class="d-flex justify-content-center">
 			<b-col cols="auto" class="d-flex flex-column pr-4">
 				<div class="middle-gif"></div>
@@ -25,9 +22,7 @@
 					{{ $ml.get("active_games_list") }}
 				</p>
 
-				<div
-					class="d-flex flex-column justify-content-start flex-grow-1 active-games-list px-3 py-1"
-				>
+				<div class="d-flex flex-column justify-content-start flex-grow-1 active-games-list px-3 py-1">
 					<div>
 						<ActiveRoomsGraph
 							v-for="item in getActiveRoomsAndSortByPlayersCountAsc"
@@ -75,7 +70,6 @@
 			:isModalShown="showCreateRoomModal"
 			@close="showCreateRoomModal = !showCreateRoomModal"
 			ref="createRoomModalChildComponent"
-			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</CreateRoomModal>
 
@@ -83,7 +77,6 @@
 			:isModalShown="showJoinRoomModal"
 			:currentRoom="currentRoom"
 			@close="showJoinRoomModal = !showJoinRoomModal"
-			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</JoinRoomModal>
 	</b-container>
@@ -171,8 +164,6 @@ export default {
 			async handler() {
 				if (this.getActiveRoomsAndSortByPlayersCountAsc.length > 0) {
 					try {
-						this.currentRoomId = await this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
-						this.currentRoom = await this.getActiveRoomsAndSortByPlayersCountAsc[0];
 						this.roomSelected = true;
 						this.disabled = true;
 					} catch (error) {
@@ -236,9 +227,9 @@ p {
 	position: absolute;
 	top: 355px;
 	color: #dc3545;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-		"Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-		"Segoe UI Symbol", "Noto Color Emoji";
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+		"Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+		"Noto Color Emoji";
 }
 
 .active-games-list {

@@ -42,12 +42,17 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .modal-dialog {
+	justify-content: center;
+}
+
 ::v-deep .modal-content {
+	width: 120%;
 	border-radius: 10px;
 }
 
 ::v-deep img {
-	width: 110px;
+	width: 9vw;
 }
 
 ::v-deep .modal-header {

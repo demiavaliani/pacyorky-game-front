@@ -4,7 +4,7 @@
 		@click="$emit('current-room-click', currentRoomFromActiveRoomsGraph)"
 	>
 		<b-col cols="6" class="pr-1" v-if="displayRoomName">
-			<p class="m-0 text-left">
+			<p class="m-0 text-left room-name w-100">
 				{{ activeRoomNameFromActiveRoomsGraph }}
 			</p>
 		</b-col>
@@ -111,6 +111,12 @@ p {
 
 .room-entry {
 	height: 4.2vh;
+}
+
+.room-name {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
