@@ -79,10 +79,10 @@
 <script>
 export default {
 	props: {
-		activePlayersCountFromActiveRoomsGraph: Number,
-		activeRoomNameFromActiveRoomsGraph: String,
-		currentRoomFromActiveRoomsGraph: {},
-		displayRoomName: Boolean,
+		activePlayersCountFromActiveRoomsGraph: { type: Number, required: false },
+		activeRoomNameFromActiveRoomsGraph: { type: String, required: false },
+		currentRoomFromActiveRoomsGraph: { required: false },
+		displayRoomName: { type: Boolean, required: false },
 	},
 	methods: {
 		fillMan(position) {
