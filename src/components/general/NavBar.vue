@@ -32,10 +32,8 @@
 							</b-col>
 
 							<b-col cols="auto">
-								<b-nav-item>
-									<a href="https://pacyorky.ee/#game">
+								<b-nav-item target="_blank" href="https://pacyorky.ee/#game">
 										<p>{{ $ml.get("board_game") }}</p>
-									</a>
 								</b-nav-item>
 							</b-col>
 
@@ -43,7 +41,7 @@
 								<div class="d-flex">
                   <b-dropdown :text="$ml.current">
                     <b-dropdown-item v-for="lang in $ml.list" v-if="lang!==$ml.current" :key="lang" @click="$ml.change(lang)">
-                      {{lang}}
+                      <img class="w-25 m-2" :src="require('@/assets/navbar/'+lang+'.svg')"/>{{lang}}
                     </b-dropdown-item>
                   </b-dropdown>
 								</div>
