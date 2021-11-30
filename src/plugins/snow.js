@@ -4,22 +4,24 @@ var Snow = function (options) {
 	document.getElementById(options.id).style.left = 0;
 	document.getElementById(options.id).style.zIndex = 1000;
 	document.getElementById(options.id).style.pointerEvents = "none";
-	var snowflakeImage;
+	// var snowflakeImage;
 
 	//snowflake image to use
 	if (options.image) {
-		snowflakeImage = document.createElement("img")
-		snowflakeImage.src = options.image
-		snowflakeImage.id = "snowflake"
-		snowflakeImage.style.display = "none"
-		document.body.appendChild(snowflakeImage)
+		this.snowflakeImage = document.createElement("img")
+		this.snowflakeImage.src = options.image
+		this.snowflakeImage.id = "snowflake"
+		this.snowflakeImage.style.display = "none"
+		document.body.appendChild(this.snowflakeImage)
 	}
 
+	// console.log("snow flake image", snowflakeImage)
+
 	//create canvas
-	let canvas = document.createElement("canvas"); //add random number to change canvas id
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-	document.getElementById(options.id).appendChild(canvas);
+	this.canvas = document.createElement("canvas"); //add random number to change canvas id
+	this.canvas.width = window.innerWidth;
+	this.canvas.height = window.innerHeight;
+	document.getElementById(options.id).appendChild(this.canvas);
 
 	//change size
 	var min = 2;
@@ -35,42 +37,42 @@ var Snow = function (options) {
 		return Math.random() * (max - min) + min;
 	}
 
-	let go = false;
-	let snowflakes = []
-	let animation;
-	let context;
+	this.go = false;
+	this.snowflakes = []
+	this.animation;
+	this.context;
 
-	let snowfall = function () {
-		// console.log("SNOWFALL block")
-		animation = requestAnimationFrame(() => snowfall());
-		if (go) {
-			// console.log("GO block")
+	this.snowfall = function () {
+		console.log("SNOWFALL block")
+		this.animation = requestAnimationFrame(() => this.snowfall());
+		if (this.go) {
+			console.log("GO block")
 			//clear canvas
-			context = canvas.getContext('2d');
-			context.clearRect(0, 0, canvas.width, canvas.height);
+			this.context = this.canvas.getContext('2d');
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 			//update snowflakes
 			for (var i = 0; i < 100; i++) {
-				snowflakes.push(new Snowflake(canvas, snowflakeImage, min, max))
-				snowflakes[i].update();
-				snowflakes[i].show();
+				this.snowflakes.push(new Snowflake(this.canvas, this.snowflakeImage, min, max))
+				this.snowflakes[i].update();
+				this.snowflakes[i].show();
 
-				if (snowflakes[i].y > canvas.height) {
-					snowflakes[i].y = random(-20, -200);
+				if (this.snowflakes[i].y > this.canvas.height) {
+					this.snowflakes[i].y = random(-20, -200);
 				}
 			}
 		}
-		else if (!go) {
-			// console.log("!GO block")
+		else if (!this.go) {
+			console.log("!GO block")
 			// clear canvas
-			context.clearRect(0, 0, canvas.width, canvas.height);
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 			for (var i = 0; i < 100; i++) {
-				snowflakes[i].update();
-				snowflakes[i].show();
+				this.snowflakes[i].update();
+				this.snowflakes[i].show();
 
 				// stop spawning the snowflakes
-				if (snowflakes[i].y > canvas.height) { }
+				if (this.snowflakes[i].y > this.canvas.height) { }
 			}
 		}
 	}
@@ -78,19 +80,19 @@ var Snow = function (options) {
 	// snowfall();
 
 	this.toggle = function () {
-		console.log(snowflakeImage)
-		console.log("Snow in snow.js", Snow)
-		// console.log("GO before", go)
-		go = !go;
-		// console.log("GO after", go)
+		// console.log("this", this)
+		// console.log(snowflakeImage)
+		console.log("GO before", this.go)
+		this.go = !this.go;
+		console.log("GO after", this.go)
 
-		if (go) {
-			snowfall();
-		} else if (!go) {
+		if (this.go) {
+			this.snowfall();
+		} else if (!this.go) {
 			setTimeout(() => {
-				cancelAnimationFrame(animation)
-				snowflakes = []
-				snowflakeImage.remove()
+				cancelAnimationFrame(this.animation)
+				this.snowflakes = []
+				this.snowflakeImage.remove()
 			}, 30000)
 		}
 	}
@@ -107,10 +109,10 @@ var Snowflake = function (canvas, image, min, max) {
 	//set default
 	this.color = "#FFF"
 
-	canvas = canvas;
+	this.canvas = canvas;
 
 	this.show = function () {
-		var ctx = canvas.getContext("2d");
+		var ctx = this.canvas.getContext("2d");
 		if (image) {
 			ctx.drawImage(image, this.x, this.y, this.radius, this.radius)
 		} else {

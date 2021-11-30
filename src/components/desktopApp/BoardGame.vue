@@ -1,6 +1,6 @@
 <template>
 	<div id="main-div">
-		<div id="snow"></div>
+		<div id="snow" style="position: absolute; width: 100vw; height: 100vh"></div>
 
 		<div id="overlay">
 			<progress value="0"></progress>
@@ -21,7 +21,7 @@
 			ref="gameLogic"
 			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
-			@show-throw-cards-modal="showThrowCardsModalBtnDisabled = false"
+			@show-throw-cards-modal="showThrowCardsModalBtnDisabledTemporary = false"
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
@@ -135,7 +135,6 @@
 				<img
 					id="board"
 					src="@/assets/board-game/board-1.svg"
-					class="board-game-img"
 					usemap="#image-map"
 					@load="getBoardPosition"
 				/>
@@ -459,7 +458,7 @@ import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
 import RTCClient from "./agora/RTCClient";
-import * as Snow from "../../plugins/snow.js";
+import * as Snowfall from "../../plugins/snowfall/snowfall.js";
 
 export default {
 	name: "BoardGame",
@@ -479,7 +478,7 @@ export default {
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 			inited: false,
-			diceRolled: false,
+			diceRolled: "initial",
 			playersInGame: [],
 
 			cardsToThrow: [],
@@ -493,6 +492,7 @@ export default {
 			stuffDeck: [],
 
 			throwCardsModalVisible: false,
+			showThrowCardsModalBtnDisabledTemporary: false,
 			showThrowCardsModalBtnDisabled: false,
 			voteModalVisible: false,
 			gameEndedModalVisible: false,
@@ -556,6 +556,7 @@ export default {
 
 		callThrowDice() {
 			this.diceBtnDisabled = true;
+			this.showThrowCardsModalBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
 		},
 
@@ -614,16 +615,23 @@ export default {
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-						if (this.isCurrentPlayer && this.diceRolled) {
-							// setTimeout(() => {
+						if (this.isCurrentPlayer && this.diceRolled == "initial") {
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+							this.diceRolled = "unset";
+						}
+
+						if (this.isCurrentPlayer && this.diceRolled == "each-roll") {
 							this.seasonChanged();
 							playerFigure.style.left = `${this.boardX +
 								parseFloat(coordsAttrArray[0]) -
 								elementWidth / 2}px`;
 							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
 							this.inited = true;
-							this.diceRolled = false;
-							// }, 3000);
+							this.diceRolled = "unset";
 						}
 
 						if (!this.isCurrentPlayer) {
@@ -712,7 +720,10 @@ export default {
 							"-" +
 							(this.game.capacity > 4 ? 2 : 1) +
 							".svg");
-						this.diceRolled = true;
+						this.diceRolled = "each-roll";
+						if (this.showThrowCardsModalBtnDisabledTemporary == false) {
+							this.showThrowCardsModalBtnDisabled = false;
+						}
 					} else {
 						count++;
 						let random = Math.floor(Math.random() * 6) + 1;
@@ -738,6 +749,34 @@ export default {
 			});
 		},
 
+		makeItSnow(season) {
+			let snowflake = document.querySelector("#snow");
+			snowflake.style.opacity = 1;
+
+			$("#snow").snowfall({
+				flakeCount: 70,
+				image: require(`../../assets/board-game/${season}.svg`),
+				minSize: 10,
+				maxSize: 20,
+				minSpeed: 1,
+				maxSpeed: 2,
+				shadow: false,
+			});
+
+			setTimeout(() => {
+				if (snowflake) {
+					let snowflakeOpacityInterval = setInterval(() => {
+						if (snowflake.style.opacity == 0) {
+							snowflake.querySelectorAll("img").forEach(item => item.remove());
+							clearInterval(snowflakeOpacityInterval);
+						} else {
+							snowflake.style.opacity = snowflake.style.opacity - 0.1;
+						}
+					}, 300);
+				}
+			}, 8000);
+		},
+
 		seasonChanged() {
 			if (this.isCurrentPlayer && this.currentDevicePlayer.currentDay.deskOrder != null) {
 				let day = this.currentDevicePlayer.currentDay.deskOrder;
@@ -747,84 +786,44 @@ export default {
 						console.log("DAY is", day);
 						console.log("CASE block: 301 - 523");
 						if (this.seasonNumber < 301 || this.seasonNumber > 523) {
-							console.log("this.snow in BoardGame", this.snow);
 							console.log("IF block");
 							console.log("Season number before", this.seasonNumber);
 							this.seasonNumber = day;
 							console.log("Season number after", this.seasonNumber);
-							this.snow = new Snow.default({
-								id: "snow",
-								min_size: 15,
-								max_size: 25,
-								image: require("../../assets/board-game/spring.svg"),
-							});
-							this.snow.toggle();
-							setTimeout(() => {
-								this.snow.toggle();
-							}, 8000);
+							this.makeItSnow("spring");
 						}
 						break;
 					case day >= 601 && day <= 819:
 						console.log("DAY is", day);
 						console.log("CASE block: 601 - 819");
 						if (this.seasonNumber < 601 || this.seasonNumber > 819) {
-							console.log("this.snow in BoardGame", this.snow);
 							console.log("IF block");
 							console.log("Season number before", this.seasonNumber);
 							this.seasonNumber = day;
 							console.log("Season number after", this.seasonNumber);
-							this.snow = new Snow.default({
-								id: "snow",
-								min_size: 15,
-								max_size: 25,
-								image: require("../../assets/board-game/summer.svg"),
-							});
-							this.snow.toggle();
-							setTimeout(() => {
-								this.snow.toggle();
-							}, 8000);
+							this.makeItSnow("summer");
 						}
 						break;
 					case day >= 901 && day <= 1123:
 						console.log("DAY is", day);
 						console.log("CASE block: 901 - 1123");
 						if (this.seasonNumber < 901 || this.seasonNumber > 1123) {
-							console.log("this.snow in BoardGame", this.snow);
 							console.log("IF block");
 							console.log("Season number before", this.seasonNumber);
 							this.seasonNumber = day;
 							console.log("Season number after", this.seasonNumber);
-							this.snow = new Snow.default({
-								id: "snow",
-								min_size: 15,
-								max_size: 25,
-								image: require("../../assets/board-game/autumn.svg"),
-							});
-							this.snow.toggle();
-							setTimeout(() => {
-								this.snow.toggle();
-							}, 8000);
+							this.makeItSnow("autumn");
 						}
 						break;
 					case day >= 1204 && day <= 1219:
 						console.log("DAY is", day);
 						console.log("CASE block: 1204 - 1219");
 						if (this.seasonNumber < 1204 || this.seasonNumber > 1219) {
-							console.log("this.snow in BoardGame", this.snow);
 							console.log("IF block");
 							console.log("Season number before", this.seasonNumber);
 							this.seasonNumber = day;
 							console.log("Season number after", this.seasonNumber);
-							this.snow = new Snow.default({
-								id: "snow",
-								min_size: 15,
-								max_size: 25,
-								image: require("../../assets/board-game/winter.svg"),
-							});
-							this.snow.toggle();
-							setTimeout(() => {
-								this.snow.toggle();
-							}, 8000);
+							this.makeItSnow("winter");
 						}
 						break;
 				}
@@ -878,7 +877,7 @@ export default {
 		},
 
 		"game.step.counter": function() {
-			if (this.game && this.game.step.counter != null) {
+			if (this.game && this.game.step && this.game.step.counter != null) {
 				if (this.isCurrentPlayer) {
 					this.diceAnimate();
 				} else {
@@ -891,12 +890,6 @@ export default {
 				}
 			}
 		},
-
-		// "currentDevicePlayer.currentDay.deskOrder": function() {
-		// 	if (this.isCurrentPlayer && this.currentDevicePlayer.currentDay.deskOrder != null) {
-		// 		this.seasonChanged();
-		// 	}
-		// },
 	},
 
 	mounted() {
@@ -949,6 +942,10 @@ p {
 	font-family: "Amatic_SC";
 	line-height: 1;
 	color: black;
+}
+
+.board-game-row {
+	position: relative;
 }
 
 .board-game-row img {
