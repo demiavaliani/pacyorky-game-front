@@ -41,8 +41,10 @@ var Snow = function (options) {
 	let context;
 
 	let snowfall = function () {
+		// console.log("SNOWFALL block")
 		animation = requestAnimationFrame(() => snowfall());
 		if (go) {
+			// console.log("GO block")
 			//clear canvas
 			context = canvas.getContext('2d');
 			context.clearRect(0, 0, canvas.width, canvas.height);
@@ -59,6 +61,7 @@ var Snow = function (options) {
 			}
 		}
 		else if (!go) {
+			// console.log("!GO block")
 			// clear canvas
 			context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -75,7 +78,11 @@ var Snow = function (options) {
 	// snowfall();
 
 	this.toggle = function () {
+		console.log(snowflakeImage)
+		console.log("Snow in snow.js", Snow)
+		// console.log("GO before", go)
 		go = !go;
+		// console.log("GO after", go)
 
 		if (go) {
 			snowfall();
@@ -83,6 +90,7 @@ var Snow = function (options) {
 			setTimeout(() => {
 				cancelAnimationFrame(animation)
 				snowflakes = []
+				snowflakeImage.remove()
 			}, 30000)
 		}
 	}

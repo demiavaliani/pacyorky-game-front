@@ -479,6 +479,7 @@ export default {
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 			inited: false,
+			diceRolled: false,
 			playersInGame: [],
 
 			cardsToThrow: [],
@@ -613,11 +614,25 @@ export default {
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-						playerFigure.style.left = `${this.boardX +
-							parseFloat(coordsAttrArray[0]) -
-							elementWidth / 2}px`;
-						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
-						this.inited = true;
+						if (this.isCurrentPlayer && this.diceRolled) {
+							// setTimeout(() => {
+							this.seasonChanged();
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+							this.diceRolled = false;
+							// }, 3000);
+						}
+
+						if (!this.isCurrentPlayer) {
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+						}
 					}
 				}
 			}
@@ -697,6 +712,7 @@ export default {
 							"-" +
 							(this.game.capacity > 4 ? 2 : 1) +
 							".svg");
+						this.diceRolled = true;
 					} else {
 						count++;
 						let random = Math.floor(Math.random() * 6) + 1;
@@ -723,69 +739,95 @@ export default {
 		},
 
 		seasonChanged() {
-			let day = this.currentDevicePlayer.currentDay.deskOrder;
+			if (this.isCurrentPlayer && this.currentDevicePlayer.currentDay.deskOrder != null) {
+				let day = this.currentDevicePlayer.currentDay.deskOrder;
 
-			switch (true) {
-				case day >= 301 && day <= 523:
-					if (this.seasonNumber < 301 || this.seasonNumber > 523) {
-						this.seasonNumber = day;
-						this.snow = new Snow.default({
-							id: "snow",
-							min_size: 15,
-							max_size: 25,
-							image: require("../../assets/board-game/spring.svg"),
-						});
-						this.snow.toggle();
-						setTimeout(() => {
+				switch (true) {
+					case day >= 301 && day <= 523:
+						console.log("DAY is", day);
+						console.log("CASE block: 301 - 523");
+						if (this.seasonNumber < 301 || this.seasonNumber > 523) {
+							console.log("this.snow in BoardGame", this.snow);
+							console.log("IF block");
+							console.log("Season number before", this.seasonNumber);
+							this.seasonNumber = day;
+							console.log("Season number after", this.seasonNumber);
+							this.snow = new Snow.default({
+								id: "snow",
+								min_size: 15,
+								max_size: 25,
+								image: require("../../assets/board-game/spring.svg"),
+							});
 							this.snow.toggle();
-						}, 8000);
-					}
-					break;
-				case day >= 601 && day <= 819:
-					if (this.seasonNumber < 601 || this.seasonNumber > 819) {
-						this.seasonNumber = day;
-						this.snow = new Snow.default({
-							id: "snow",
-							min_size: 15,
-							max_size: 25,
-							image: require("../../assets/board-game/summer.svg"),
-						});
-						this.snow.toggle();
-						setTimeout(() => {
+							setTimeout(() => {
+								this.snow.toggle();
+							}, 8000);
+						}
+						break;
+					case day >= 601 && day <= 819:
+						console.log("DAY is", day);
+						console.log("CASE block: 601 - 819");
+						if (this.seasonNumber < 601 || this.seasonNumber > 819) {
+							console.log("this.snow in BoardGame", this.snow);
+							console.log("IF block");
+							console.log("Season number before", this.seasonNumber);
+							this.seasonNumber = day;
+							console.log("Season number after", this.seasonNumber);
+							this.snow = new Snow.default({
+								id: "snow",
+								min_size: 15,
+								max_size: 25,
+								image: require("../../assets/board-game/summer.svg"),
+							});
 							this.snow.toggle();
-						}, 8000);
-					}
-					break;
-				case day >= 901 && day <= 1123:
-					if (this.seasonNumber < 901 || this.seasonNumber > 1123) {
-						this.seasonNumber = day;
-						this.snow = new Snow.default({
-							id: "snow",
-							min_size: 15,
-							max_size: 25,
-							image: require("../../assets/board-game/autumn.svg"),
-						});
-						this.snow.toggle();
-						setTimeout(() => {
+							setTimeout(() => {
+								this.snow.toggle();
+							}, 8000);
+						}
+						break;
+					case day >= 901 && day <= 1123:
+						console.log("DAY is", day);
+						console.log("CASE block: 901 - 1123");
+						if (this.seasonNumber < 901 || this.seasonNumber > 1123) {
+							console.log("this.snow in BoardGame", this.snow);
+							console.log("IF block");
+							console.log("Season number before", this.seasonNumber);
+							this.seasonNumber = day;
+							console.log("Season number after", this.seasonNumber);
+							this.snow = new Snow.default({
+								id: "snow",
+								min_size: 15,
+								max_size: 25,
+								image: require("../../assets/board-game/autumn.svg"),
+							});
 							this.snow.toggle();
-						}, 8000);
-					}
-					break;
-				case day >= 1204 && day <= 1219:
-					if (this.seasonNumber < 1204 || this.seasonNumber > 1219) {
-						this.seasonNumber = day;
-						this.snow = new Snow.default({
-							id: "snow",
-							min_size: 15,
-							max_size: 25,
-							image: require("../../assets/board-game/winter.svg"),
-						});
-						this.snow.toggle();
-						setTimeout(() => {
+							setTimeout(() => {
+								this.snow.toggle();
+							}, 8000);
+						}
+						break;
+					case day >= 1204 && day <= 1219:
+						console.log("DAY is", day);
+						console.log("CASE block: 1204 - 1219");
+						if (this.seasonNumber < 1204 || this.seasonNumber > 1219) {
+							console.log("this.snow in BoardGame", this.snow);
+							console.log("IF block");
+							console.log("Season number before", this.seasonNumber);
+							this.seasonNumber = day;
+							console.log("Season number after", this.seasonNumber);
+							this.snow = new Snow.default({
+								id: "snow",
+								min_size: 15,
+								max_size: 25,
+								image: require("../../assets/board-game/winter.svg"),
+							});
 							this.snow.toggle();
-						}, 8000);
-					}
-					break;
+							setTimeout(() => {
+								this.snow.toggle();
+							}, 8000);
+						}
+						break;
+				}
 			}
 		},
 	},
@@ -850,11 +892,11 @@ export default {
 			}
 		},
 
-		"currentDevicePlayer.currentDay.deskOrder": function() {
-			if (this.isCurrentPlayer && this.currentDevicePlayer.currentDay.deskOrder != null) {
-				this.seasonChanged();
-			}
-		},
+		// "currentDevicePlayer.currentDay.deskOrder": function() {
+		// 	if (this.isCurrentPlayer && this.currentDevicePlayer.currentDay.deskOrder != null) {
+		// 		this.seasonChanged();
+		// 	}
+		// },
 	},
 
 	mounted() {
