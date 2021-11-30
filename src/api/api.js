@@ -71,7 +71,11 @@ export default {
 
     async attachAgoraId(uid) {
         try {
-            return await axios.get("/api/v1/moderate/agoraId?agoraId="+uid);
+            return await axios.post("/api/v1/moderate/agoraId", uid, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
         } catch (error) { }
     }
 
