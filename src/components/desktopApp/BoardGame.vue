@@ -99,7 +99,6 @@
 									</b-button>
 
 									<img :src="diceUrl" v-if="game.step.counter" />
-
 								</div>
 
 								<div
@@ -570,7 +569,7 @@ export default {
 
 			seasonNumber: 0,
 			snow: Object,
-      
+
 			currentLanguage: "",
 			playersInGame: [],
 			currentDevicePlayer: {},
@@ -896,6 +895,8 @@ export default {
 						break;
 				}
 			}
+		},
+
 		setRoomDetails() {
 			this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then(response => {
 				this.roomDetails = response;
@@ -1027,6 +1028,8 @@ p {
 
 .board-game-row img {
 	width: 50vw;
+}
+
 .left-side .col:first-child button p,
 .left-side .col:first-child a p {
 	font-family: "Montserrat";
