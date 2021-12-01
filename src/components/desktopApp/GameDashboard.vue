@@ -177,7 +177,7 @@ export default {
 		await this.$store.dispatch("setDevicePlayerIdAction");
 
 		let initialRoomInterval = setInterval(() => {
-			if (this.currentRoomId == "" || !Object.keys(this.currentRoom).length) {
+			if (this.sortedRooms.length && (this.currentRoomId == "" || !Object.keys(this.currentRoom).length)) {
 				this.currentRoom = this.getActiveRoomsAndSortByPlayersCountAsc[0];
 				this.currentRoomId = this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
 			} else {

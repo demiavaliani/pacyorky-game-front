@@ -519,6 +519,7 @@ export default {
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 			inited: false,
+			diceRolledTemporary: "",
 			diceRolled: "initial",
 
 			cardsToThrow: [],
@@ -650,6 +651,8 @@ export default {
 			let board = elem.getBoundingClientRect();
 			this.boardX = board.x;
 			this.boardY = board.y;
+			console.log("boardX: ", this.boardX);
+			console.log("boardY: ", this.boardY);
 
 			imageMapResize();
 		},
@@ -665,31 +668,18 @@ export default {
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-						if (this.isCurrentPlayer && this.diceRolled == "initial") {
-							playerFigure.style.left = `${this.boardX +
-								parseFloat(coordsAttrArray[0]) -
-								elementWidth / 2}px`;
-							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
-							this.inited = true;
-							this.diceRolled = "unset";
-						}
+						playerFigure.style.left = `${this.boardX +
+							parseFloat(coordsAttrArray[0]) -
+							elementWidth / 2}px`;
+						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+						this.inited = true;
 
-						if (this.isCurrentPlayer && this.diceRolled == "each-roll") {
+						if (
+							this.isCurrentPlayer &&
+							(this.diceRolled == "each-roll" || this.diceRolled == "initial")
+						) {
 							this.seasonChanged();
-							playerFigure.style.left = `${this.boardX +
-								parseFloat(coordsAttrArray[0]) -
-								elementWidth / 2}px`;
-							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
-							this.inited = true;
 							this.diceRolled = "unset";
-						}
-
-						if (!this.isCurrentPlayer) {
-							playerFigure.style.left = `${this.boardX +
-								parseFloat(coordsAttrArray[0]) -
-								elementWidth / 2}px`;
-							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
-							this.inited = true;
 						}
 					}
 				}
