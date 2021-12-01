@@ -1,5 +1,7 @@
 <template>
 	<div id="main-div">
+		<div id="snow" style="position: absolute; width: 100vw; height: 100vh"></div>
+
 		<div id="overlay">
 			<progress value="0"></progress>
 		</div>
@@ -19,7 +21,7 @@
 			ref="gameLogic"
 			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
-			@show-throw-cards-modal="showThrowCardsModalBtnDisabled = false"
+			@show-throw-cards-modal="showThrowCardsModalBtnDisabledTemporary = false"
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
@@ -95,17 +97,9 @@
 									>
 										<p>{{ $ml.get("throw_cards") }}</p>
 									</b-button>
-									<img
-										:src="
-											require('@/assets/board-game/dice-' +
-												game.step.counter +
-												'-' +
-												(game.capacity > 4 ? 2 : 1) +
-												'.svg')
-										"
-										:style="{ width: '39px' }"
-										v-if="game.step.counter"
-									/>
+
+									<img :src="diceUrl" v-if="game.step.counter" />
+
 								</div>
 
 								<div
@@ -524,6 +518,7 @@ import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
 import RTCClient from "./agora/RTCClient";
+import * as Snowfall from "../../plugins/snowfall/snowfall.js";
 
 export default {
 	name: "BoardGame",
@@ -542,6 +537,7 @@ export default {
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 			inited: false,
+			diceRolled: "initial",
 
 			cardsToThrow: [],
 			cardsToVote: [],
@@ -554,6 +550,7 @@ export default {
 			stuffDeck: [],
 
 			throwCardsModalVisible: false,
+			showThrowCardsModalBtnDisabledTemporary: false,
 			showThrowCardsModalBtnDisabled: false,
 			voteModalVisible: false,
 			gameEndedModalVisible: false,
@@ -568,6 +565,12 @@ export default {
 			dayDescription: false,
 
 			gameState: "",
+			intervalDice: "",
+			diceUrl: "",
+
+			seasonNumber: 0,
+			snow: Object,
+      
 			currentLanguage: "",
 			playersInGame: [],
 			currentDevicePlayer: {},
@@ -602,18 +605,6 @@ export default {
 	},
 
 	methods: {
-		timerAnimate(startAt) {
-			let actionTimeUtc = new Date(startAt).toUTCString();
-			let currentTimeUtc = new Date().toUTCString();
-			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
-			let timerRect = document.querySelector(".timer-rect");
-
-			timerRect.animate([{ width: "229px" }, { width: "0" }], {
-				duration: msTillAction,
-				fill: "forwards",
-			});
-		},
-
 		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
@@ -633,6 +624,7 @@ export default {
 
 		callThrowDice() {
 			this.diceBtnDisabled = true;
+			this.showThrowCardsModalBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
 		},
 
@@ -691,11 +683,32 @@ export default {
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-						playerFigure.style.left = `${this.boardX +
-							parseFloat(coordsAttrArray[0]) -
-							elementWidth / 2}px`;
-						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
-						this.inited = true;
+						if (this.isCurrentPlayer && this.diceRolled == "initial") {
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+							this.diceRolled = "unset";
+						}
+
+						if (this.isCurrentPlayer && this.diceRolled == "each-roll") {
+							this.seasonChanged();
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+							this.diceRolled = "unset";
+						}
+
+						if (!this.isCurrentPlayer) {
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+						}
 					}
 				}
 			}
@@ -763,6 +776,126 @@ export default {
 			});
 		},
 
+		diceAnimate() {
+			let count = 0;
+
+			if (this.game && this.game.step.counter != null) {
+				this.intervalDice = setInterval(() => {
+					if (count >= 30) {
+						clearInterval(this.intervalDice);
+						this.diceUrl = require("@/assets/board-game/dice-" +
+							this.game.step.counter +
+							"-" +
+							(this.game.capacity > 4 ? 2 : 1) +
+							".svg");
+						this.diceRolled = "each-roll";
+						if (this.showThrowCardsModalBtnDisabledTemporary == false) {
+							this.showThrowCardsModalBtnDisabled = false;
+						}
+					} else {
+						count++;
+						let random = Math.floor(Math.random() * 6) + 1;
+						this.diceUrl = require("@/assets/board-game/dice-" +
+							random +
+							"-" +
+							(this.game.capacity > 4 ? 2 : 1) +
+							".svg");
+					}
+				}, 100);
+			}
+		},
+
+		timerAnimate(startAt) {
+			let actionTimeUtc = new Date(startAt).toUTCString();
+			let currentTimeUtc = new Date().toUTCString();
+			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
+			let timerRect = document.querySelector(".timer-rect");
+
+			timerRect.animate([{ width: "229px" }, { width: "0" }], {
+				duration: msTillAction,
+				fill: "forwards",
+			});
+		},
+
+		makeItSnow(season) {
+			let snowflake = document.querySelector("#snow");
+			snowflake.style.opacity = 1;
+
+			$("#snow").snowfall({
+				flakeCount: 70,
+				image: require(`../../assets/board-game/${season}.svg`),
+				minSize: 10,
+				maxSize: 20,
+				minSpeed: 1,
+				maxSpeed: 2,
+				shadow: false,
+			});
+
+			setTimeout(() => {
+				if (snowflake) {
+					let snowflakeOpacityInterval = setInterval(() => {
+						if (snowflake.style.opacity == 0) {
+							snowflake.querySelectorAll("img").forEach(item => item.remove());
+							clearInterval(snowflakeOpacityInterval);
+						} else {
+							snowflake.style.opacity = snowflake.style.opacity - 0.1;
+						}
+					}, 300);
+				}
+			}, 8000);
+		},
+
+		seasonChanged() {
+			if (this.isCurrentPlayer && this.currentDevicePlayer.currentDay.deskOrder != null) {
+				let day = this.currentDevicePlayer.currentDay.deskOrder;
+
+				switch (true) {
+					case day >= 301 && day <= 523:
+						console.log("DAY is", day);
+						console.log("CASE block: 301 - 523");
+						if (this.seasonNumber < 301 || this.seasonNumber > 523) {
+							console.log("IF block");
+							console.log("Season number before", this.seasonNumber);
+							this.seasonNumber = day;
+							console.log("Season number after", this.seasonNumber);
+							this.makeItSnow("spring");
+						}
+						break;
+					case day >= 601 && day <= 819:
+						console.log("DAY is", day);
+						console.log("CASE block: 601 - 819");
+						if (this.seasonNumber < 601 || this.seasonNumber > 819) {
+							console.log("IF block");
+							console.log("Season number before", this.seasonNumber);
+							this.seasonNumber = day;
+							console.log("Season number after", this.seasonNumber);
+							this.makeItSnow("summer");
+						}
+						break;
+					case day >= 901 && day <= 1123:
+						console.log("DAY is", day);
+						console.log("CASE block: 901 - 1123");
+						if (this.seasonNumber < 901 || this.seasonNumber > 1123) {
+							console.log("IF block");
+							console.log("Season number before", this.seasonNumber);
+							this.seasonNumber = day;
+							console.log("Season number after", this.seasonNumber);
+							this.makeItSnow("autumn");
+						}
+						break;
+					case day >= 1204 && day <= 1219:
+						console.log("DAY is", day);
+						console.log("CASE block: 1204 - 1219");
+						if (this.seasonNumber < 1204 || this.seasonNumber > 1219) {
+							console.log("IF block");
+							console.log("Season number before", this.seasonNumber);
+							this.seasonNumber = day;
+							console.log("Season number after", this.seasonNumber);
+							this.makeItSnow("winter");
+						}
+						break;
+				}
+			}
 		setRoomDetails() {
 			this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then(response => {
 				this.roomDetails = response;
@@ -812,6 +945,21 @@ export default {
 		"game.nextStepAt": function() {
 			if (this.game.status === "STARTED" && this.game.nextStepAt) {
 				this.timerAnimate(this.game.nextStepAt);
+			}
+		},
+
+		"game.step.counter": function() {
+			if (this.game && this.game.step && this.game.step.counter != null) {
+				if (this.isCurrentPlayer) {
+					this.diceAnimate();
+				} else {
+					clearInterval(this.intervalDice);
+					this.diceUrl = require("@/assets/board-game/dice-" +
+						this.game.step.counter +
+						"-" +
+						(this.game.capacity > 4 ? 2 : 1) +
+						".svg");
+				}
 			}
 		},
 	},
@@ -873,6 +1021,12 @@ p {
 	color: black;
 }
 
+.board-game-row {
+	position: relative;
+}
+
+.board-game-row img {
+	width: 50vw;
 .left-side .col:first-child button p,
 .left-side .col:first-child a p {
 	font-family: "Montserrat";
@@ -1026,6 +1180,8 @@ p {
 	position: absolute;
 	top: 450px;
 	z-index: 1;
+	transition-duration: 1s;
+	transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 }
 ::v-deep .btn.dropdown-toggle {
 	border: 0;
