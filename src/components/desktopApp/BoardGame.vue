@@ -668,16 +668,15 @@ export default {
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-						playerFigure.style.left = `${this.boardX +
-							parseFloat(coordsAttrArray[0]) -
-							elementWidth / 2}px`;
-						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
-						this.inited = true;
+						if (this.diceRolled === "initial" || this.diceRolled === "each-roll") {
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+						}
 
-						if (
-							this.isCurrentPlayer &&
-							(this.diceRolled == "each-roll" || this.diceRolled == "initial")
-						) {
+						if (this.isCurrentPlayer && this.diceRolled == "each-roll") {
 							this.seasonChanged();
 							this.diceRolled = "unset";
 						}
