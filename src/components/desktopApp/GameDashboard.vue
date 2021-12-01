@@ -103,6 +103,7 @@ export default {
 			showCreateRoomModal: false,
 			showJoinRoomModal: false,
 			currentRoom: {},
+			sortedRooms: [],
 			currentRoomId: "",
 			roomSelected: false,
 			disabled: true,
@@ -117,7 +118,7 @@ export default {
 		}),
 
 		getActiveRoomsAndSortByPlayersCountAsc() {
-			return this.activeRooms
+			return (this.sortedRooms = this.activeRooms
 				.sort((a, b) => {
 					var roomA = a.playersCount;
 					var roomB = b.playersCount;
@@ -129,7 +130,7 @@ export default {
 					}
 					return 0;
 				})
-				.slice(0, 6);
+				.slice(0, 6));
 		},
 	},
 
@@ -157,14 +158,11 @@ export default {
 	},
 
 	watch: {
-		getActiveRoomsAndSortByPlayersCountAsc: {
-			immediate: true,
-			async handler() {
-				if (this.getActiveRoomsAndSortByPlayersCountAsc.length < 1) {
-					this.roomSelected = false;
-					this.disabled = false;
-				}
-			},
+		roomSelected() {
+			if (this.sortedRooms.length < 1) {
+				this.roomSelected = false;
+				this.disabled = false;
+			}
 		},
 	},
 
