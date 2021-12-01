@@ -6,7 +6,7 @@
 		:hide-header="headerHidden"
 		no-close-on-esc
 		no-close-on-backdrop
-		size="lg"
+		size="custom-size"
 		centered
 		ok-only
 	>
@@ -46,15 +46,19 @@ export default {
 <style scoped>
 ::v-deep .modal-dialog {
 	justify-content: center;
+	max-width: none;
+}
+
+::v-deep .modal-custom-size {
+	width: 50vw;
 }
 
 ::v-deep .modal-content {
-	width: 120%;
 	border-radius: 10px;
 }
 
 ::v-deep img {
-	width: 9vw;
+	width: 100%;
 }
 
 ::v-deep .modal-header {
