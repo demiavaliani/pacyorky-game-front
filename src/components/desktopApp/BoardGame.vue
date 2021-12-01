@@ -40,13 +40,6 @@
 							<p>{{ $ml.get("go_to_home_page") }}</p>
 						</b-button>
 					</div>
-
-					<b-button
-						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
-						to="/game-dashboard"
-					>
-						<p>{{ $ml.get("go_to_home_page") }}</p>
-					</b-button>
 				</b-col>
 
 				<b-col>
