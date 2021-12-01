@@ -69,7 +69,7 @@
 								</p>
 								<p v-else-if="!isCurrentPlayer">
 									{{ $ml.get("current_player") }}
-									{{ this.game.step.currentPlayer.character.name }}
+									{{ $ml.get(this.game.step.currentPlayer.character.name) }}
 								</p>
 							</b-col>
 

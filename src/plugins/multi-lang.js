@@ -133,6 +133,14 @@ export default new MLCreate({
 			left_chat: 'вийти з чату',
 			in_chat: 'у чаті',
 			current_player: 'Грає зараз: ',
+            dochka_solomia : 'Донька Соломія',
+            dochka_orisja : 'Донька Орися',
+            gospodinja_ivga : 'Господиня Ївга',
+            baba_docka : 'Баба Доцька',
+            gospodar_vukol : 'Господар Вукол',
+            did_bojan : 'Дід Боян',
+            sin_gnat : 'Син Гнат',
+            legin_ustim : 'Легінь Устим',
 		}),
 		new MLanguage('Estonian').create({
 			"": "",
@@ -259,9 +267,17 @@ export default new MLCreate({
 			join_chat: 'siseneda vestlusesse',
 			left_chat: 'lahkuda vestlusest',
 			in_chat: 'olen vastluses',
-			current_player: 'mängib praegu: '
+			current_player: 'mängib praegu: ',
+            dochka_solomia : 'Tütar Solomia',
+            dochka_orisja : 'Tütar Orõsja',
+            gospodinja_ivga : 'Perenaine Jivga',
+            baba_docka : 'Eit Dotska',
+            gospodar_vukol : 'Peremees Vukol',
+            did_bojan : 'Taat Bojan',
+            sin_gnat : 'Poeg Gnat',
+            legin_ustim : 'Noormees Ustõm',
 		}),
-		new MLanguage('English').create({
+		/*new MLanguage('English').create({
 			"": "",
 			please_add_new_game: 'В данный момент игр нет. Добавьте новую',
 			home: 'главная',
@@ -385,7 +401,15 @@ export default new MLCreate({
 			left_chat: 'вийти з чату',
 			in_chat: 'у чаті',
 			current_player: 'Грає зараз',
-		}),
+            dochka_solomia : '',
+            dochka_orisja : '',
+            gospodinja_ivga : '',
+            baba_docka : '',
+            gospodar_vukol : '',
+            did_bojan : '',
+            sin_gnat : '',
+            legin_ustim : '',
+		}),*/
 		new MLanguage('Russian').create({
 			"": "",
 			please_add_new_game: 'В данный момент игр нет. Добавьте новую',
@@ -511,7 +535,15 @@ export default new MLCreate({
 			join_chat: 'войти в чат',
 			left_chat: 'выйти из чата',
 			in_chat: 'в чате',
-			current_player: 'Сейчас игрет: '
+			current_player: 'Сейчас игрет: ',
+            dochka_solomia : 'Дочка Соломия',
+            dochka_orisja : 'Дочка Орыся',
+            gospodinja_ivga : 'Хозяйка Йивга',
+            baba_docka : 'Баба Доцька',
+            gospodar_vukol : 'Хозяин Вукол',
+            did_bojan : 'Дед Боян',
+            sin_gnat : 'Сын Гнат',
+            legin_ustim : 'Юноша Устим',
 		}),
 	]
 })
