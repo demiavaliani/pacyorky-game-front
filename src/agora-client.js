@@ -95,6 +95,10 @@ export default class RTCClient {
     leaveChannel() {
         return new Promise((resolve, reject) => {
             // Leave the channel
+            if(!this.localStream) {
+                resolve();
+                return;
+            }
             this.client.unpublish(this.localStream, (err) => {
                 console.log(err)
             })
