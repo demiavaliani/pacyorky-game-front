@@ -420,7 +420,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
+		<GameEndedModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<b-row class="d-flex justify-content-center">
 					<b-col cols="12" class="my-2">
@@ -459,7 +459,7 @@
 					</p>
 				</b-button>
 			</template>
-		</InGameModal>
+		</GameEndedModal>
 
 		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
@@ -516,6 +516,7 @@ import { mapState } from "vuex";
 import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
+import GameEndedModal from "../modals/GameEndedModal.vue";
 import RTCClient from "./agora/RTCClient";
 import * as Snowfall from "../../plugins/snowfall/snowfall.js";
 
@@ -527,6 +528,7 @@ export default {
 		GameLogic,
 		ActiveRoomsGraph,
 		InGameModal,
+		GameEndedModal,
 	},
 
 	data() {

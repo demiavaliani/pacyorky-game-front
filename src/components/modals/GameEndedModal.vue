@@ -50,7 +50,7 @@ export default {
 }
 
 ::v-deep .modal-custom-size {
-	width: 60vw;
+	width: 44vw;
 }
 
 ::v-deep .modal-content {
@@ -58,7 +58,7 @@ export default {
 }
 
 ::v-deep img {
-	width: 9vw;
+	width: 100%;
 }
 
 ::v-deep .modal-header {
