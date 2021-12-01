@@ -3,7 +3,7 @@
 		<NavBar v-if="$route.name != 'boardGame'"></NavBar>
 		<router-view></router-view>
 		<MainFooter v-if="$route.name != 'boardGame'"></MainFooter>
-		<!-- <ErrorModal></ErrorModal> -->
+		<ErrorModal></ErrorModal>
 	</div>
 </template>
 
@@ -22,6 +22,7 @@ import CreateRoomModal from "@/components/modals/CreateRoomModal";
 import JoinRoomModal from "@/components/modals/JoinRoomModal";
 import GameLogic from "@/components/desktopApp/GameLogic";
 import InGameModal from "@/components/modals/InGameModal";
+import GameEndedModal from "@/components/modals/GameEndedModal";
 
 export default {
 	name: "app",

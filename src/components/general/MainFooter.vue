@@ -36,11 +36,11 @@
 					<div class="w-100"></div>
 
 					<b-col lg="3" md="6" order-md="3" order-lg="0" class="py-md-1">
-						<p>pacyorky.ee</p>
+						<a href="https://pacyorky.ee/" target="_blank">pacyorky.ee</a>
 					</b-col>
 
 					<b-col lg="3" md="6" order-md="4" order-lg="0" class="py-md-1">
-						<p>info@pacyorky.ee</p>
+						<a href="mailto:info@pacyorky.ee" target="_blank">info@pacyorky.ee</a>
 					</b-col>
 
 					<b-col lg="6" md="6" order-md="8" order-lg="0" class="d-flex align-items-center py-md-1">
@@ -60,21 +60,21 @@
 					</b-col>
 
 					<b-col lg="3" md="6" order-md="5" order-lg="0" class="py-md-1">
-						<p>vodograi.ee</p>
+						<a href="http://vodograi.ee/" target="_blank">vodograi.ee</a>
 					</b-col>
 
 					<b-col lg="3" md="6" order-md="6" order-lg="0" class="py-md-1">
 						<b-row>
 							<b-col class="pr-1">
-								<img src="@/assets/footer/footer-facebook.svg" style="width: 25px;" />
+                <a href="https://www.facebook.com/vodograi.estonia/" target="_blank"><img src="@/assets/footer/footer-facebook.svg" style="width: 25px;" /></a>
 							</b-col>
 
 							<b-col class="px-1">
-								<img src="@/assets/footer/footer-share.svg" style="width: 20px;" />
+								<a href="https://www.facebook.com/sharer/sharer.php?kid_directed_site=0&u=https%3A%2F%2Fwww.facebook.com%2Fpacyorky.ee%2F&display=popup&ref=plugin&src=share_button" target="_blank"><img src="@/assets/footer/footer-share.svg" style="width: 20px;" /></a>
 							</b-col>
 
 							<b-col class="pl-1">
-								<img src="@/assets/footer/footer-email.svg" style="width: 25px;" />
+                <a href="mailto:info@pacyorky.ee" target="_blank"><img src="@/assets/footer/footer-email.svg" style="width: 25px;" /></a>
 							</b-col>
 						</b-row>
 					</b-col>
@@ -91,6 +91,12 @@ export default {
 </script>
 
 <style scoped>
+a {
+  color: #212529;
+  margin-bottom: 0;
+  font-family: "Montserrat";
+  font-size: max(13px, 0.73vw);
+}
 p {
 	margin-bottom: 0;
 	font-family: "Montserrat";

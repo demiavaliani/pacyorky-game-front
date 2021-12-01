@@ -1,5 +1,7 @@
 <template>
 	<div id="main-div">
+		<div id="snow" style="position: absolute; width: 100vw; height: 100vh"></div>
+
 		<div id="overlay">
 			<progress value="0"></progress>
 		</div>
@@ -19,7 +21,7 @@
 			ref="gameLogic"
 			@start-game-btn-disabled="startGameBtnDisabled = $event"
 			@throw-dice-disabled="diceBtnDisabled = $event"
-			@show-throw-cards-modal="throwCardsModalVisible = true"
+			@show-throw-cards-modal="showThrowCardsModalBtnDisabledTemporary = false"
 			@dropped-cards="populateVoteCardDecks($event)"
 			@show-vote-modal="voteModalVisible = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
@@ -32,16 +34,23 @@
 		>
 		</GameLogic>
 
-		<b-container
-			fluid
-			class="d-flex justify-content-between align-items-center main-container px-0 h-100"
-		>
-			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
-				<RTCClient
-					v-if="game && game.token && game.token !== ''"
-					:token="game.token"
-					:channel="String(game.id)"
-				/>
+		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
+			<b-row class="left-side ml-3 mb-5 pt-5 h-100 d-flex align-content-between">
+				<b-col class="h-25">
+					<div v-if="gameState === 'game-not-started'">
+						<b-button to="/game-dashboard">
+							<p>{{ $ml.get("go_to_home_page") }}</p>
+						</b-button>
+					</div>
+				</b-col>
+
+				<b-col>
+					<RTCClient
+						v-if="game && game.token && game.token !== ''"
+						:token="game.token"
+						:channel="String(game.id)"
+					/>
+				</b-col>
 
 				<b-col>
 					<div class="game-controls-box" style="min-height: 300px">
@@ -52,7 +61,8 @@
 									{{ $ml.get("my_turn") }}
 								</p>
 								<p v-else-if="!isCurrentPlayer">
-									{{ $ml.get("current_player") }} {{ this.game.step.currentPlayer.character.name }}
+									{{ $ml.get("current_player") }}
+									{{ $ml.get(this.game.step.currentPlayer.character.name) }}
 								</p>
 							</b-col>
 
@@ -69,16 +79,19 @@
 									>
 										<p>{{ $ml.get("throw_dice") }}</p>
 									</b-button>
-									<img
-										v-if="game.step.counter"
-										:src="
-											require('@/assets/board-game/dice-' +
-												game.step.counter +
-												'-' +
-												(game.capacity > 4 ? 2 : 1) +
-												'.svg')
+									<b-button
+										class="throw-dice-btn mr-3"
+										:disabled="showThrowCardsModalBtnDisabled"
+										@click="
+											throwCardsModalVisible = true;
+											showThrowCardsModalBtnDisabled = true;
 										"
-									/>
+										v-else-if="isCurrentPlayer && game.step.status === 'WAITING_CARD'"
+									>
+										<p>{{ $ml.get("throw_cards") }}</p>
+									</b-button>
+
+									<img :src="diceUrl" v-if="game.step.counter" />
 								</div>
 
 								<div
@@ -132,8 +145,8 @@
 			<div class="board-game-row">
 				<img
 					id="board"
-					src="@/assets/board-game/board-1.svg"
 					class="board-game-img"
+					:src="boardLanguage"
 					usemap="#image-map"
 					@load="getBoardPosition"
 				/>
@@ -173,13 +186,7 @@
 					<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
 					<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
 					<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
-					<area
-						alt="927"
-						href=""
-						data-name="vozdvizhennja_hrista"
-						coords="210,336,20"
-						shape="circle"
-					/>
+					<area alt="927" href="" data-name="vozdvizhennja_hrista" coords="210,336,20" shape="circle" />
 					<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
 					<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
 					<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
@@ -196,33 +203,39 @@
 				</map>
 			</div>
 
-			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
+			<b-row class="d-flex justify-content-end align-items-center right-side mr-0 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
 					<b-dropdown :text="$ml.current">
 						<b-dropdown-item
 							v-for="lang in $ml.list"
 							v-if="lang !== $ml.current"
 							:key="lang"
-							@click="$ml.change(lang)"
+							@click="
+								$ml.change(lang);
+								currentLanguage = $ml.current.toLowerCase();
+							"
 						>
-							{{ lang }}
+							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
-					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
+					<p class="room-name">{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”</p>
 
-					<b-button v-if="gameState === 'default'" @click="leaveRoom()">
+					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
 						<p>{{ $ml.get("end_game") }}</p>
 					</b-button>
 
-					<b-button v-else-if="gameState === 'game-not-started'" @click="joinRoom()">
+					<b-button
+						v-else-if="gameState === 'game-not-started'"
+						@click="joinRoom()"
+						:disabled="joinRoomBtnDisabled"
+					>
 						<p>{{ $ml.get("join_room") }}</p>
 					</b-button>
 
-					<b-button v-else-if="gameState === 'spectator'" to="/game-dashboard">
-						<p>{{ $ml.get("go_to_home_page") }}</p>
-					</b-button>
-
-					<b-button v-else-if="gameState === 'game-finished-cancelled'" to="/game-dashboard">
+					<b-button
+						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
+						to="/game-dashboard"
+					>
 						<p>{{ $ml.get("go_to_home_page") }}</p>
 					</b-button>
 				</b-col>
@@ -235,40 +248,48 @@
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
 					></ActiveRoomsGraph>
+
+					<ActiveRoomsGraph
+						v-else-if="roomDetails.players"
+						class="active-rooms-graph"
+						:currentRoomFromActiveRoomsGraph="roomDetails"
+						:displayRoomName="false"
+						:activePlayersCountFromActiveRoomsGraph="roomDetails.players.length"
+					></ActiveRoomsGraph>
 				</b-col>
 
 				<b-col cols="12" class="d-flex justify-content-end">
 					<div class="my-cards-box">
-						<b-row class="d-flex justify-content-end align-items-start h-100 mx-auto">
-							<b-col cols="auto" class="d-flex flex-column">
+						<b-row class="d-flex justify-content-start align-items-start h-100 mx-auto">
+							<b-col cols="11" class="text-center pr-0">
 								<p>{{ $ml.get("deck") }}</p>
 							</b-col>
 
-							<b-col cols="auto" class="pr-0 d-flex flex-column">
+							<b-col cols="1" class="d-flex px-0">
 								<img src="@/assets/board-game/info-sign.svg" width="18" />
 							</b-col>
 
-							<b-col cols="12" class="pl-0 pr-4">
+							<b-col cols="12" class="first-row-deck">
 								<b-row class="cards mx-auto">
-									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in dishesDeck">
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
-									</div>
+									</b-col>
 								</b-row>
 							</b-col>
 
-							<b-col cols="12" class="pl-0 pr-4">
+							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in ritualsDeck">
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in ritualsDeck">
 										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
-									</div>
+									</b-col>
 								</b-row>
 							</b-col>
 
-							<b-col cols="12" class="pl-0 pr-4">
+							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<div class="p-0" style="width: 53px; height: 73px;" v-for="card in stuffDeck">
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in stuffDeck">
 										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
-									</div>
+									</b-col>
 								</b-row>
 							</b-col>
 						</b-row>
@@ -369,17 +390,40 @@
 			<template v-slot:footer>
 				<b-button @click="callVote()">
 					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
-						{{ $ml.get("throw_cards") }}
+						{{ $ml.get("WAITING_VOTE") }}
 					</p>
 				</b-button>
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
+		<GameEndedModal
+			v-if="game && game.players && (game.status === 'FINISHED' || game.status === 'CANCELLED')"
+			:modalVisible="gameEndedModalVisible"
+			:footerHidden="false"
+			:headerHidden="true"
+		>
 			<template v-slot:upper-half>
-				<p v-bind:style="{ fontFamily: 'Montserrat', fontWeight: '500', fontSize: '35px' }">
-					{{ $ml.get("game_ended") }}
-				</p>
+				<b-row class="d-flex justify-content-center">
+					<b-col cols="12" class="my-2">
+						<p
+							v-bind:style="{
+								fontFamily: 'Montserrat',
+								fontWeight: '500',
+								fontSize: '35px',
+							}"
+						>
+							{{ $ml.get("game_ended") }}
+						</p>
+					</b-col>
+
+					<b-col cols="3" class="my-2" v-for="player in game.players" :key="player.id">
+						<img :src="require('@/assets/cards/character/' + player.character.name + '.png')" />
+						<p style="font-size: 26px">
+							{{ player.character.name }}
+						</p>
+						<p style="font-size: 24px">{{ $ml.get("happiness") }} - {{ player.happiness }}</p>
+					</b-col>
+				</b-row>
 			</template>
 
 			<template v-slot:footer>
@@ -396,7 +440,7 @@
 					</p>
 				</b-button>
 			</template>
-		</InGameModal>
+		</GameEndedModal>
 
 		<InGameModal :modalVisible="stepTimeOutModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
@@ -453,7 +497,9 @@ import { mapState } from "vuex";
 import GameLogic from "./GameLogic";
 import ActiveRoomsGraph from "./ActiveRoomsGraph.vue";
 import InGameModal from "../modals/InGameModal.vue";
+import GameEndedModal from "../modals/GameEndedModal.vue";
 import RTCClient from "./agora/RTCClient";
+import * as Snowfall from "../../plugins/snowfall/snowfall.js";
 
 export default {
 	name: "BoardGame",
@@ -463,17 +509,17 @@ export default {
 		GameLogic,
 		ActiveRoomsGraph,
 		InGameModal,
+		GameEndedModal,
 	},
 
 	data() {
 		return {
-			currentDevicePlayer: {},
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 			inited: false,
-			playersInGame: [],
+			diceRolled: "initial",
 
 			cardsToThrow: [],
 			cardsToVote: [],
@@ -486,17 +532,31 @@ export default {
 			stuffDeck: [],
 
 			throwCardsModalVisible: false,
+			showThrowCardsModalBtnDisabledTemporary: false,
+			showThrowCardsModalBtnDisabled: false,
 			voteModalVisible: false,
 			gameEndedModalVisible: false,
 			stepTimeOutModalVisible: false,
 
 			diceBtnDisabled: true,
 			startGameBtnDisabled: true,
+			endGameBtnDisabled: false,
+			joinRoomBtnDisabled: false,
 
 			modalDay: "day",
 			dayDescription: false,
 
 			gameState: "",
+			intervalDice: "",
+			diceUrl: "",
+
+			seasonNumber: 0,
+			snow: Object,
+
+			currentLanguage: "",
+			playersInGame: [],
+			currentDevicePlayer: {},
+			roomDetails: Object,
 		};
 	},
 
@@ -519,21 +579,14 @@ export default {
 				return true;
 			}
 		},
+
+		boardLanguage() {
+			let boardSrc = require(`../../assets/board-game/board-${this.currentLanguage}.svg`);
+			return boardSrc;
+		},
 	},
 
 	methods: {
-		timerAnimate(startAt) {
-			let actionTimeUtc = new Date(startAt).toUTCString();
-			let currentTimeUtc = new Date().toUTCString();
-			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
-			let timerRect = document.querySelector(".timer-rect");
-
-			timerRect.animate([{ width: "229px" }, { width: "0" }], {
-				duration: msTillAction,
-				fill: "forwards",
-			});
-		},
-
 		chooseCardsForAction(id, ev, actionArray) {
 			let elementStyle = ev.target.style;
 
@@ -553,6 +606,7 @@ export default {
 
 		callThrowDice() {
 			this.diceBtnDisabled = true;
+			this.showThrowCardsModalBtnDisabled = true;
 			this.$refs.gameLogic.throwDice();
 		},
 
@@ -580,7 +634,15 @@ export default {
 		},
 
 		leaveRoom() {
+			this.endGameBtnDisabled = true;
+			this.joinRoomBtnDisabled = false;
 			api.leaveRoom().then();
+		},
+
+		joinRoom() {
+			this.joinRoomBtnDisabled = true;
+			this.endGameBtnDisabled = false;
+			api.joinRoom(this.$route.params.id).then(() => this.$store.dispatch("setGameAction"));
 		},
 
 		getBoardPosition() {
@@ -603,11 +665,32 @@ export default {
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 
-						playerFigure.style.left = `${this.boardX +
-							parseFloat(coordsAttrArray[0]) -
-							elementWidth / 2}px`;
-						playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
-						this.inited = true;
+						if (this.isCurrentPlayer && this.diceRolled == "initial") {
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+							this.diceRolled = "unset";
+						}
+
+						if (this.isCurrentPlayer && this.diceRolled == "each-roll") {
+							this.seasonChanged();
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+							this.diceRolled = "unset";
+						}
+
+						if (!this.isCurrentPlayer) {
+							playerFigure.style.left = `${this.boardX +
+								parseFloat(coordsAttrArray[0]) -
+								elementWidth / 2}px`;
+							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.inited = true;
+						}
 					}
 				}
 			}
@@ -660,12 +743,12 @@ export default {
 
 		loaderProgress() {
 			let progress = document.querySelector("progress");
-			let images = require.context("../../assets/cards/", true, /\.png/);
+			let images = require.context("../../assets/board-game/", true);
 			progress.max = images.keys().length;
 
 			images.keys().forEach(key => {
 				let img = new Image();
-				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.src = require("../../assets/board-game/" + key.replace("./", ""));
 				img.onload = () => {
 					progress.value++;
 					if (progress.value === images.keys().length) {
@@ -675,20 +758,119 @@ export default {
 			});
 		},
 
-		joinRoom() {
-			api.joinRoom(this.$route.params.id).then();
+		diceAnimate() {
+			let count = 0;
+
+			if (this.game && this.game.step.counter != null) {
+				this.intervalDice = setInterval(() => {
+					if (count >= 30) {
+						clearInterval(this.intervalDice);
+						this.diceUrl = require("@/assets/board-game/dice-" +
+							this.game.step.counter +
+							"-" +
+							(this.game.capacity > 4 ? 2 : 1) +
+							".svg");
+						this.diceRolled = "each-roll";
+						if (this.showThrowCardsModalBtnDisabledTemporary == false) {
+							this.showThrowCardsModalBtnDisabled = false;
+						}
+					} else {
+						count++;
+						let random = Math.floor(Math.random() * 6) + 1;
+						this.diceUrl = require("@/assets/board-game/dice-" +
+							random +
+							"-" +
+							(this.game.capacity > 4 ? 2 : 1) +
+							".svg");
+					}
+				}, 100);
+			}
+		},
+
+		timerAnimate(startAt) {
+			let actionTimeUtc = new Date(startAt).toUTCString();
+			let currentTimeUtc = new Date().toUTCString();
+			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
+			let timerRect = document.querySelector(".timer-rect");
+
+			timerRect.animate([{ width: "229px" }, { width: "0" }], {
+				duration: msTillAction,
+				fill: "forwards",
+			});
+		},
+
+		makeItSnow(season) {
+			let snowflake = document.querySelector("#snow");
+			snowflake.style.opacity = 1;
+
+			$("#snow").snowfall({
+				flakeCount: 70,
+				image: require(`../../assets/board-game/${season}.svg`),
+				minSize: 10,
+				maxSize: 20,
+				minSpeed: 1,
+				maxSpeed: 2,
+				shadow: false,
+			});
+
+			setTimeout(() => {
+				if (snowflake) {
+					let snowflakeOpacityInterval = setInterval(() => {
+						if (snowflake.style.opacity == 0) {
+							snowflake.querySelectorAll("img").forEach(item => item.remove());
+							clearInterval(snowflakeOpacityInterval);
+						} else {
+							snowflake.style.opacity = snowflake.style.opacity - 0.1;
+						}
+					}, 300);
+				}
+			}, 8000);
+		},
+
+		seasonChanged() {
+			if (this.isCurrentPlayer && this.currentDevicePlayer.currentDay.deskOrder != null) {
+				let day = this.currentDevicePlayer.currentDay.deskOrder;
+
+				switch (true) {
+					case day >= 301 && day <= 523:
+						if (this.seasonNumber < 301 || this.seasonNumber > 523) {
+							this.seasonNumber = day;
+							this.makeItSnow("spring");
+						}
+						break;
+					case day >= 601 && day <= 819:
+						if (this.seasonNumber < 601 || this.seasonNumber > 819) {
+							this.seasonNumber = day;
+							this.makeItSnow("summer");
+						}
+						break;
+					case day >= 901 && day <= 1123:
+						if (this.seasonNumber < 901 || this.seasonNumber > 1123) {
+							this.seasonNumber = day;
+							this.makeItSnow("autumn");
+						}
+						break;
+					case day >= 1204 && day <= 1219:
+						if (this.seasonNumber < 1204 || this.seasonNumber > 1219) {
+							this.seasonNumber = day;
+							this.makeItSnow("winter");
+						}
+						break;
+				}
+			}
+		},
+
+		setRoomDetails() {
+			this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then(response => {
+				this.roomDetails = response;
+			});
 		},
 	},
 
 	watch: {
 		game: {
 			handler: function() {
-				if (
-					this.game &&
-					this.game.status === "STARTED" &&
-					this.game.players &&
-					this.devicePlayerId
-				) {
+				if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
 					this.currentDevicePlayer = this.game.players.filter(
 						player => player.id == this.devicePlayerId
 					)[0];
@@ -729,9 +911,29 @@ export default {
 				this.timerAnimate(this.game.nextStepAt);
 			}
 		},
+
+		"game.step.counter": function() {
+			if (this.game && this.game.step && this.game.step.counter != null) {
+				if (this.isCurrentPlayer) {
+					this.diceAnimate();
+				} else {
+					clearInterval(this.intervalDice);
+					this.diceUrl = require("@/assets/board-game/dice-" +
+						this.game.step.counter +
+						"-" +
+						(this.game.capacity > 4 ? 2 : 1) +
+						".svg");
+				}
+			}
+		},
+	},
+
+	created() {
+		this.currentLanguage = this.$ml.current.toLowerCase();
 	},
 
 	mounted() {
+		this.setRoomDetails();
 		this.areaClick();
 		this.loaderProgress();
 	},
@@ -745,7 +947,7 @@ export default {
 
 #main-div {
 	height: 100vh;
-	background: url("../../assets/home-page/background-patterns.png") center no-repeat;
+	background: #f0f8ff url("../../assets/home-page/background-patterns.png") no-repeat center;
 	background-size: 100vw;
 }
 
@@ -783,8 +985,18 @@ p {
 	color: black;
 }
 
+.board-game-row {
+	position: relative;
+}
+
 .board-game-row img {
 	width: 50vw;
+}
+
+.left-side .col:first-child button p,
+.left-side .col:first-child a p {
+	font-family: "Montserrat";
+	font-size: 18px;
 }
 
 .game-controls-box {
@@ -820,6 +1032,10 @@ p {
 	width: 229px;
 }
 
+.board-game-row img {
+	width: 50vw;
+}
+
 .right-side p {
 	font-size: 50px;
 }
@@ -834,12 +1050,22 @@ p {
 	font-size: 18px;
 }
 
+.room-name {
+	display: -webkit-box;
+	width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+
 ::v-deep .men-img {
 	width: 10vw;
 }
 
 .my-cards-box {
-	width: 198px;
+	width: 10vw;
 	height: 380px;
 	padding: 10px;
 	border: 1px solid #e4e4e4;
@@ -862,68 +1088,25 @@ p {
 }
 
 .my-cards-box .cards img {
-	width: 53px;
+	width: 60px;
 }
 
 .cards .p-0:hover img {
 	position: absolute;
-	width: 110px;
+	width: 10vw;
+	left: -75px;
 	bottom: 100px;
 	z-index: 9999;
 }
 
-.cards :nth-child(10) {
-	position: absolute;
-	top: 3px;
-	left: 108px;
-}
-
-.cards :nth-child(9) {
-	position: absolute;
-	top: 3px;
-	left: 96px;
-}
-
-.cards :nth-child(8) {
-	position: absolute;
-	top: 6px;
-	left: 84px;
-}
-
-.cards :nth-child(7) {
-	position: absolute;
-	top: 9px;
-	left: 72px;
-}
-
-.cards :nth-child(6) {
-	position: absolute;
-	top: 12px;
-	left: 60px;
-}
-
-.cards :nth-child(5) {
-	position: absolute;
-	top: 15px;
-	left: 48px;
-}
-
-.cards :nth-child(4) {
-	position: absolute;
-	top: 18px;
-	left: 36px;
-}
-
-.cards :nth-child(3) {
-	position: absolute;
-	top: 21px;
-	left: 24px;
+.first-row-deck .p-0:hover img {
+	bottom: 60px;
 }
 
 .cards :nth-child(2) {
 	position: absolute;
-	top: 24px;
-	left: 12px;
+	top: 15px;
+	left: 55px;
 }
 
 .cards > :nth-child(1) {
@@ -963,6 +1146,8 @@ p {
 	position: absolute;
 	top: 450px;
 	z-index: 1;
+	transition-duration: 1s;
+	transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 }
 ::v-deep .btn.dropdown-toggle {
 	border: 0;
