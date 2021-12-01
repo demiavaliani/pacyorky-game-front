@@ -243,7 +243,9 @@
 							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
-					<p>{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”</p>
+					<!-- <div style="visibility: visible"> -->
+					<p class="room-name">{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”</p>
+					<!-- </div> -->
 
 					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
 						<p>{{ $ml.get("end_game") }}</p>
@@ -928,10 +930,11 @@ p {
 }
 
 .room-name {
+	display: -webkit-box;
 	width: 200px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	display: -webkit-box;
+	word-wrap: break-word;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
 }

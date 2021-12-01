@@ -18,25 +18,46 @@
 				<b-col cols="8">
 					<p>{{ $ml.get("play_with_computer") }}</p>
 				</b-col>
-				<b-col cols="2">
-					<b-form-radio-group class="d-flex justify-content-around">
-						<b-form-radio
+				<!-- <b-col cols="2"> -->
+				<!-- <b-form-radio-group class="d-flex justify-content-around"> -->
+				<!-- @change="checkActive('tick-active')" -->
+				<!-- @change="tickActive = 'tick'" -->
+				<!-- <b-form-radio
 							id="tick"
-							@change="tickActive = 'tick'"
 							v-model="roomForm.withComputer"
-							value="true"
+							@change="checkActive('tick')"
 							v-bind:class="tickActiveObj"
-							name="playwithcomputerselector"
-						></b-form-radio>
-						<b-form-radio
+						></b-form-radio> -->
+				<!-- @click="checkActive('x-active')" -->
+				<!-- @change="tickActive = 'x'" -->
+				<!-- <b-form-radio
 							id="x"
-							@change="tickActive = 'x'"
 							v-model="roomForm.withComputer"
-							value="false"
+							@change="checkActive('x')"
 							v-bind:class="xActiveObj"
-							name="playwithcomputerselector"
-						></b-form-radio>
-					</b-form-radio-group>
+						></b-form-radio> -->
+				<!-- </b-form-radio-group> -->
+				<!-- </b-col> -->
+
+				<b-col cols="2">
+					<div class="d-flex justify-content-around">
+						<b-button
+							class="tick remove-default-button-style"
+							@click="
+								activeClass = 'tick';
+								roomForm.withComputer = true;
+							"
+							v-bind:class="tickActiveObj"
+						></b-button>
+						<b-button
+							class="x remove-default-button-style"
+							@click="
+								activeClass = 'x';
+								roomForm.withComputer = false;
+							"
+							v-bind:class="xActiveObj"
+						></b-button>
+					</div>
 				</b-col>
 
 				<b-col cols="12" class="mb-5"></b-col>
@@ -118,7 +139,7 @@ export default {
 	data() {
 		return {
 			maxTimePerTurn: 0,
-			tickActive: "x",
+			activeClass: "x",
 			roomNameArray: [
 				"kyiv",
 				"kharkiv",
@@ -145,7 +166,7 @@ export default {
 
 			roomForm: {
 				capacity: 4,
-				withComputer: null,
+				withComputer: false,
 				privateRoom: true,
 				password: "",
 				name: "",
@@ -156,13 +177,13 @@ export default {
 	computed: {
 		tickActiveObj() {
 			return {
-				"tick-active": this.tickActive === "tick",
+				"tick-active": this.activeClass == "tick",
 			};
 		},
 
 		xActiveObj() {
 			return {
-				"x-active": this.tickActive === "x",
+				"x-active": this.activeClass == "x",
 			};
 		},
 
@@ -175,13 +196,14 @@ export default {
 				return false;
 			} else return true;
 		},
-
-		tickActiveComputed() {
-			return this.tickActive;
-		},
 	},
 
 	methods: {
+		checkActive(e) {
+			console.log(e);
+			this.activeClass = e;
+		},
+
 		onClose() {
 			this.$emit("close");
 		},
@@ -263,7 +285,73 @@ p {
 	border-color: transparent;
 }
 
-::v-deep .custom-control {
+.tick {
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	margin-right: 5px;
+	background: url("../../assets/game-dashboard/component-tick.svg") no-repeat;
+}
+
+.x {
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	margin-left: 5px;
+	background: url("../../assets/game-dashboard/component-x.svg") no-repeat;
+}
+
+.tick-active {
+	background: url("../../assets/game-dashboard/component-tick-active.svg") no-repeat;
+}
+
+.x-active {
+	background: url("../../assets/game-dashboard/component-x-active.svg") no-repeat;
+}
+
+/* .tick::before {
+	top: 0;
+	left: 0;
+	width: 32px !important;
+	height: 32px !important;
+	border: 0;
+	box-shadow: none;
+}
+
+.x::before {
+	top: 0;
+	left: 0;
+	width: 32px !important;
+	height: 32px !important;
+	border: 0;
+	box-shadow: none;
+}
+
+.tick::after {
+	top: 0;
+	left: 0;
+	width: 32px !important;
+	height: 32px !important;
+	background-image: none !important;
+}
+
+.x::after {
+	top: 0;
+	left: 0;
+	width: 32px !important;
+	height: 32px !important;
+	background-image: none !important;
+}
+
+.tick::before {
+	background: url("../../assets/game-dashboard/component-tick.svg") no-repeat;
+}
+
+.x::before {
+	background: url("../../assets/game-dashboard/component-x.svg") no-repeat;
+} */
+
+/* ::v-deep .custom-control {
 	padding-left: 0;
 	margin-right: 0;
 }
@@ -288,23 +376,15 @@ p {
 	width: 32px;
 	height: 32px;
 	background-image: none !important;
-}
+} */
 
-::v-deep #tick ~ .custom-control-label::before {
+/* ::v-deep #tick ~ .custom-control-label::before {
 	background: url("../../assets/game-dashboard/component-tick.svg") no-repeat;
 }
 
 ::v-deep #x ~ .custom-control-label::before {
 	background: url("../../assets/game-dashboard/component-x.svg") no-repeat;
-}
-
-.tick-active {
-	content: url("../../assets/game-dashboard/component-tick-active.svg");
-}
-
-.x-active {
-	content: url("../../assets/game-dashboard/component-x-active.svg");
-}
+} */
 
 .submit-game-create-btn {
 	width: 345px;
