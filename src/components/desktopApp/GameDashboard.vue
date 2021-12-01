@@ -70,7 +70,6 @@
 			:isModalShown="showCreateRoomModal"
 			@close="showCreateRoomModal = !showCreateRoomModal"
 			ref="createRoomModalChildComponent"
-			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</CreateRoomModal>
 
@@ -78,7 +77,6 @@
 			:isModalShown="showJoinRoomModal"
 			:currentRoom="currentRoom"
 			@close="showJoinRoomModal = !showJoinRoomModal"
-			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</JoinRoomModal>
 	</b-container>
@@ -104,10 +102,8 @@ export default {
 		return {
 			showCreateRoomModal: false,
 			showJoinRoomModal: false,
-			currentRoom: {
-				players: [],
-			},
-			currentRoomId: 0,
+			currentRoom: {},
+			currentRoomId: "",
 			roomSelected: false,
 			disabled: true,
 			interval: "",
@@ -164,16 +160,9 @@ export default {
 		getActiveRoomsAndSortByPlayersCountAsc: {
 			immediate: true,
 			async handler() {
-				if (this.getActiveRoomsAndSortByPlayersCountAsc.length > 0) {
-					try {
-						this.currentRoomId = await this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
-						this.currentRoom = await this.getActiveRoomsAndSortByPlayersCountAsc[0];
-						this.roomSelected = true;
-						this.disabled = true;
-					} catch (error) {
-						this.roomSelected = false;
-						this.disabled = false;
-					}
+				if (this.getActiveRoomsAndSortByPlayersCountAsc.length < 1) {
+					this.roomSelected = false;
+					this.disabled = false;
 				}
 			},
 		},
@@ -188,6 +177,17 @@ export default {
 		this.updateActiveRoomsGraph();
 		await this.$store.dispatch("setGameAction");
 		await this.$store.dispatch("setDevicePlayerIdAction");
+
+		let initialRoomInterval = setInterval(() => {
+			if (this.currentRoomId == "" || !Object.keys(this.currentRoom).length) {
+				this.currentRoom = this.getActiveRoomsAndSortByPlayersCountAsc[0];
+				this.currentRoomId = this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
+			} else {
+				this.roomSelected = true;
+				clearInterval(initialRoomInterval);
+			}
+		}, 1000);
+
 		this.checkGame();
 	},
 };

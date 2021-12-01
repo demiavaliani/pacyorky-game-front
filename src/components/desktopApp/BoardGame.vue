@@ -35,12 +35,29 @@
 		</GameLogic>
 
 		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
-			<b-row class="ml-3 mb-5 h-100 d-flex align-items-end">
-				<RTCClient
-					v-if="game && game.token && game.token !== ''"
-					:token="game.token"
-					:channel="String(game.id)"
-				/>
+			<b-row class="left-side ml-3 mb-5 pt-5 h-100 d-flex align-content-between">
+				<b-col class="h-25">
+					<div v-if="gameState === 'game-not-started'">
+						<b-button to="/game-dashboard">
+							<p>{{ $ml.get("go_to_home_page") }}</p>
+						</b-button>
+					</div>
+
+					<b-button
+						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
+						to="/game-dashboard"
+					>
+						<p>{{ $ml.get("go_to_home_page") }}</p>
+					</b-button>
+				</b-col>
+
+				<b-col>
+					<RTCClient
+						v-if="game && game.token && game.token !== ''"
+						:token="game.token"
+						:channel="String(game.id)"
+					/>
+				</b-col>
 
 				<b-col>
 					<div class="game-controls-box" style="min-height: 300px">
@@ -80,7 +97,9 @@
 									>
 										<p>{{ $ml.get("throw_cards") }}</p>
 									</b-button>
+
 									<img :src="diceUrl" v-if="game.step.counter" />
+
 								</div>
 
 								<div
@@ -134,7 +153,8 @@
 			<div class="board-game-row">
 				<img
 					id="board"
-					src="@/assets/board-game/board-1.svg"
+					class="board-game-img"
+					:src="boardLanguage"
 					usemap="#image-map"
 					@load="getBoardPosition"
 				/>
@@ -191,19 +211,24 @@
 				</map>
 			</div>
 
-			<b-row class="d-flex justify-content-end align-items-center right-side mr-3 h-100">
+			<b-row class="d-flex justify-content-end align-items-center right-side mr-0 h-100">
 				<b-col cols="12" class="d-flex justify-content-between align-items-center">
 					<b-dropdown :text="$ml.current">
 						<b-dropdown-item
 							v-for="lang in $ml.list"
 							v-if="lang !== $ml.current"
 							:key="lang"
-							@click="$ml.change(lang)"
+							@click="
+								$ml.change(lang);
+								currentLanguage = $ml.current.toLowerCase();
+							"
 						>
 							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
-					<p>{{ $ml.get("room_name_room") }} “{{ game.name }}”</p>
+					<!-- <div style="visibility: visible"> -->
+					<p class="room-name">{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”</p>
+					<!-- </div> -->
 
 					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
 						<p>{{ $ml.get("end_game") }}</p>
@@ -233,22 +258,35 @@
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
 					></ActiveRoomsGraph>
+
+					<ActiveRoomsGraph
+						v-else-if="roomDetails.players"
+						class="active-rooms-graph"
+						:currentRoomFromActiveRoomsGraph="roomDetails"
+						:displayRoomName="false"
+						:activePlayersCountFromActiveRoomsGraph="roomDetails.players.length"
+					></ActiveRoomsGraph>
 				</b-col>
 
 				<b-col cols="12" class="d-flex justify-content-end">
 					<div class="my-cards-box">
-						<b-row class="d-flex justify-content-end align-items-start h-100 mx-auto">
-							<b-col cols="auto" class="d-flex flex-column pr-0">
+						<b-row class="d-flex justify-content-start align-items-start h-100 mx-auto">
+							<b-col cols="11" class="text-center pr-0">
 								<p>{{ $ml.get("deck") }}</p>
 							</b-col>
 
-							<b-col cols="auto" class="pr-0 d-flex flex-column">
+							<b-col cols="1" class="d-flex px-0">
 								<img src="@/assets/board-game/info-sign.svg" width="18" />
 							</b-col>
 
-							<b-col cols="12" class="">
+							<b-col cols="12" class="first-row-deck">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in dishesDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -256,7 +294,12 @@
 
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in ritualsDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in ritualsDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -264,7 +307,12 @@
 
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in stuffDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in stuffDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -309,21 +357,21 @@
 
 		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeck">
+				<div class="mx-1" v-for="card in dishesDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in ritualsDeck">
+				<div class="mx-1" v-for="card in ritualsDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in stuffDeck">
+				<div class="mx-1" v-for="card in stuffDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
@@ -342,21 +390,21 @@
 
 		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeckForVote">
+				<div class="mx-1" v-for="card in dishesDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in ritualsDeckForVote">
+				<div class="mx-1" v-for="card in ritualsDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in stuffDeckForVote">
+				<div class="mx-1" v-for="card in stuffDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
@@ -375,15 +423,27 @@
 
 		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<p
-					v-bind:style="{
-						fontFamily: 'Montserrat',
-						fontWeight: '500',
-						fontSize: '35px',
-					}"
-				>
-					{{ $ml.get("game_ended") }}
-				</p>
+				<b-row class="d-flex justify-content-center">
+					<b-col cols="12" class="my-2">
+						<p
+							v-bind:style="{
+								fontFamily: 'Montserrat',
+								fontWeight: '500',
+								fontSize: '35px',
+							}"
+						>
+							{{ $ml.get("game_ended") }}
+						</p>
+					</b-col>
+
+					<b-col cols="auto" class="my-2" v-for="player in game.players" :key="player.id">
+						<img :src="require('@/assets/cards/character/' + player.character.name + '.png')" />
+						<p style="font-size: 26px">
+							{{ player.character.name }}
+						</p>
+						<p style="font-size: 24px">{{ $ml.get("happiness") }} - {{ player.happiness }}</p>
+					</b-col>
+				</b-row>
 			</template>
 
 			<template v-slot:footer>
@@ -472,14 +532,12 @@ export default {
 
 	data() {
 		return {
-			currentDevicePlayer: {},
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 			inited: false,
 			diceRolled: "initial",
-			playersInGame: [],
 
 			cardsToThrow: [],
 			cardsToVote: [],
@@ -512,6 +570,11 @@ export default {
 
 			seasonNumber: 0,
 			snow: Object,
+      
+			currentLanguage: "",
+			playersInGame: [],
+			currentDevicePlayer: {},
+			roomDetails: Object,
 		};
 	},
 
@@ -533,6 +596,11 @@ export default {
 			if (this.game.step && this.currentDevicePlayer.id === this.game.step.currentPlayer.id) {
 				return true;
 			}
+		},
+
+		boardLanguage() {
+			let boardSrc = require(`../../assets/board-game/board-${this.currentLanguage}.svg`);
+			return boardSrc;
 		},
 	},
 
@@ -693,12 +761,12 @@ export default {
 
 		loaderProgress() {
 			let progress = document.querySelector("progress");
-			let images = require.context("../../assets/cards/", true, /\.png/);
+			let images = require.context("../../assets/board-game/", true);
 			progress.max = images.keys().length;
 
 			images.keys().forEach(key => {
 				let img = new Image();
-				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.src = require("../../assets/board-game/" + key.replace("./", ""));
 				img.onload = () => {
 					progress.value++;
 					if (progress.value === images.keys().length) {
@@ -828,6 +896,10 @@ export default {
 						break;
 				}
 			}
+		setRoomDetails() {
+			this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then(response => {
+				this.roomDetails = response;
+			});
 		},
 	},
 
@@ -892,7 +964,12 @@ export default {
 		},
 	},
 
+	created() {
+		this.currentLanguage = this.$ml.current.toLowerCase();
+	},
+
 	mounted() {
+		this.setRoomDetails();
 		this.areaClick();
 		this.loaderProgress();
 	},
@@ -950,6 +1027,10 @@ p {
 
 .board-game-row img {
 	width: 50vw;
+.left-side .col:first-child button p,
+.left-side .col:first-child a p {
+	font-family: "Montserrat";
+	font-size: 18px;
 }
 
 .game-controls-box {
@@ -985,6 +1066,10 @@ p {
 	width: 229px;
 }
 
+.board-game-row img {
+	width: 50vw;
+}
+
 .right-side p {
 	font-size: 50px;
 }
@@ -999,12 +1084,22 @@ p {
 	font-size: 18px;
 }
 
+.room-name {
+	display: -webkit-box;
+	width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+
 ::v-deep .men-img {
 	width: 10vw;
 }
 
 .my-cards-box {
-	width: 35%;
+	width: 10vw;
 	height: 380px;
 	padding: 10px;
 	border: 1px solid #e4e4e4;
@@ -1032,9 +1127,14 @@ p {
 
 .cards .p-0:hover img {
 	position: absolute;
-	width: 110px;
+	width: 10vw;
+	left: -75px;
 	bottom: 100px;
 	z-index: 9999;
+}
+
+.first-row-deck .p-0:hover img {
+	bottom: 60px;
 }
 
 .cards :nth-child(2) {

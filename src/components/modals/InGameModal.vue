@@ -2,10 +2,11 @@
 	<b-modal
 		v-model="modalVisible"
 		:hide-footer="footerHidden"
-		:hide-header-close="headerHidden"
+		:hide-header-close="headerCloseHidden"
+		:hide-header="headerHidden"
 		no-close-on-esc
 		no-close-on-backdrop
-		size="lg"
+		size="custom-size"
 		centered
 		ok-only
 	>
@@ -27,7 +28,12 @@
 export default {
 	name: "InGameModal",
 
-	props: ["modalVisible", "footerHidden", "headerHidden"],
+	props: {
+		modalVisible: { required: false },
+		footerHidden: { required: false },
+		headerCloseHidden: { required: false },
+		headerHidden: { required: false },
+	},
 
 	data() {
 		return {};
@@ -38,12 +44,21 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .modal-dialog {
+	justify-content: center;
+	max-width: none;
+}
+
+::v-deep .modal-custom-size {
+	width: 50vw;
+}
+
 ::v-deep .modal-content {
 	border-radius: 10px;
 }
 
 ::v-deep img {
-	width: 110px;
+	width: 100%;
 }
 
 ::v-deep .modal-header {
