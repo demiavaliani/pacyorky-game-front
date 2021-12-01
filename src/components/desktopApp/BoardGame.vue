@@ -413,7 +413,12 @@
 			</template>
 		</InGameModal>
 
-		<GameEndedModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
+		<GameEndedModal
+			v-if="game && game.players && (game.status === 'FINISHED' || game.status === 'CANCELLED')"
+			:modalVisible="gameEndedModalVisible"
+			:footerHidden="false"
+			:headerHidden="true"
+		>
 			<template v-slot:upper-half>
 				<b-row class="d-flex justify-content-center">
 					<b-col cols="12" class="my-2">
