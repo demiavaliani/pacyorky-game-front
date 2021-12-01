@@ -18,26 +18,6 @@
 				<b-col cols="8">
 					<p>{{ $ml.get("play_with_computer") }}</p>
 				</b-col>
-				<!-- <b-col cols="2"> -->
-				<!-- <b-form-radio-group class="d-flex justify-content-around"> -->
-				<!-- @change="checkActive('tick-active')" -->
-				<!-- @change="tickActive = 'tick'" -->
-				<!-- <b-form-radio
-							id="tick"
-							v-model="roomForm.withComputer"
-							@change="checkActive('tick')"
-							v-bind:class="tickActiveObj"
-						></b-form-radio> -->
-				<!-- @click="checkActive('x-active')" -->
-				<!-- @change="tickActive = 'x'" -->
-				<!-- <b-form-radio
-							id="x"
-							v-model="roomForm.withComputer"
-							@change="checkActive('x')"
-							v-bind:class="xActiveObj"
-						></b-form-radio> -->
-				<!-- </b-form-radio-group> -->
-				<!-- </b-col> -->
 
 				<b-col cols="2">
 					<div class="d-flex justify-content-around">
@@ -199,11 +179,6 @@ export default {
 	},
 
 	methods: {
-		checkActive(e) {
-			console.log(e);
-			this.activeClass = e;
-		},
-
 		onClose() {
 			this.$emit("close");
 		},
@@ -308,83 +283,6 @@ p {
 .x-active {
 	background: url("../../assets/game-dashboard/component-x-active.svg") no-repeat;
 }
-
-/* .tick::before {
-	top: 0;
-	left: 0;
-	width: 32px !important;
-	height: 32px !important;
-	border: 0;
-	box-shadow: none;
-}
-
-.x::before {
-	top: 0;
-	left: 0;
-	width: 32px !important;
-	height: 32px !important;
-	border: 0;
-	box-shadow: none;
-}
-
-.tick::after {
-	top: 0;
-	left: 0;
-	width: 32px !important;
-	height: 32px !important;
-	background-image: none !important;
-}
-
-.x::after {
-	top: 0;
-	left: 0;
-	width: 32px !important;
-	height: 32px !important;
-	background-image: none !important;
-}
-
-.tick::before {
-	background: url("../../assets/game-dashboard/component-tick.svg") no-repeat;
-}
-
-.x::before {
-	background: url("../../assets/game-dashboard/component-x.svg") no-repeat;
-} */
-
-/* ::v-deep .custom-control {
-	padding-left: 0;
-	margin-right: 0;
-}
-
-::v-deep .custom-control-label {
-	width: 32px;
-	height: 32px;
-}
-
-::v-deep .custom-control-label::before {
-	top: 0;
-	left: 0;
-	width: 32px;
-	height: 32px;
-	border: 0;
-	box-shadow: none;
-}
-
-::v-deep .custom-control-label::after {
-	top: 0;
-	left: 0;
-	width: 32px;
-	height: 32px;
-	background-image: none !important;
-} */
-
-/* ::v-deep #tick ~ .custom-control-label::before {
-	background: url("../../assets/game-dashboard/component-tick.svg") no-repeat;
-}
-
-::v-deep #x ~ .custom-control-label::before {
-	background: url("../../assets/game-dashboard/component-x.svg") no-repeat;
-} */
 
 .submit-game-create-btn {
 	width: 345px;

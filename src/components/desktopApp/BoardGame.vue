@@ -833,46 +833,26 @@ export default {
 
 				switch (true) {
 					case day >= 301 && day <= 523:
-						console.log("DAY is", day);
-						console.log("CASE block: 301 - 523");
 						if (this.seasonNumber < 301 || this.seasonNumber > 523) {
-							console.log("IF block");
-							console.log("Season number before", this.seasonNumber);
 							this.seasonNumber = day;
-							console.log("Season number after", this.seasonNumber);
 							this.makeItSnow("spring");
 						}
 						break;
 					case day >= 601 && day <= 819:
-						console.log("DAY is", day);
-						console.log("CASE block: 601 - 819");
 						if (this.seasonNumber < 601 || this.seasonNumber > 819) {
-							console.log("IF block");
-							console.log("Season number before", this.seasonNumber);
 							this.seasonNumber = day;
-							console.log("Season number after", this.seasonNumber);
 							this.makeItSnow("summer");
 						}
 						break;
 					case day >= 901 && day <= 1123:
-						console.log("DAY is", day);
-						console.log("CASE block: 901 - 1123");
 						if (this.seasonNumber < 901 || this.seasonNumber > 1123) {
-							console.log("IF block");
-							console.log("Season number before", this.seasonNumber);
 							this.seasonNumber = day;
-							console.log("Season number after", this.seasonNumber);
 							this.makeItSnow("autumn");
 						}
 						break;
 					case day >= 1204 && day <= 1219:
-						console.log("DAY is", day);
-						console.log("CASE block: 1204 - 1219");
 						if (this.seasonNumber < 1204 || this.seasonNumber > 1219) {
-							console.log("IF block");
-							console.log("Season number before", this.seasonNumber);
 							this.seasonNumber = day;
-							console.log("Season number after", this.seasonNumber);
 							this.makeItSnow("winter");
 						}
 						break;
