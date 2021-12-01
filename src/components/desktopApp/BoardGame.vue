@@ -35,18 +35,7 @@
 		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
 			<b-row class="left-side ml-3 mb-5 pt-5 h-100 d-flex align-content-between">
 				<b-col class="h-25">
-					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
-						<p>{{ $ml.get("end_game") }}</p>
-					</b-button>
-
-					<div
-						v-else-if="gameState === 'game-not-started'"
-						class="d-flex flex-column justify-content-around h-100"
-					>
-						<b-button @click="joinRoom()" :disabled="joinRoomBtnDisabled">
-							<p>{{ $ml.get("join_room") }}</p>
-						</b-button>
-
+					<div v-if="gameState === 'game-not-started'">
 						<b-button to="/game-dashboard">
 							<p>{{ $ml.get("go_to_home_page") }}</p>
 						</b-button>
