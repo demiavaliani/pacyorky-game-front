@@ -170,8 +170,8 @@
 			<div class="board-game-row">
 				<img
 					id="board"
-					src="@/assets/board-game/board-1.svg"
 					class="board-game-img"
+					:src="boardLanguage"
 					usemap="#image-map"
 					@load="getBoardPosition"
 				/>
@@ -235,13 +235,15 @@
 							v-for="lang in $ml.list"
 							v-if="lang !== $ml.current"
 							:key="lang"
-							@click="$ml.change(lang)"
+							@click="
+								$ml.change(lang);
+								currentLanguage = $ml.current.toLowerCase();
+							"
 						>
 							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
-
-					<p class="room-name">{{ $ml.get("room_name_room") }} “{{ this.game.name }}”</p>
+					<p>{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”</p>
 
 					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
 						<p>{{ $ml.get("end_game") }}</p>
@@ -271,6 +273,14 @@
 						:displayRoomName="false"
 						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
 					></ActiveRoomsGraph>
+
+					<ActiveRoomsGraph
+						v-else-if="roomDetails.players"
+						class="active-rooms-graph"
+						:currentRoomFromActiveRoomsGraph="roomDetails"
+						:displayRoomName="false"
+						:activePlayersCountFromActiveRoomsGraph="roomDetails.players.length"
+					></ActiveRoomsGraph>
 				</b-col>
 
 				<b-col cols="12" class="d-flex justify-content-end">
@@ -286,7 +296,12 @@
 
 							<b-col cols="12" class="first-row-deck">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in dishesDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -294,7 +309,12 @@
 
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in ritualsDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in ritualsDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -302,7 +322,12 @@
 
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in stuffDeck">
+									<b-col
+										class="p-0"
+										style="width: 60px; height: 82px;"
+										v-for="card in stuffDeck"
+										:key="card.id"
+									>
 										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -347,21 +372,21 @@
 
 		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeck">
+				<div class="mx-1" v-for="card in dishesDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in ritualsDeck">
+				<div class="mx-1" v-for="card in ritualsDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in stuffDeck">
+				<div class="mx-1" v-for="card in stuffDeck" :key="card.id">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
@@ -380,21 +405,21 @@
 
 		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeckForVote">
+				<div class="mx-1" v-for="card in dishesDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in ritualsDeckForVote">
+				<div class="mx-1" v-for="card in ritualsDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in stuffDeckForVote">
+				<div class="mx-1" v-for="card in stuffDeckForVote" :key="card.id">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
@@ -509,13 +534,11 @@ export default {
 
 	data() {
 		return {
-			currentDevicePlayer: {},
 			boardX: "",
 			boardY: "",
 			adjustedCoordX: "",
 			adjustedCoordY: "",
 			inited: false,
-			playersInGame: [],
 
 			cardsToThrow: [],
 			cardsToVote: [],
@@ -542,6 +565,10 @@ export default {
 			dayDescription: false,
 
 			gameState: "",
+			currentLanguage: "",
+			playersInGame: [],
+			currentDevicePlayer: {},
+			roomDetails: Object,
 		};
 	},
 
@@ -563,6 +590,11 @@ export default {
 			if (this.game.step && this.currentDevicePlayer.id === this.game.step.currentPlayer.id) {
 				return true;
 			}
+		},
+
+		boardLanguage() {
+			let boardSrc = require(`../../assets/board-game/board-${this.currentLanguage}.svg`);
+			return boardSrc;
 		},
 	},
 
@@ -713,18 +745,24 @@ export default {
 
 		loaderProgress() {
 			let progress = document.querySelector("progress");
-			let images = require.context("../../assets/cards/", true, /\.png/);
+			let images = require.context("../../assets/board-game/", true);
 			progress.max = images.keys().length;
 
 			images.keys().forEach(key => {
 				let img = new Image();
-				img.src = require("../../assets/cards/" + key.replace("./", ""));
+				img.src = require("../../assets/board-game/" + key.replace("./", ""));
 				img.onload = () => {
 					progress.value++;
 					if (progress.value === images.keys().length) {
 						document.getElementById("overlay").style.display = "none";
 					}
 				};
+			});
+		},
+
+		setRoomDetails() {
+			this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then(response => {
+				this.roomDetails = response;
 			});
 		},
 	},
@@ -775,7 +813,12 @@ export default {
 		},
 	},
 
+	created() {
+		this.currentLanguage = this.$ml.current.toLowerCase();
+	},
+
 	mounted() {
+		this.setRoomDetails();
 		this.areaClick();
 		this.loaderProgress();
 	},
@@ -872,6 +915,11 @@ p {
 
 .right-side p {
 	font-size: 50px;
+}
+
+.right-side button p {
+	font-family: "Montserrat";
+	font-size: 18px;
 }
 
 .right-side a p {

@@ -70,7 +70,6 @@
 			:isModalShown="showCreateRoomModal"
 			@close="showCreateRoomModal = !showCreateRoomModal"
 			ref="createRoomModalChildComponent"
-			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</CreateRoomModal>
 
@@ -78,7 +77,6 @@
 			:isModalShown="showJoinRoomModal"
 			:currentRoom="currentRoom"
 			@close="showJoinRoomModal = !showJoinRoomModal"
-			@update-active-rooms-graph="updateActiveRoomsGraph"
 		>
 		</JoinRoomModal>
 	</b-container>
