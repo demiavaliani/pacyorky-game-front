@@ -2,7 +2,8 @@
 	<b-modal
 		v-model="modalVisible"
 		:hide-footer="footerHidden"
-		:hide-header-close="headerHidden"
+		:hide-header-close="headerCloseHidden"
+		:hide-header="headerHidden"
 		no-close-on-esc
 		no-close-on-backdrop
 		size="custom-size"
@@ -30,6 +31,7 @@ export default {
 	props: {
 		modalVisible: { required: false },
 		footerHidden: { required: false },
+		headerCloseHidden: { required: false },
 		headerHidden: { required: false },
 	},
 

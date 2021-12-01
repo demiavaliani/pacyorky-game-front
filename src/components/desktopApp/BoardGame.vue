@@ -440,15 +440,27 @@
 
 		<InGameModal :modalVisible="gameEndedModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<p
-					v-bind:style="{
-						fontFamily: 'Montserrat',
-						fontWeight: '500',
-						fontSize: '35px',
-					}"
-				>
-					{{ $ml.get("game_ended") }}
-				</p>
+				<b-row class="d-flex justify-content-center">
+					<b-col cols="12" class="my-2">
+						<p
+							v-bind:style="{
+								fontFamily: 'Montserrat',
+								fontWeight: '500',
+								fontSize: '35px',
+							}"
+						>
+							{{ $ml.get("game_ended") }}
+						</p>
+					</b-col>
+
+					<b-col cols="auto" class="my-2" v-for="player in game.players" :key="player.id">
+						<img :src="require('@/assets/cards/character/' + player.character.name + '.png')" />
+						<p style="font-size: 26px">
+							{{ player.character.name }}
+						</p>
+						<p style="font-size: 24px">{{ $ml.get("happiness") }} - {{ player.happiness }}</p>
+					</b-col>
+				</b-row>
 			</template>
 
 			<template v-slot:footer>
