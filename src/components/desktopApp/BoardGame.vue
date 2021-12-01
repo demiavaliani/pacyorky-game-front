@@ -435,7 +435,7 @@
 						</p>
 					</b-col>
 
-					<b-col cols="auto" class="my-2" v-for="player in game.players" :key="player.id">
+					<b-col cols="3" class="my-2" v-for="player in game.players" :key="player.id">
 						<img :src="require('@/assets/cards/character/' + player.character.name + '.png')" />
 						<p style="font-size: 26px">
 							{{ player.character.name }}
