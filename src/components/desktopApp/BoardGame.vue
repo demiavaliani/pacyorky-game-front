@@ -218,9 +218,7 @@
 							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
 						</b-dropdown-item>
 					</b-dropdown>
-					<!-- <div style="visibility: visible"> -->
 					<p class="room-name">{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”</p>
-					<!-- </div> -->
 
 					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
 						<p>{{ $ml.get("end_game") }}</p>
@@ -273,12 +271,7 @@
 
 							<b-col cols="12" class="first-row-deck">
 								<b-row class="cards mx-auto">
-									<b-col
-										class="p-0"
-										style="width: 60px; height: 82px;"
-										v-for="card in dishesDeck"
-										:key="card.id"
-									>
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
 										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -286,12 +279,7 @@
 
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<b-col
-										class="p-0"
-										style="width: 60px; height: 82px;"
-										v-for="card in ritualsDeck"
-										:key="card.id"
-									>
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in ritualsDeck">
 										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -299,12 +287,7 @@
 
 							<b-col cols="12">
 								<b-row class="cards mx-auto">
-									<b-col
-										class="p-0"
-										style="width: 60px; height: 82px;"
-										v-for="card in stuffDeck"
-										:key="card.id"
-									>
+									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in stuffDeck">
 										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
 									</b-col>
 								</b-row>
@@ -349,21 +332,21 @@
 
 		<InGameModal :modalVisible="throwCardsModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeck" :key="card.id">
+				<div class="mx-1" v-for="card in dishesDeck">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in ritualsDeck" :key="card.id">
+				<div class="mx-1" v-for="card in ritualsDeck">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in stuffDeck" :key="card.id">
+				<div class="mx-1" v-for="card in stuffDeck">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToThrow')"
@@ -382,21 +365,21 @@
 
 		<InGameModal :modalVisible="voteModalVisible" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
-				<div class="mx-1" v-for="card in dishesDeckForVote" :key="card.id">
+				<div class="mx-1" v-for="card in dishesDeckForVote">
 					<img
 						:src="require('@/assets/cards/dishes/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in ritualsDeckForVote" :key="card.id">
+				<div class="mx-1" v-for="card in ritualsDeckForVote">
 					<img
 						:src="require('@/assets/cards/rituals/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
 					/>
 				</div>
 
-				<div class="mx-1" v-for="card in stuffDeckForVote" :key="card.id">
+				<div class="mx-1" v-for="card in stuffDeckForVote">
 					<img
 						:src="require('@/assets/cards/stuff/' + card.name + '.png')"
 						@click="chooseCardsForAction(card.id, $event, 'cardsToVote')"
