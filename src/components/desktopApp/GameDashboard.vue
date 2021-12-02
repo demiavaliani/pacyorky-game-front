@@ -2,7 +2,7 @@
 	<b-container id="game-dashboard" class="d-flex flex-column justify-content-center align-items-center h-75">
 		<b-row class="d-flex justify-content-center">
 			<b-col cols="auto" class="d-flex flex-column pr-4">
-				<div class="middle-gif"></div>
+				<div class="middle-gif"><iframe width="100%" height="100%" style="border-radius: 10px" src="https://www.youtube-nocookie.com/embed/U1RcT1cj_mc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
 				<b-button
 					@click="
