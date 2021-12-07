@@ -698,13 +698,14 @@ export default {
 					let playerFigure = document.getElementById("player-character-" + player.character.name);
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
+						let elementHeight = playerFigure.getBoundingClientRect().height;
 
 						if (this.diceRolled === "initial" || this.diceRolled === "each-roll") {
 							this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
 							this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
 
 							playerFigure.style.left = `${this.adjustedCoordX - elementWidth / 2}px`;
-							playerFigure.style.top = `${this.adjustedCoordY - 120}px`;
+							playerFigure.style.top = `${this.adjustedCoordY - coordsAttrArray[2] - elementHeight}px`;
 
 							this.inited = true;
 						}
