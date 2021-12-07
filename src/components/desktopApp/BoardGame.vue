@@ -13,8 +13,12 @@
 			:id="'player-character-' + player.character.name"
 			class="player-character"
 			:style="inited ? '' : 'opacity: 0'"
+			style="pointer-events: none"
 		>
-			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
+			<img
+				:src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')"
+				style="pointer-events: none"
+			/>
 		</div>
 
 		<GameLogic
@@ -148,6 +152,7 @@
 					class="board-game-img"
 					:src="boardLanguage"
 					usemap="#image-map"
+					style="pointer-events: auto"
 					@load="getBoardPosition"
 				/>
 
