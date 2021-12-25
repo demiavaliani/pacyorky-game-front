@@ -151,14 +151,14 @@
 
 				<b-col cols="4" class="d-flex align-items-center">
 					<div class="board-game-row">
-            <img
-                id="board"
-                class="board-game-img"
-                :src="boardLanguage"
-                usemap="#image-map"
-                style="pointer-events: auto"
-                @load="getBoardPosition"
-            />
+						<img
+							id="board"
+							class="board-game-img"
+							:src="boardLanguage"
+							usemap="#image-map"
+							style="pointer-events: auto"
+							@load="getBoardPosition"
+						/>
 
 						<map name="image-map">
 							<area alt="101" href="" data-name="day" coords="513,682,19" shape="circle" />
@@ -516,7 +516,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="dayDescription" :footerHidden="true">
+		<InGameModal :modalVisible="dayDescription" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<div class="flex-column">
 					<p
@@ -526,9 +526,11 @@
 					>
 						{{ $ml.get("day_" + modalDay) }}
 					</p>
-					<br />
-					<b-button @click="dayDescription = false">Close</b-button>
 				</div>
+			</template>
+
+			<template v-slot:footer>
+				<b-button @click="dayDescription = false">Close</b-button>
 			</template>
 		</InGameModal>
 	</div>
@@ -1025,7 +1027,9 @@ p {
 }
 
 .board-game-row img {
+	position: relative;
 	width: 50vw;
+	z-index: 1;
 }
 
 .left-side .col:first-child button p,
@@ -1065,10 +1069,6 @@ p {
 
 .timer-rect {
 	width: 229px;
-}
-
-.board-game-row img {
-	width: 50vw;
 }
 
 .right-side p {
@@ -1180,7 +1180,7 @@ p {
 .player-character {
 	position: absolute;
 	top: 450px;
-	z-index: 1;
+	z-index: 2;
 	transition-duration: 1s;
 	transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 }
