@@ -74,7 +74,7 @@
 
 									<b-col class="d-flex flex-grow-0 flex-column-reverse">
 										<div
-											class="d-flex justify-content-center align-items-center flex-grow-1"
+											class="d-flex justify-content-center align-items-center flex-grow-1 flex-column"
 											v-if="game.step"
 										>
 											<b-button
@@ -104,7 +104,7 @@
 												<p>{{ $ml.get("throw_cards") }}</p>
 											</b-button>
 
-											<img :src="diceUrl" v-if="game.step.counter" :style="game.capacity > 4 ? 'width : 50%' : ''"/>
+											<img :src="diceUrl" v-if="game.step.counter" :style="game.capacity > 4 ? 'width : 50%' : ''" style="margin-top: 5px"/>
 										</div>
 
 										<div
