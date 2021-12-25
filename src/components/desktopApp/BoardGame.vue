@@ -38,299 +38,338 @@
 		>
 		</GameLogic>
 
-		<b-container fluid class="d-flex justify-content-between align-items-center main-container px-0 h-100">
-			<b-row class="left-side ml-3 mb-5 pt-5 h-100 d-flex align-content-between">
-				<b-col class="h-25">
-					<div v-if="gameState === 'game-not-started'">
-						<b-button to="/game-dashboard">
-							<p>{{ $ml.get("go_to_home_page") }}</p>
-						</b-button>
-					</div>
-				</b-col>
-
-				<b-col>
-					<RTCClient
-						v-if="game && game.token && game.token !== ''"
-						:token="game.token"
-						:channel="String(game.id)"
-					/>
-				</b-col>
-
-				<b-col>
-					<div class="game-controls-box" style="min-height: 300px">
-						<b-row class="d-flex flex-column justify-content-between flex-nowrap h-100">
-							<b-col class="text-center flex-grow-0">
-								<p v-if="!game.step"></p>
-								<p v-else-if="isCurrentPlayer">
-									{{ $ml.get("my_turn") }}
+		<b-container fluid class="h-100">
+			<b-row class="justify-content-between h-100">
+				<b-col cols="2" class="d-flex justify-content-start align-content-between py-3 left-side h-100 ">
+					<b-row cols="1" class="align-content-between">
+						<b-col>
+							<b-button to="/game-dashboard" v-if="gameState === 'game-not-started'">
+								<p>
+									{{ $ml.get("go_to_home_page") }}
 								</p>
-								<p v-else-if="!isCurrentPlayer">
-									{{ $ml.get("current_player") }}
-									{{ $ml.get(this.game.step.currentPlayer.character.name) }}
-								</p>
-							</b-col>
+							</b-button>
+						</b-col>
 
-							<b-col class="d-flex flex-grow-0 flex-column-reverse">
-								<div
-									class="d-flex justify-content-center align-items-center flex-grow-1"
-									v-if="game.step"
-								>
-									<b-button
-										v-if="isCurrentPlayer && game.step.status === 'WAITING_DICE'"
-										@click="callThrowDice"
-										:disabled="diceBtnDisabled"
-										class="throw-dice-btn"
-									>
-										<p>{{ $ml.get("throw_dice") }}</p>
-									</b-button>
-									<b-button
-										class="throw-dice-btn mr-3"
-										:disabled="showThrowCardsModalBtnDisabled"
-										@click="
-											throwCardsModalVisible = true;
-											showThrowCardsModalBtnDisabled = true;
-										"
-										v-else-if="isCurrentPlayer && game.step.status === 'WAITING_CARD'"
-									>
-										<p>{{ $ml.get("throw_cards") }}</p>
-									</b-button>
+						<b-col>
+							<RTCClient
+								v-if="game && game.token && game.token !== ''"
+								:token="game.token"
+								:channel="String(game.id)"
+							/>
+						</b-col>
 
-									<img :src="diceUrl" v-if="game.step.counter" />
-								</div>
+						<b-col>
+							<div class="game-controls-box" style="min-height: 300px">
+								<b-row class="d-flex flex-column justify-content-between flex-nowrap h-100">
+									<b-col class="text-center flex-grow-0">
+										<p v-if="!game.step"></p>
+										<p v-else-if="isCurrentPlayer">
+											{{ $ml.get("my_turn") }}
+										</p>
+										<p v-else-if="!isCurrentPlayer">
+											{{ $ml.get("current_player") }}
+											{{ $ml.get(this.game.step.currentPlayer.character.name) }}
+										</p>
+									</b-col>
 
-								<div
-									class="d-flex justify-content-center align-items-center flex-grow-1"
-									v-if="game && game.status === 'WAITING'"
-								>
-									<b-button
-										@click="callStartGame"
-										:disabled="startGameBtnDisabled"
-										class="throw-dice-btn"
-									>
-										<p>{{ $ml.get("start_game") }}</p>
-									</b-button>
-								</div>
+									<b-col class="d-flex flex-grow-0 flex-column-reverse">
+										<div
+											class="d-flex justify-content-center align-items-center flex-grow-1"
+											v-if="game.step"
+										>
+											<b-button
+												v-if="isCurrentPlayer && game.step.status === 'WAITING_DICE'"
+												@click="callThrowDice"
+												:disabled="diceBtnDisabled"
+												class="throw-dice-btn"
+											>
+												<p>{{ $ml.get("throw_dice") }}</p>
+											</b-button>
+											<b-button
+												class="throw-dice-btn mr-3"
+												:disabled="showThrowCardsModalBtnDisabled"
+												@click="
+													throwCardsModalVisible = true;
+													showThrowCardsModalBtnDisabled = true;
+												"
+												v-else-if="isCurrentPlayer && game.step.status === 'WAITING_CARD'"
+											>
+												<p>{{ $ml.get("throw_cards") }}</p>
+											</b-button>
 
-								<div
-									class="d-flex justify-content-center align-items-center flex-grow-1"
-									v-if="!isCurrentPlayer && game.step"
-								>
-									<p>
-										{{ $ml.get(this.game.step.status) }}
+											<img :src="diceUrl" v-if="game.step.counter" />
+										</div>
+
+										<div
+											class="d-flex justify-content-center align-items-center flex-grow-1"
+											v-if="game && game.status === 'WAITING'"
+										>
+											<b-button
+												@click="callStartGame"
+												:disabled="startGameBtnDisabled"
+												class="throw-dice-btn"
+											>
+												<p>{{ $ml.get("start_game") }}</p>
+											</b-button>
+										</div>
+
+										<div
+											class="d-flex justify-content-center align-items-center flex-grow-1"
+											v-if="!isCurrentPlayer && game.step"
+										>
+											<p>
+												{{ $ml.get(this.game.step.status) }}
+											</p>
+										</div>
+										<div
+											class="d-flex justify-content-center align-items-center flex-grow-1"
+											v-else-if="game && game.status && game.status !== 'STARTED'"
+										>
+											<p>
+												{{ $ml.get("GAME_" + this.game.status) }}
+											</p>
+										</div>
+									</b-col>
+
+									<b-col class="d-flex flex-column flex-grow-0">
+										<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
+
+										<svg
+											class="timer"
+											viewBox="0 0 229 12"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<rect class="timer-rect" y="0.833008" height="11" rx="5.5" fill="#04944F" />
+										</svg>
+									</b-col>
+								</b-row>
+							</div>
+						</b-col>
+					</b-row>
+				</b-col>
+
+				<b-col cols="4" class="d-flex align-items-center">
+					<div class="board-game-row">
+            <img
+                id="board"
+                class="board-game-img"
+                :src="boardLanguage"
+                usemap="#image-map"
+                style="pointer-events: auto"
+                @load="getBoardPosition"
+            />
+
+						<map name="image-map">
+							<area alt="101" href="" data-name="day" coords="513,682,19" shape="circle" />
+							<area alt="106" href="" data-name="svjatvechir" coords="558,670,21" shape="circle" />
+							<area alt="107" href="" data-name="rizdvo" coords="607,691,20" shape="circle" />
+							<area alt="113" href="" data-name="malanki" coords="571,731,20" shape="circle" />
+							<area alt="114" href="" data-name="vasilja" coords="545,775,19" shape="circle" />
+							<area alt="118" href="" data-name="golodna_kutja" coords="597,790,20" shape="circle" />
+							<area alt="119" href="" data-name="vodohresha" coords="642,764,20" shape="circle" />
+							<area alt="201" href="" data-name="day" coords="696,726,23" shape="circle" />
+							<area alt="215" href="" data-name="stritennja" coords="702,676,20" shape="circle" />
+							<area alt="216" href="" data-name="maslenica" coords="737,639,23" shape="circle" />
+							<area alt="217" href="" data-name="day" coords="795,654,22" shape="circle" />
+							<area alt="301" href="" data-name="day" coords="847,600,22" shape="circle" />
+							<area alt="314" href="" data-name="javdohi" coords="828,545,20" shape="circle" />
+							<area alt="322" href="" data-name="sorok_svjatih" coords="890,537,20" shape="circle" />
+							<area alt="330" href="" data-name="oleksi" coords="863,485,20" shape="circle" />
+							<area alt="407" href="" data-name="blagoveshinnja" coords="900,411,20" shape="circle" />
+							<area alt="408" href="" data-name="verbna_nedelja" coords="860,376,20" shape="circle" />
+							<area alt="409" href="" data-name="velikden" coords="903,337,20" shape="circle" />
+							<area alt="410" href="" data-name="day" coords="857,306,22" shape="circle" />
+							<area alt="505" href="" data-name="ljalja" coords="825,256,19" shape="circle" />
+							<area alt="506" href="" data-name="jurija" coords="779,228,21" shape="circle" />
+							<area alt="522" href="" data-name="mikolaja_leto" coords="771,179,20" shape="circle" />
+							<area alt="523" href="" data-name="trijcja" coords="723,162,20" shape="circle" />
+							<area alt="601" href="" data-name="day" coords="678,122,23" shape="circle" />
+							<area alt="602" href="" data-name="day" coords="625,142,21" shape="circle" />
+							<area alt="603" href="" data-name="day" coords="596,97,22" shape="circle" />
+							<area alt="604" href="" data-name="day" coords="543,121,23" shape="circle" />
+							<area alt="701" href="" data-name="day" coords="475,108,23" shape="circle" />
+							<area alt="707" href="" data-name="ivana_kupala" coords="425,148,20" shape="circle" />
+							<area alt="712" href="" data-name="petra_i_pavla" coords="371,118,20" shape="circle" />
+							<area alt="802" href="" data-name="illi" coords="309,155,21" shape="circle" />
+							<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
+							<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
+							<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
+							<area
+								alt="927"
+								href=""
+								data-name="vozdvizhennja_hrista"
+								coords="210,336,20"
+								shape="circle"
+							/>
+							<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
+							<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
+							<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
+							<area alt="1016" href="" data-name="day" coords="181,509,22" shape="circle" />
+							<area alt="1017" href="" data-name="day" coords="141,557,22" shape="circle" />
+							<area alt="1101" href="" data-name="day" coords="193,597,22" shape="circle" />
+							<area alt="1121" href="" data-name="mihajla" coords="200,652,20" shape="circle" />
+							<area alt="1122" href="" data-name="day" coords="255,639,22" shape="circle" />
+							<area alt="1123" href="" data-name="day" coords="276,698,22" shape="circle" />
+							<area alt="1204" href="" data-name="vvedenja" coords="335,724,19" shape="circle" />
+							<area alt="1207" href="" data-name="katerini" coords="359,764,20" shape="circle" />
+							<area alt="1213" href="" data-name="andria" coords="415,768,20" shape="circle" />
+							<area alt="1219" href="" data-name="mikolaja_zima" coords="449,733,20" shape="circle" />
+						</map>
+					</div>
+				</b-col>
+
+				<b-col cols="5" class="right-side py-3 h-100">
+					<b-row cols="1" class="justify-content-end align-items-between h-100">
+						<b-col>
+							<b-row class="d-flex justify-content-end align-items-center">
+								<b-col cols="auto">
+									<b-dropdown :text="$ml.current">
+										<b-dropdown-item
+											v-for="lang in $ml.list"
+											v-if="lang !== $ml.current"
+											:key="lang"
+											@click="
+												$ml.change(lang);
+												currentLanguage = $ml.current.toLowerCase();
+											"
+										>
+											<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{
+												lang
+											}}
+										</b-dropdown-item>
+									</b-dropdown>
+								</b-col>
+
+								<b-col cols="auto">
+									<p class="room-name">
+										{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”
 									</p>
-								</div>
-								<div
-									class="d-flex justify-content-center align-items-center flex-grow-1"
-									v-else-if="game && game.status && game.status !== 'STARTED'"
+								</b-col>
+
+								<b-col cols="auto" v-if="gameState === 'default'">
+									<b-button @click="leaveRoom()" :disabled="endGameBtnDisabled">
+										<p>{{ $ml.get("end_game") }}</p>
+									</b-button>
+								</b-col>
+
+								<b-col cols="auto" v-else-if="gameState === 'game-not-started'">
+									<b-button @click="joinRoom()" :disabled="joinRoomBtnDisabled">
+										<p>{{ $ml.get("join_room") }}</p>
+									</b-button>
+								</b-col>
+
+								<b-col
+									cols="auto"
+									v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
 								>
-									<p>
-										{{ $ml.get("GAME_" + this.game.status) }}
-									</p>
-								</div>
-							</b-col>
+									<b-button to="/game-dashboard">
+										<p>{{ $ml.get("go_to_home_page") }}</p>
+									</b-button>
+								</b-col>
+							</b-row>
+						</b-col>
 
-							<b-col class="d-flex flex-column flex-grow-0">
-								<img class="mb-2" width="34px" src="@/assets/board-game/timer.svg" />
+						<b-col class="d-flex justify-content-end">
+							<ActiveRoomsGraph
+								v-if="game"
+								class="active-rooms-graph"
+								:currentRoomFromActiveRoomsGraph="game"
+								:displayRoomName="false"
+								:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
+							></ActiveRoomsGraph>
 
-								<svg
-									class="timer"
-									viewBox="0 0 229 12"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<rect class="timer-rect" y="0.833008" height="11" rx="5.5" fill="#04944F" />
-								</svg>
-							</b-col>
-						</b-row>
-					</div>
-				</b-col>
-			</b-row>
+							<ActiveRoomsGraph
+								v-else-if="roomDetails.players"
+								class="active-rooms-graph"
+								:currentRoomFromActiveRoomsGraph="roomDetails"
+								:displayRoomName="false"
+								:activePlayersCountFromActiveRoomsGraph="roomDetails.players.length"
+							></ActiveRoomsGraph>
+						</b-col>
 
-			<div class="board-game-row">
-				<img
-					id="board"
-					class="board-game-img"
-					:src="boardLanguage"
-					usemap="#image-map"
-					style="pointer-events: auto"
-					@load="getBoardPosition"
-				/>
+						<b-col class="d-flex justify-content-end">
+							<div class="my-cards-box">
+								<b-row class="d-flex justify-content-start align-items-start h-100 mx-auto">
+									<b-col cols="11" class="text-center pr-0">
+										<p>{{ $ml.get("deck") }}</p>
+									</b-col>
 
-				<map name="image-map">
-					<area alt="101" href="" data-name="day" coords="513,682,19" shape="circle" />
-					<area alt="106" href="" data-name="svjatvechir" coords="558,670,21" shape="circle" />
-					<area alt="107" href="" data-name="rizdvo" coords="607,691,20" shape="circle" />
-					<area alt="113" href="" data-name="malanki" coords="571,731,20" shape="circle" />
-					<area alt="114" href="" data-name="vasilja" coords="545,775,19" shape="circle" />
-					<area alt="118" href="" data-name="golodna_kutja" coords="597,790,20" shape="circle" />
-					<area alt="119" href="" data-name="vodohresha" coords="642,764,20" shape="circle" />
-					<area alt="201" href="" data-name="day" coords="696,726,23" shape="circle" />
-					<area alt="215" href="" data-name="stritennja" coords="702,676,20" shape="circle" />
-					<area alt="216" href="" data-name="maslenica" coords="737,639,23" shape="circle" />
-					<area alt="217" href="" data-name="day" coords="795,654,22" shape="circle" />
-					<area alt="301" href="" data-name="day" coords="847,600,22" shape="circle" />
-					<area alt="314" href="" data-name="javdohi" coords="828,545,20" shape="circle" />
-					<area alt="322" href="" data-name="sorok_svjatih" coords="890,537,20" shape="circle" />
-					<area alt="330" href="" data-name="oleksi" coords="863,485,20" shape="circle" />
-					<area alt="407" href="" data-name="blagoveshinnja" coords="900,411,20" shape="circle" />
-					<area alt="408" href="" data-name="verbna_nedelja" coords="860,376,20" shape="circle" />
-					<area alt="409" href="" data-name="velikden" coords="903,337,20" shape="circle" />
-					<area alt="410" href="" data-name="day" coords="857,306,22" shape="circle" />
-					<area alt="505" href="" data-name="ljalja" coords="825,256,19" shape="circle" />
-					<area alt="506" href="" data-name="jurija" coords="779,228,21" shape="circle" />
-					<area alt="522" href="" data-name="mikolaja_leto" coords="771,179,20" shape="circle" />
-					<area alt="523" href="" data-name="trijcja" coords="723,162,20" shape="circle" />
-					<area alt="601" href="" data-name="day" coords="678,122,23" shape="circle" />
-					<area alt="602" href="" data-name="day" coords="625,142,21" shape="circle" />
-					<area alt="603" href="" data-name="day" coords="596,97,22" shape="circle" />
-					<area alt="604" href="" data-name="day" coords="543,121,23" shape="circle" />
-					<area alt="701" href="" data-name="day" coords="475,108,23" shape="circle" />
-					<area alt="707" href="" data-name="ivana_kupala" coords="425,148,20" shape="circle" />
-					<area alt="712" href="" data-name="petra_i_pavla" coords="371,118,20" shape="circle" />
-					<area alt="802" href="" data-name="illi" coords="309,155,21" shape="circle" />
-					<area alt="814" href="" data-name="makovia" coords="295,213,20" shape="circle" />
-					<area alt="819" href="" data-name="velikii_spas" coords="240,225,20" shape="circle" />
-					<area alt="901" href="" data-name="day" coords="188,290,23" shape="circle" />
-					<area alt="927" href="" data-name="vozdvizhennja_hrista" coords="210,336,20" shape="circle" />
-					<area alt="928" href="" data-name="day" coords="151,370,22" shape="circle" />
-					<area alt="1014" href="" data-name="pokrova" coords="148,440,19" shape="circle" />
-					<area alt="1015" href="" data-name="day" coords="132,487,22" shape="circle" />
-					<area alt="1016" href="" data-name="day" coords="181,509,22" shape="circle" />
-					<area alt="1017" href="" data-name="day" coords="141,557,22" shape="circle" />
-					<area alt="1101" href="" data-name="day" coords="193,597,22" shape="circle" />
-					<area alt="1121" href="" data-name="mihajla" coords="200,652,20" shape="circle" />
-					<area alt="1122" href="" data-name="day" coords="255,639,22" shape="circle" />
-					<area alt="1123" href="" data-name="day" coords="276,698,22" shape="circle" />
-					<area alt="1204" href="" data-name="vvedenja" coords="335,724,19" shape="circle" />
-					<area alt="1207" href="" data-name="katerini" coords="359,764,20" shape="circle" />
-					<area alt="1213" href="" data-name="andria" coords="415,768,20" shape="circle" />
-					<area alt="1219" href="" data-name="mikolaja_zima" coords="449,733,20" shape="circle" />
-				</map>
-			</div>
+									<b-col cols="1" class="d-flex px-0">
+										<img src="@/assets/board-game/info-sign.svg" width="18" />
+									</b-col>
 
-			<b-row class="d-flex justify-content-end align-items-center right-side mr-0 h-100">
-				<b-col cols="12" class="d-flex justify-content-between align-items-center">
-					<b-dropdown :text="$ml.current">
-						<b-dropdown-item
-							v-for="lang in $ml.list"
-							v-if="lang !== $ml.current"
-							:key="lang"
-							@click="
-								$ml.change(lang);
-								currentLanguage = $ml.current.toLowerCase();
-							"
-						>
-							<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{ lang }}
-						</b-dropdown-item>
-					</b-dropdown>
-					<p class="room-name">{{ $ml.get("room_name_room") }} “{{ game.name || roomDetails.name }}”</p>
+									<b-col cols="12" class="first-row-deck">
+										<b-row class="cards mx-auto">
+											<b-col
+												class="p-0"
+												style="width: 60px; height: 82px;"
+												v-for="card in dishesDeck"
+											>
+												<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
+											</b-col>
+										</b-row>
+									</b-col>
 
-					<b-button v-if="gameState === 'default'" @click="leaveRoom()" :disabled="endGameBtnDisabled">
-						<p>{{ $ml.get("end_game") }}</p>
-					</b-button>
+									<b-col cols="12">
+										<b-row class="cards mx-auto">
+											<b-col
+												class="p-0"
+												style="width: 60px; height: 82px;"
+												v-for="card in ritualsDeck"
+											>
+												<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
+											</b-col>
+										</b-row>
+									</b-col>
 
-					<b-button
-						v-else-if="gameState === 'game-not-started'"
-						@click="joinRoom()"
-						:disabled="joinRoomBtnDisabled"
-					>
-						<p>{{ $ml.get("join_room") }}</p>
-					</b-button>
-
-					<b-button
-						v-else-if="gameState === 'spectator' || gameState === 'game-finished-cancelled'"
-						to="/game-dashboard"
-					>
-						<p>{{ $ml.get("go_to_home_page") }}</p>
-					</b-button>
-				</b-col>
-
-				<b-col class="d-flex justify-content-end">
-					<ActiveRoomsGraph
-						v-if="game"
-						class="active-rooms-graph"
-						:currentRoomFromActiveRoomsGraph="game"
-						:displayRoomName="false"
-						:activePlayersCountFromActiveRoomsGraph="game.players ? game.players.length : 0"
-					></ActiveRoomsGraph>
-
-					<ActiveRoomsGraph
-						v-else-if="roomDetails.players"
-						class="active-rooms-graph"
-						:currentRoomFromActiveRoomsGraph="roomDetails"
-						:displayRoomName="false"
-						:activePlayersCountFromActiveRoomsGraph="roomDetails.players.length"
-					></ActiveRoomsGraph>
-				</b-col>
-
-				<b-col cols="12" class="d-flex justify-content-end">
-					<div class="my-cards-box">
-						<b-row class="d-flex justify-content-start align-items-start h-100 mx-auto">
-							<b-col cols="11" class="text-center pr-0">
-								<p>{{ $ml.get("deck") }}</p>
-							</b-col>
-
-							<b-col cols="1" class="d-flex px-0">
-								<img src="@/assets/board-game/info-sign.svg" width="18" />
-							</b-col>
-
-							<b-col cols="12" class="first-row-deck">
-								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in dishesDeck">
-										<img :src="require('@/assets/cards/dishes/' + card.name + '.png')" />
+									<b-col cols="12">
+										<b-row class="cards mx-auto">
+											<b-col
+												class="p-0"
+												style="width: 60px; height: 82px;"
+												v-for="card in stuffDeck"
+											>
+												<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
+											</b-col>
+										</b-row>
 									</b-col>
 								</b-row>
-							</b-col>
+							</div>
+						</b-col>
 
-							<b-col cols="12">
-								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in ritualsDeck">
-										<img :src="require('@/assets/cards/rituals/' + card.name + '.png')" />
+						<b-col class="d-flex justify-content-end align-items-end">
+							<div class="my-progress-box">
+								<b-row class="h-100">
+									<b-col cols="6" class="left h-100">
+										<img
+											v-if="currentDevicePlayer && currentDevicePlayer.character"
+											class="character-img w-100 h-100"
+											:src="require('@/assets/cards/character/' + playerCharacter + '.png')"
+										/>
+									</b-col>
+
+									<b-col cols="6" class="d-flex flex-column justify-content-between right">
+										<p>{{ $ml.get("my_character") }}</p>
+
+										<p class="mt-5">{{ $ml.get("my_happiness") }}</p>
+
+										<b-row class="d-flex justify-content-center align-items-center happiness">
+											<b-col cols="5" class="px-0">
+												<img src="@/assets/board-game/zheton.png" />
+											</b-col>
+											<b-col cols="auto" class="px-2">
+												<p>-</p>
+											</b-col>
+											<b-col cols="2" class="px-0">
+												<p>{{ playerHappiness }}</p>
+											</b-col>
+										</b-row>
 									</b-col>
 								</b-row>
-							</b-col>
-
-							<b-col cols="12">
-								<b-row class="cards mx-auto">
-									<b-col class="p-0" style="width: 60px; height: 82px;" v-for="card in stuffDeck">
-										<img :src="require('@/assets/cards/stuff/' + card.name + '.png')" />
-									</b-col>
-								</b-row>
-							</b-col>
-						</b-row>
-					</div>
-				</b-col>
-
-				<b-col cols="12" class="d-flex justify-content-end">
-					<div class="my-progress-box">
-						<b-row class="h-100">
-							<b-col cols="6" class="left h-100">
-								<img
-									v-if="currentDevicePlayer && currentDevicePlayer.character"
-									class="character-img w-100 h-100"
-									:src="require('@/assets/cards/character/' + playerCharacter + '.png')"
-								/>
-							</b-col>
-
-							<b-col cols="6" class="d-flex flex-column justify-content-between right">
-								<p>{{ $ml.get("my_character") }}</p>
-
-								<p class="mt-5">{{ $ml.get("my_happiness") }}</p>
-
-								<b-row class="d-flex justify-content-center align-items-center happiness">
-									<b-col cols="5" class="px-0">
-										<img src="@/assets/board-game/zheton.png" />
-									</b-col>
-									<b-col cols="auto" class="px-2">
-										<p>-</p>
-									</b-col>
-									<b-col cols="2" class="px-0">
-										<p>{{ playerHappiness }}</p>
-									</b-col>
-								</b-row>
-							</b-col>
-						</b-row>
-					</div>
+							</div>
+						</b-col>
+					</b-row>
 				</b-col>
 			</b-row>
 		</b-container>
@@ -656,8 +695,6 @@ export default {
 			let board = elem.getBoundingClientRect();
 			this.boardX = board.x;
 			this.boardY = board.y;
-			console.log("boardX: ", this.boardX);
-			console.log("boardY: ", this.boardY);
 
 			imageMapResize();
 		},
@@ -672,12 +709,15 @@ export default {
 					let playerFigure = document.getElementById("player-character-" + player.character.name);
 					if (playerFigure) {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
+						let elementHeight = playerFigure.getBoundingClientRect().height;
 
 						if (this.diceRolled === "initial" || this.diceRolled === "each-roll") {
-							playerFigure.style.left = `${this.boardX +
-								parseFloat(coordsAttrArray[0]) -
-								elementWidth / 2}px`;
-							playerFigure.style.top = `${this.boardY + parseFloat(coordsAttrArray[1]) - 120}px`;
+							this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
+							this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
+
+							playerFigure.style.left = `${this.adjustedCoordX - elementWidth / 2}px`;
+							playerFigure.style.top = `${this.adjustedCoordY - coordsAttrArray[2] - elementHeight}px`;
+
 							this.inited = true;
 						}
 
@@ -747,6 +787,7 @@ export default {
 					progress.value++;
 					if (progress.value === images.keys().length) {
 						document.getElementById("overlay").style.display = "none";
+						this.getBoardPosition();
 					}
 				};
 			});
@@ -1031,7 +1072,7 @@ p {
 }
 
 .right-side p {
-	font-size: 50px;
+	font-size: 40px;
 }
 
 .right-side button p {
@@ -1110,8 +1151,8 @@ p {
 
 .my-progress-box {
 	width: 329px;
-	height: 200px;
-	padding: 20px 30px 20px 30px;
+	height: 180px;
+	padding: 10px 30px 10px 30px;
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
 	background-color: white;
