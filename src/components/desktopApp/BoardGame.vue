@@ -97,7 +97,7 @@
 												<p>{{ $ml.get("throw_cards") }}</p>
 											</b-button>
 
-											<img :src="diceUrl" v-if="game.step.counter" />
+											<img :src="diceUrl" v-if="game.step.counter" :style="game.capacity > 4 ? 'width : 50%' : ''"/>
 										</div>
 
 										<div
@@ -516,7 +516,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="dayDescription" :footerHidden="true">
+		<InGameModal :modalVisible="dayDescription" :footerHidden="true" :headerHidden="true">
 			<template v-slot:upper-half>
 				<div class="flex-column">
 					<p
