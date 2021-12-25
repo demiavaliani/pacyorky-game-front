@@ -13,8 +13,12 @@
 			:id="'player-character-' + player.character.name"
 			class="player-character"
 			:style="inited ? '' : 'opacity: 0'"
+			style="pointer-events: none"
 		>
-			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
+			<img
+				:src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')"
+				style="pointer-events: none"
+			/>
 		</div>
 
 		<GameLogic
@@ -147,7 +151,14 @@
 
 				<b-col cols="4" class="d-flex align-items-center">
 					<div class="board-game-row">
-						<img id="board" class="board-game-img" :src="boardLanguage" usemap="#image-map" />
+            <img
+                id="board"
+                class="board-game-img"
+                :src="boardLanguage"
+                usemap="#image-map"
+                style="pointer-events: auto"
+                @load="getBoardPosition"
+            />
 
 						<map name="image-map">
 							<area alt="101" href="" data-name="day" coords="513,682,19" shape="circle" />
