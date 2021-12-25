@@ -97,7 +97,7 @@ export default {
 						this.$emit("dropped-cards", cardsArray);
 					})
 					.then(() => {
-						this.$emit("show-vote-modal");
+						this.$emit("can-vote");
 					});
 			}
 		},
