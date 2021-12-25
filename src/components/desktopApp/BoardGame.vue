@@ -27,7 +27,7 @@
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="showThrowCardsModalBtnDisabledTemporary = false"
 			@dropped-cards="populateVoteCardDecks($event)"
-			@show-vote-modal="voteModalVisible = true"
+			@can-vote="canVote = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
 			@show-step-time-out-modal="stepTimeOutModalVisible = true"
 			@game-waiting-player-not-in-game="gameState = 'game-not-started'"
@@ -85,19 +85,26 @@
 											>
 												<p>{{ $ml.get("throw_dice") }}</p>
 											</b-button>
+                      <b-button
+                          v-if="game.step.status === 'WAITING_VOTE'"
+                          @click="voteModalVisible = true"
+                          :disabled="!canVote"
+                          class="throw-dice-btn"
+                      >
+                        <p>{{ $ml.get("WAITING_VOTE") }}</p>
+                      </b-button>
 											<b-button
 												class="throw-dice-btn mr-3"
 												:disabled="showThrowCardsModalBtnDisabled"
 												@click="
 													throwCardsModalVisible = true;
-													showThrowCardsModalBtnDisabled = true;
 												"
 												v-else-if="isCurrentPlayer && game.step.status === 'WAITING_CARD'"
 											>
 												<p>{{ $ml.get("throw_cards") }}</p>
 											</b-button>
 
-											<img :src="diceUrl" v-if="game.step.counter" />
+											<img :src="diceUrl" v-if="game.step.counter" :style="game.capacity > 4 ? 'width : 50%' : ''"/>
 										</div>
 
 										<div
@@ -404,6 +411,11 @@
 						{{ $ml.get("throw_cards") }}
 					</p>
 				</b-button>
+        <b-button @click="throwCardsModalVisible = false">
+          <p v-bind:style="{ color: 'white', fontSize: '22px' }">
+            {{ $ml.get("close") }}
+          </p>
+        </b-button>
 			</template>
 		</InGameModal>
 
@@ -437,6 +449,11 @@
 						{{ $ml.get("WAITING_VOTE") }}
 					</p>
 				</b-button>
+        <b-button @click="voteModalVisible = false">
+          <p v-bind:style="{ color: 'white', fontSize: '22px' }">
+            {{ $ml.get("close") }}
+          </p>
+        </b-button>
 			</template>
 		</InGameModal>
 
@@ -582,6 +599,7 @@ export default {
 			showThrowCardsModalBtnDisabledTemporary: false,
 			showThrowCardsModalBtnDisabled: false,
 			voteModalVisible: false,
+      canVote: false,
 			gameEndedModalVisible: false,
 			stepTimeOutModalVisible: false,
 
@@ -666,6 +684,7 @@ export default {
 			this.$refs.gameLogic.throwCards(this.cardsToThrow);
 			this.cardsToThrow = [];
 			this.throwCardsModalVisible = false;
+      this.showThrowCardsModalBtnDisabled = true;
 		},
 
 		populateVoteCardDecks(thrownCards) {
@@ -678,6 +697,7 @@ export default {
 			this.$refs.gameLogic.vote(this.cardsToVote);
 			this.cardsToVote = [];
 			this.voteModalVisible = false;
+      this.canVote = false;
 		},
 
 		leaveRoom() {
