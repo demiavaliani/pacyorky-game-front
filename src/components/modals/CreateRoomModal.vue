@@ -18,25 +18,26 @@
 				<b-col cols="8">
 					<p>{{ $ml.get("play_with_computer") }}</p>
 				</b-col>
+
 				<b-col cols="2">
-					<b-form-radio-group class="d-flex justify-content-around">
-						<b-form-radio
-							id="tick"
-							@change="tickActive = 'tick'"
-							v-model="roomForm.withComputer"
-							value="true"
+					<div class="d-flex justify-content-around">
+						<b-button
+							class="tick remove-default-button-style"
+							@click="
+								activeClass = 'tick';
+								roomForm.withComputer = true;
+							"
 							v-bind:class="tickActiveObj"
-							name="playwithcomputerselector"
-						></b-form-radio>
-						<b-form-radio
-							id="x"
-							@change="tickActive = 'x'"
-							v-model="roomForm.withComputer"
-							value="false"
+						></b-button>
+						<b-button
+							class="x remove-default-button-style"
+							@click="
+								activeClass = 'x';
+								roomForm.withComputer = false;
+							"
 							v-bind:class="xActiveObj"
-							name="playwithcomputerselector"
-						></b-form-radio>
-					</b-form-radio-group>
+						></b-button>
+					</div>
 				</b-col>
 
 				<b-col cols="12" class="mb-5"></b-col>
@@ -85,7 +86,7 @@
 						size="lg"
 					></b-form-input>
 					<b-form-invalid-feedback>
-						{{ $ml.get("name_3_11_characters_long") }}
+						{{ $ml.get("name_min_3_characters_long") }}
 					</b-form-invalid-feedback>
 				</b-col>
 			</b-row>
@@ -118,7 +119,7 @@ export default {
 	data() {
 		return {
 			maxTimePerTurn: 0,
-			tickActive: "x",
+			activeClass: "x",
 			roomNameArray: [
 				"kyiv",
 				"kharkiv",
@@ -145,7 +146,7 @@ export default {
 
 			roomForm: {
 				capacity: 4,
-				withComputer: null,
+				withComputer: false,
 				privateRoom: true,
 				password: "",
 				name: "",
@@ -156,13 +157,13 @@ export default {
 	computed: {
 		tickActiveObj() {
 			return {
-				"tick-active": this.tickActive === "tick",
+				"tick-active": this.activeClass == "tick",
 			};
 		},
 
 		xActiveObj() {
 			return {
-				"x-active": this.tickActive === "x",
+				"x-active": this.activeClass == "x",
 			};
 		},
 
@@ -174,10 +175,6 @@ export default {
 			if (this.roomNameState == false) {
 				return false;
 			} else return true;
-		},
-
-		tickActiveComputed() {
-			return this.tickActive;
 		},
 	},
 
@@ -263,47 +260,28 @@ p {
 	border-color: transparent;
 }
 
-::v-deep .custom-control {
-	padding-left: 0;
-	margin-right: 0;
-}
-
-::v-deep .custom-control-label {
+.tick {
 	width: 32px;
 	height: 32px;
-}
-
-::v-deep .custom-control-label::before {
-	top: 0;
-	left: 0;
-	width: 32px;
-	height: 32px;
-	border: 0;
-	box-shadow: none;
-}
-
-::v-deep .custom-control-label::after {
-	top: 0;
-	left: 0;
-	width: 32px;
-	height: 32px;
-	background-image: none !important;
-}
-
-::v-deep #tick ~ .custom-control-label::before {
+	padding: 0;
+	margin-right: 5px;
 	background: url("../../assets/game-dashboard/component-tick.svg") no-repeat;
 }
 
-::v-deep #x ~ .custom-control-label::before {
+.x {
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	margin-left: 5px;
 	background: url("../../assets/game-dashboard/component-x.svg") no-repeat;
 }
 
 .tick-active {
-	content: url("../../assets/game-dashboard/component-tick-active.svg");
+	background: url("../../assets/game-dashboard/component-tick-active.svg") no-repeat;
 }
 
 .x-active {
-	content: url("../../assets/game-dashboard/component-x-active.svg");
+	background: url("../../assets/game-dashboard/component-x-active.svg") no-repeat;
 }
 
 .submit-game-create-btn {

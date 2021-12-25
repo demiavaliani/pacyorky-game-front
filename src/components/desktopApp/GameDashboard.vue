@@ -2,7 +2,7 @@
 	<b-container id="game-dashboard" class="d-flex flex-column justify-content-center align-items-center h-75">
 		<b-row class="d-flex justify-content-center">
 			<b-col cols="auto" class="d-flex flex-column pr-4">
-				<div class="middle-gif"></div>
+				<div class="middle-gif"><iframe width="100%" height="100%" style="border-radius: 10px" src="https://www.youtube-nocookie.com/embed/U1RcT1cj_mc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
 				<b-button
 					@click="
@@ -102,10 +102,9 @@ export default {
 		return {
 			showCreateRoomModal: false,
 			showJoinRoomModal: false,
-			currentRoom: {
-				players: [],
-			},
-			currentRoomId: 0,
+			currentRoom: {},
+			sortedRooms: [],
+			currentRoomId: "",
 			roomSelected: false,
 			disabled: true,
 			interval: "",
@@ -119,7 +118,7 @@ export default {
 		}),
 
 		getActiveRoomsAndSortByPlayersCountAsc() {
-			return this.activeRooms
+			return (this.sortedRooms = this.activeRooms
 				.sort((a, b) => {
 					var roomA = a.playersCount;
 					var roomB = b.playersCount;
@@ -131,7 +130,7 @@ export default {
 					}
 					return 0;
 				})
-				.slice(0, 6);
+				.slice(0, 6));
 		},
 	},
 
@@ -159,19 +158,11 @@ export default {
 	},
 
 	watch: {
-		getActiveRoomsAndSortByPlayersCountAsc: {
-			immediate: true,
-			async handler() {
-				if (this.getActiveRoomsAndSortByPlayersCountAsc.length > 0) {
-					try {
-						this.roomSelected = true;
-						this.disabled = true;
-					} catch (error) {
-						this.roomSelected = false;
-						this.disabled = false;
-					}
-				}
-			},
+		roomSelected() {
+			if (this.sortedRooms.length < 1) {
+				this.roomSelected = false;
+				this.disabled = false;
+			}
 		},
 	},
 
@@ -184,6 +175,17 @@ export default {
 		this.updateActiveRoomsGraph();
 		await this.$store.dispatch("setGameAction");
 		await this.$store.dispatch("setDevicePlayerIdAction");
+
+		let initialRoomInterval = setInterval(() => {
+			if (this.sortedRooms.length && (this.currentRoomId == "" || !Object.keys(this.currentRoom).length)) {
+				this.currentRoom = this.getActiveRoomsAndSortByPlayersCountAsc[0];
+				this.currentRoomId = this.getActiveRoomsAndSortByPlayersCountAsc[0].id;
+			} else {
+				this.roomSelected = true;
+				clearInterval(initialRoomInterval);
+			}
+		}, 1000);
+
 		this.checkGame();
 	},
 };
