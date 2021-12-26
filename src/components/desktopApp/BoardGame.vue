@@ -480,7 +480,7 @@
 					<b-col cols="3" class="my-2" v-for="player in game.players" :key="player.id">
 						<img :src="require('@/assets/cards/character/' + player.character.name + '.png')" />
 						<p style="font-size: 26px">
-							{{ player.character.name }}
+							{{ $ml.get(player.character.name) }}
 						</p>
 						<p style="font-size: 24px">{{ $ml.get("happiness") }} - {{ player.happiness }}</p>
 					</b-col>
@@ -733,7 +733,7 @@ export default {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 						let elementHeight = playerFigure.getBoundingClientRect().height;
 
-						if (this.diceRolled === "initial" || this.diceRolled === "each-roll") {
+						//if (this.diceRolled === "initial" || this.diceRolled === "each-roll") {
 							this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
 							this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
 
@@ -741,7 +741,7 @@ export default {
 							playerFigure.style.top = `${this.adjustedCoordY - coordsAttrArray[2] - elementHeight}px`;
 
 							this.inited = true;
-						}
+						//}
 
 						if (this.isCurrentPlayer && this.diceRolled == "each-roll") {
 							this.seasonChanged();
@@ -847,7 +847,7 @@ export default {
 		timerAnimate(startAt) {
 			let actionTimeUtc = new Date(startAt).toUTCString();
 			let currentTimeUtc = new Date().toUTCString();
-			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
+			let msTillAction = Math.abs(Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc));
 			let timerRect = document.querySelector(".timer-rect");
 
 			timerRect.animate([{ width: "229px" }, { width: "0" }], {
@@ -950,7 +950,7 @@ export default {
 						setTimeout(() => this.adjustImgMapCoords(this.playersInGame), 500);
 					}
 					if (this.game.step) {
-						this.adjustImgMapCoords([this.game.step.currentPlayer]);
+						this.adjustImgMapCoords(this.game.players);
 					}
 				}
 			},
