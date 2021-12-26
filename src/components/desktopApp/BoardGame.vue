@@ -348,7 +348,7 @@
 						<b-col class="d-flex justify-content-end align-items-end">
 							<div class="my-progress-box">
 								<b-row class="h-100">
-									<b-col cols="6" class="left h-100">
+									<b-col cols="6" class="left h-100 character-anchor">
 										<img
 											v-if="currentDevicePlayer && currentDevicePlayer.character"
 											class="character-img w-100 h-100"
@@ -1152,6 +1152,15 @@ p {
 	left: -75px;
 	bottom: 100px;
 	z-index: 9999;
+}
+
+.character-anchor:hover img{
+  position: absolute;
+  width: 17vw !important;
+  height: 20vw !important;
+  left: -75px;
+  bottom: 100px;
+  z-index: 9999;
 }
 
 .first-row-deck .p-0:hover img {
