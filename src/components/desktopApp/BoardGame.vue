@@ -733,7 +733,7 @@ export default {
 						let elementWidth = playerFigure.getBoundingClientRect().width;
 						let elementHeight = playerFigure.getBoundingClientRect().height;
 
-						//if (this.diceRolled === "initial" || this.diceRolled === "each-roll") {
+						if (this.diceRolled === "initial" || this.diceRolled === "each-roll") {
 							this.adjustedCoordX = this.boardX + parseFloat(coordsAttrArray[0]);
 							this.adjustedCoordY = this.boardY + parseFloat(coordsAttrArray[1]);
 
@@ -741,7 +741,7 @@ export default {
 							playerFigure.style.top = `${this.adjustedCoordY - coordsAttrArray[2] - elementHeight}px`;
 
 							this.inited = true;
-						//}
+						}
 
 						if (this.isCurrentPlayer && this.diceRolled == "each-roll") {
 							this.seasonChanged();
@@ -828,6 +828,7 @@ export default {
 							(this.game.capacity > 4 ? 2 : 1) +
 							".svg");
 						this.diceRolled = "each-roll";
+						this.adjustImgMapCoords([this.game.step.currentPlayer]);
 						if (this.showThrowCardsModalBtnDisabledTemporary == false) {
 							this.showThrowCardsModalBtnDisabled = false;
 						}
@@ -949,9 +950,6 @@ export default {
 						this.playersInGame = this.game.players;
 						setTimeout(() => this.adjustImgMapCoords(this.playersInGame), 500);
 					}
-					if (this.game.step) {
-						this.adjustImgMapCoords(this.game.players);
-					}
 				}
 			},
 			deep: true,
@@ -974,12 +972,13 @@ export default {
 				if (this.isCurrentPlayer) {
 					this.diceAnimate();
 				} else {
-					clearInterval(this.intervalDice);
 					this.diceUrl = require("@/assets/board-game/dice-" +
 						this.game.step.counter +
 						"-" +
 						(this.game.capacity > 4 ? 2 : 1) +
 						".svg");
+					this.diceRolled = "each-roll";
+					this.adjustImgMapCoords([this.game.step.currentPlayer]);
 				}
 			}
 		},
