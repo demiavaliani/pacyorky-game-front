@@ -13,8 +13,12 @@
 			:id="'player-character-' + player.character.name"
 			class="player-character"
 			:style="inited ? '' : 'opacity: 0'"
+			style="pointer-events: none"
 		>
-			<img :src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')" />
+			<img
+				:src="require('@/assets/cards/moving_characters/' + player.character.name + '.png')"
+				style="pointer-events: none"
+			/>
 		</div>
 
 		<GameLogic
@@ -23,7 +27,7 @@
 			@throw-dice-disabled="diceBtnDisabled = $event"
 			@show-throw-cards-modal="showThrowCardsModalBtnDisabledTemporary = false"
 			@dropped-cards="populateVoteCardDecks($event)"
-			@show-vote-modal="voteModalVisible = true"
+			@can-vote="canVote = true"
 			@show-game-ended-modal="gameEndedModalVisible = true"
 			@show-step-time-out-modal="stepTimeOutModalVisible = true"
 			@game-waiting-player-not-in-game="gameState = 'game-not-started'"
@@ -70,7 +74,7 @@
 
 									<b-col class="d-flex flex-grow-0 flex-column-reverse">
 										<div
-											class="d-flex justify-content-center align-items-center flex-grow-1"
+											class="d-flex justify-content-center align-items-center flex-grow-1 flex-column"
 											v-if="game.step"
 										>
 											<b-button
@@ -81,19 +85,26 @@
 											>
 												<p>{{ $ml.get("throw_dice") }}</p>
 											</b-button>
+                      <b-button
+                          v-if="game.step.status === 'WAITING_VOTE'"
+                          @click="voteModalVisible = true"
+                          :disabled="!canVote"
+                          class="throw-dice-btn"
+                      >
+                        <p>{{ $ml.get("WAITING_VOTE") }}</p>
+                      </b-button>
 											<b-button
 												class="throw-dice-btn mr-3"
 												:disabled="showThrowCardsModalBtnDisabled"
 												@click="
 													throwCardsModalVisible = true;
-													showThrowCardsModalBtnDisabled = true;
 												"
 												v-else-if="isCurrentPlayer && game.step.status === 'WAITING_CARD'"
 											>
 												<p>{{ $ml.get("throw_cards") }}</p>
 											</b-button>
 
-											<img :src="diceUrl" v-if="game.step.counter" />
+											<img :src="diceUrl" v-if="game.step.counter" :style="game.capacity > 4 ? 'width : 50%' : ''" style="margin-top: 5px"/>
 										</div>
 
 										<div
@@ -147,7 +158,14 @@
 
 				<b-col cols="4" class="d-flex align-items-center">
 					<div class="board-game-row">
-						<img id="board" class="board-game-img" :src="boardLanguage" usemap="#image-map" />
+						<img
+							id="board"
+							class="board-game-img"
+							:src="boardLanguage"
+							usemap="#image-map"
+							style="pointer-events: auto"
+							@load="getBoardPosition"
+						/>
 
 						<map name="image-map">
 							<area alt="101" href="" data-name="day" coords="513,682,19" shape="circle" />
@@ -330,7 +348,7 @@
 						<b-col class="d-flex justify-content-end align-items-end">
 							<div class="my-progress-box">
 								<b-row class="h-100">
-									<b-col cols="6" class="left h-100">
+									<b-col cols="6" class="left h-100 character-anchor">
 										<img
 											v-if="currentDevicePlayer && currentDevicePlayer.character"
 											class="character-img w-100 h-100"
@@ -393,6 +411,11 @@
 						{{ $ml.get("throw_cards") }}
 					</p>
 				</b-button>
+        <b-button @click="throwCardsModalVisible = false">
+          <p v-bind:style="{ color: 'white', fontSize: '22px' }">
+            {{ $ml.get("close") }}
+          </p>
+        </b-button>
 			</template>
 		</InGameModal>
 
@@ -426,6 +449,11 @@
 						{{ $ml.get("WAITING_VOTE") }}
 					</p>
 				</b-button>
+        <b-button @click="voteModalVisible = false">
+          <p v-bind:style="{ color: 'white', fontSize: '22px' }">
+            {{ $ml.get("close") }}
+          </p>
+        </b-button>
 			</template>
 		</InGameModal>
 
@@ -452,7 +480,7 @@
 					<b-col cols="3" class="my-2" v-for="player in game.players" :key="player.id">
 						<img :src="require('@/assets/cards/character/' + player.character.name + '.png')" />
 						<p style="font-size: 26px">
-							{{ player.character.name }}
+							{{ $ml.get(player.character.name) }}
 						</p>
 						<p style="font-size: 24px">{{ $ml.get("happiness") }} - {{ player.happiness }}</p>
 					</b-col>
@@ -505,7 +533,7 @@
 			</template>
 		</InGameModal>
 
-		<InGameModal :modalVisible="dayDescription" :footerHidden="true">
+		<InGameModal :modalVisible="dayDescription" :footerHidden="false" :headerHidden="true">
 			<template v-slot:upper-half>
 				<div class="flex-column">
 					<p
@@ -515,9 +543,11 @@
 					>
 						{{ $ml.get("day_" + modalDay) }}
 					</p>
-					<br />
-					<b-button @click="dayDescription = false">Close</b-button>
 				</div>
+			</template>
+
+			<template v-slot:footer>
+				<b-button @click="dayDescription = false">Close</b-button>
 			</template>
 		</InGameModal>
 	</div>
@@ -569,6 +599,7 @@ export default {
 			showThrowCardsModalBtnDisabledTemporary: false,
 			showThrowCardsModalBtnDisabled: false,
 			voteModalVisible: false,
+      canVote: false,
 			gameEndedModalVisible: false,
 			stepTimeOutModalVisible: false,
 
@@ -653,6 +684,7 @@ export default {
 			this.$refs.gameLogic.throwCards(this.cardsToThrow);
 			this.cardsToThrow = [];
 			this.throwCardsModalVisible = false;
+      this.showThrowCardsModalBtnDisabled = true;
 		},
 
 		populateVoteCardDecks(thrownCards) {
@@ -665,6 +697,7 @@ export default {
 			this.$refs.gameLogic.vote(this.cardsToVote);
 			this.cardsToVote = [];
 			this.voteModalVisible = false;
+      this.canVote = false;
 		},
 
 		leaveRoom() {
@@ -795,6 +828,7 @@ export default {
 							(this.game.capacity > 4 ? 2 : 1) +
 							".svg");
 						this.diceRolled = "each-roll";
+						this.adjustImgMapCoords([this.game.step.currentPlayer]);
 						if (this.showThrowCardsModalBtnDisabledTemporary == false) {
 							this.showThrowCardsModalBtnDisabled = false;
 						}
@@ -814,7 +848,7 @@ export default {
 		timerAnimate(startAt) {
 			let actionTimeUtc = new Date(startAt).toUTCString();
 			let currentTimeUtc = new Date().toUTCString();
-			let msTillAction = Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc);
+			let msTillAction = Math.abs(Date.parse(actionTimeUtc) - Date.parse(currentTimeUtc));
 			let timerRect = document.querySelector(".timer-rect");
 
 			timerRect.animate([{ width: "229px" }, { width: "0" }], {
@@ -916,9 +950,6 @@ export default {
 						this.playersInGame = this.game.players;
 						setTimeout(() => this.adjustImgMapCoords(this.playersInGame), 500);
 					}
-					if (this.game.step) {
-						this.adjustImgMapCoords([this.game.step.currentPlayer]);
-					}
 				}
 			},
 			deep: true,
@@ -941,12 +972,13 @@ export default {
 				if (this.isCurrentPlayer) {
 					this.diceAnimate();
 				} else {
-					clearInterval(this.intervalDice);
 					this.diceUrl = require("@/assets/board-game/dice-" +
 						this.game.step.counter +
 						"-" +
 						(this.game.capacity > 4 ? 2 : 1) +
 						".svg");
+					this.diceRolled = "each-roll";
+					this.adjustImgMapCoords([this.game.step.currentPlayer]);
 				}
 			}
 		},
@@ -1014,7 +1046,9 @@ p {
 }
 
 .board-game-row img {
+	position: relative;
 	width: 50vw;
+	z-index: 1;
 }
 
 .left-side .col:first-child button p,
@@ -1054,10 +1088,6 @@ p {
 
 .timer-rect {
 	width: 229px;
-}
-
-.board-game-row img {
-	width: 50vw;
 }
 
 .right-side p {
@@ -1123,6 +1153,15 @@ p {
 	z-index: 9999;
 }
 
+.character-anchor:hover img{
+  position: absolute;
+  width: 17vw !important;
+  height: 20vw !important;
+  left: -75px;
+  bottom: 100px;
+  z-index: 9999;
+}
+
 .first-row-deck .p-0:hover img {
 	bottom: 60px;
 }
@@ -1169,7 +1208,7 @@ p {
 .player-character {
 	position: absolute;
 	top: 450px;
-	z-index: 1;
+	z-index: 2;
 	transition-duration: 1s;
 	transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 }
