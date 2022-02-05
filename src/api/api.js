@@ -67,6 +67,16 @@ export default {
 		try {
 			return await axios.delete("/api/v1/rooms/left");
 		} catch (error) { }
-	}
+	},
+
+    async attachAgoraId(uid) {
+        try {
+            return await axios.post("/api/v1/moderate/agoraId", uid, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+        } catch (error) { }
+    }
 
 }

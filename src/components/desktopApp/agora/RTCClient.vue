@@ -10,6 +10,7 @@
 <script>
 import RTCClient from "../../../agora-client";
 import Player from "./Player";
+import api from "../../../api/api";
 export default {
   name: "RTCClient",
   components: {Player},
@@ -17,7 +18,6 @@ export default {
     return {
       option: {
         appid: '6d981052c2fc41af918b9fab5d8e8979',
-        uid: null,
       },
       disableJoin: false,
       localStream: null,
@@ -27,7 +27,8 @@ export default {
   },
   props: {
     token: String,
-    channel: String
+    channel: String,
+    uid: String
   },
 
   methods: {
@@ -42,7 +43,9 @@ export default {
       }
       this.option.token = this.token;
       this.option.channel = this.channel;
-      this.rtc.joinChannel(this.option).then(() => {
+      this.option.uid = this.uid;
+      this.rtc.joinChannel(this.option).then((uid) => {
+        api.attachAgoraId(uid).then();
         console.log({
           message: 'Join Success',
           type: 'success'
@@ -55,10 +58,12 @@ export default {
           this.localStream = stream
           this.inVoiceChat = true;
         }).catch((err) => {
+          this.inVoiceChat = false;
           console.log('Publish Failure');
           console.log('publish local error', err)
         })
       }).catch((err) => {
+        this.inVoiceChat = false;
         console.log('Join Failure');
         console.log('join channel error', err)
       })

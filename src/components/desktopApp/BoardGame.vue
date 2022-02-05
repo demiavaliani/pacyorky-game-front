@@ -52,11 +52,11 @@
 
 						<b-col>
 							<RTCClient
-								v-if="game && game.token && game.token !== ''"
-								:token="game.token"
-								:channel="String(game.id)"
-							/>
-						</b-col>
+								v-if="game && currentDevicePlayer && currentDevicePlayer.voiceToken && currentDevicePlayer.voiceToken !== ''"
+								:token="currentDevicePlayer.voiceToken"
+					:channel="String(game.id)"
+          :uid="currentDevicePlayer.id"
+						/></b-col>
 
 						<b-col>
 							<div class="game-controls-box" style="min-height: 300px">
@@ -928,7 +928,7 @@ export default {
 	watch: {
 		game: {
 			handler: function() {
-				if (this.game && this.game.status === "STARTED" && this.game.players && this.devicePlayerId) {
+				if (this.game && this.game.players && this.devicePlayerId) {
 					this.currentDevicePlayer = this.game.players.filter(
 						player => player.id == this.devicePlayerId
 					)[0];
