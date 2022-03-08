@@ -69,14 +69,19 @@ export default {
 		} catch (error) { }
 	},
 
-    async attachAgoraId(uid) {
-        try {
-            return await axios.post("/api/v1/moderate/agoraId", uid, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-        } catch (error) { }
-    }
+	async attachAgoraId(uid) {
+		try {
+			return await axios.post("/api/v1/moderate/agoraId", uid, {
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			});
+		} catch (error) { }
+	},
 
+	async choosePrize(birthdayCard) {
+		try {
+			return await axios.post("/api/v1/game/choosePrize", birthdayCard);
+		} catch (error) { }
+	},
 }

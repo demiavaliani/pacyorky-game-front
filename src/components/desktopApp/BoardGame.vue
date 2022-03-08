@@ -52,10 +52,15 @@
 
 						<b-col>
 							<RTCClient
-								v-if="game && currentDevicePlayer && currentDevicePlayer.voiceToken && currentDevicePlayer.voiceToken !== ''"
+								v-if="
+									game &&
+										currentDevicePlayer &&
+										currentDevicePlayer.voiceToken &&
+										currentDevicePlayer.voiceToken !== ''
+								"
 								:token="currentDevicePlayer.voiceToken"
-					:channel="String(game.id)"
-          :uid="currentDevicePlayer.id"
+								:channel="String(game.id)"
+								:uid="currentDevicePlayer.id"
 						/></b-col>
 
 						<b-col>
@@ -85,26 +90,29 @@
 											>
 												<p>{{ $ml.get("throw_dice") }}</p>
 											</b-button>
-                      <b-button
-                          v-if="game.step.status === 'WAITING_VOTE'"
-                          @click="voteModalVisible = true"
-                          :disabled="!canVote"
-                          class="throw-dice-btn"
-                      >
-                        <p>{{ $ml.get("WAITING_VOTE") }}</p>
-                      </b-button>
+											<b-button
+												v-if="game.step.status === 'WAITING_VOTE'"
+												@click="voteModalVisible = true"
+												:disabled="!canVote"
+												class="throw-dice-btn"
+											>
+												<p>{{ $ml.get("WAITING_VOTE") }}</p>
+											</b-button>
 											<b-button
 												class="throw-dice-btn mr-3"
 												:disabled="showThrowCardsModalBtnDisabled"
-												@click="
-													throwCardsModalVisible = true;
-												"
+												@click="throwCardsModalVisible = true"
 												v-else-if="isCurrentPlayer && game.step.status === 'WAITING_CARD'"
 											>
 												<p>{{ $ml.get("throw_cards") }}</p>
 											</b-button>
 
-											<img :src="diceUrl" v-if="game.step.counter" :style="game.capacity > 4 ? 'width : 50%' : ''" style="margin-top: 5px"/>
+											<img
+												:src="diceUrl"
+												v-if="game.step.counter"
+												:style="game.capacity > 4 ? 'width : 50%' : ''"
+												style="margin-top: 5px"
+											/>
 										</div>
 
 										<div
@@ -241,9 +249,10 @@
 												currentLanguage = $ml.current.toLowerCase();
 											"
 										>
-											<img class="w-25 m-2" :src="require('@/assets/navbar/' + lang + '.svg')" />{{
-												lang
-											}}
+											<img
+												class="w-25 m-2"
+												:src="require('@/assets/navbar/' + lang + '.svg')"
+											/>{{ lang }}
 										</b-dropdown-item>
 									</b-dropdown>
 								</b-col>
@@ -411,11 +420,11 @@
 						{{ $ml.get("throw_cards") }}
 					</p>
 				</b-button>
-        <b-button @click="throwCardsModalVisible = false">
-          <p v-bind:style="{ color: 'white', fontSize: '22px' }">
-            {{ $ml.get("close") }}
-          </p>
-        </b-button>
+				<b-button @click="throwCardsModalVisible = false">
+					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
+						{{ $ml.get("close") }}
+					</p>
+				</b-button>
 			</template>
 		</InGameModal>
 
@@ -449,11 +458,11 @@
 						{{ $ml.get("WAITING_VOTE") }}
 					</p>
 				</b-button>
-        <b-button @click="voteModalVisible = false">
-          <p v-bind:style="{ color: 'white', fontSize: '22px' }">
-            {{ $ml.get("close") }}
-          </p>
-        </b-button>
+				<b-button @click="voteModalVisible = false">
+					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
+						{{ $ml.get("close") }}
+					</p>
+				</b-button>
 			</template>
 		</InGameModal>
 
@@ -550,6 +559,34 @@
 				<b-button @click="dayDescription = false">Close</b-button>
 			</template>
 		</InGameModal>
+
+		<InGameModal :modalVisible="birthdayModalVisible" :footerHidden="false" :headerHidden="true">
+			<template v-slot:upper-half>
+				<img
+					@click="chooseBirthdayCards('dishes', $event)"
+					class="mx-1 dishes"
+					:src="require('@/assets/cards/dishes/dishes.png')"
+				/>
+				<img
+					@click="chooseBirthdayCards('rituals', $event)"
+					class="mx-1 rituals"
+					:src="require('@/assets/cards/rituals/rituals.png')"
+				/>
+				<img
+					@click="chooseBirthdayCards('stuff', $event)"
+					class="mx-1 stuff"
+					:src="require('@/assets/cards/stuff/stuff.png')"
+				/>
+			</template>
+
+			<template v-slot:footer>
+				<b-button @click="submitBirthdayCard">
+					<p v-bind:style="{ color: 'white', fontSize: '22px' }">
+						Take
+					</p>
+				</b-button>
+			</template>
+		</InGameModal>
 	</div>
 </template>
 
@@ -599,7 +636,7 @@ export default {
 			showThrowCardsModalBtnDisabledTemporary: false,
 			showThrowCardsModalBtnDisabled: false,
 			voteModalVisible: false,
-      canVote: false,
+			canVote: false,
 			gameEndedModalVisible: false,
 			stepTimeOutModalVisible: false,
 
@@ -622,6 +659,9 @@ export default {
 			playersInGame: [],
 			currentDevicePlayer: {},
 			roomDetails: Object,
+
+			birthdayCardsArray: [],
+			birthdayModalVisible: false,
 		};
 	},
 
@@ -669,6 +709,39 @@ export default {
 			}
 		},
 
+		chooseBirthdayCards(cardType, ev) {
+			let elementStyle = ev.target.style;
+
+			if (this.birthdayCardsArray.length == 0) {
+				elementStyle.position = "relative";
+				elementStyle.bottom = "30px";
+
+				this.birthdayCardsArray.push(cardType);
+			} else if (this.birthdayCardsArray.length > 0 && this.birthdayCardsArray.includes(cardType)) {
+				elementStyle.position = "static";
+				elementStyle.bottom = "0";
+
+				this.birthdayCardsArray.pop();
+			} else {
+				this.birthdayCardsArray.push(cardType);
+
+				elementStyle.position = "relative";
+				elementStyle.bottom = "30px";
+
+				let previousElem = document.getElementsByClassName(this.birthdayCardsArray[0]);
+
+				previousElem[0].style.position = "static";
+				previousElem[0].style.bottom = "0";
+
+				this.birthdayCardsArray.shift();
+			}
+		},
+
+		submitBirthdayCard() {
+			this.birthdayModalVisible = false;
+			this.$refs.gameLogic.pickBirthdayCard(this.birthdayCardsArray[0]);
+		},
+
 		callThrowDice() {
 			this.diceBtnDisabled = true;
 			this.showThrowCardsModalBtnDisabled = true;
@@ -684,20 +757,20 @@ export default {
 			this.$refs.gameLogic.throwCards(this.cardsToThrow);
 			this.cardsToThrow = [];
 			this.throwCardsModalVisible = false;
-      this.showThrowCardsModalBtnDisabled = true;
+			this.showThrowCardsModalBtnDisabled = true;
 		},
 
 		populateVoteCardDecks(thrownCards) {
-			this.dishesDeckForVote = thrownCards.filter(card => card.cardType === 1);
-			this.ritualsDeckForVote = thrownCards.filter(card => card.cardType === 2);
-			this.stuffDeckForVote = thrownCards.filter(card => card.cardType === 3);
+			this.dishesDeckForVote = thrownCards.filter((card) => card.cardType === 1);
+			this.ritualsDeckForVote = thrownCards.filter((card) => card.cardType === 2);
+			this.stuffDeckForVote = thrownCards.filter((card) => card.cardType === 3);
 		},
 
 		callVote() {
 			this.$refs.gameLogic.vote(this.cardsToVote);
 			this.cardsToVote = [];
 			this.voteModalVisible = false;
-      this.canVote = false;
+			this.canVote = false;
 		},
 
 		leaveRoom() {
@@ -756,7 +829,7 @@ export default {
 			let area = document.getElementsByTagName("area");
 
 			area.forEach(() => {
-				addEventListener("click", event => {
+				addEventListener("click", (event) => {
 					event.preventDefault();
 					let dayName = event.target.dataset.name;
 					if (!dayName) {
@@ -780,7 +853,7 @@ export default {
 								dayName = this.currentDevicePlayer.currentDay.name;
 							} else {
 								let players = this.game.players.filter(
-									player =>
+									(player) =>
 										player.currentDay &&
 										player.currentDay.deskOrder == event.target.alt &&
 										player.currentDay.holiday
@@ -802,7 +875,7 @@ export default {
 			let images = require.context("../../assets/board-game/", true);
 			progress.max = images.keys().length;
 
-			images.keys().forEach(key => {
+			images.keys().forEach((key) => {
 				let img = new Image();
 				img.src = require("../../assets/board-game/" + key.replace("./", ""));
 				img.onload = () => {
@@ -875,7 +948,7 @@ export default {
 				if (snowflake) {
 					let snowflakeOpacityInterval = setInterval(() => {
 						if (snowflake.style.opacity == 0) {
-							snowflake.querySelectorAll("img").forEach(item => item.remove());
+							snowflake.querySelectorAll("img").forEach((item) => item.remove());
 							clearInterval(snowflakeOpacityInterval);
 						} else {
 							snowflake.style.opacity = snowflake.style.opacity - 0.1;
@@ -919,7 +992,7 @@ export default {
 		},
 
 		setRoomDetails() {
-			this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then(response => {
+			this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then((response) => {
 				this.roomDetails = response;
 			});
 		},
@@ -930,23 +1003,20 @@ export default {
 			handler: function() {
 				if (this.game && this.game.players && this.devicePlayerId) {
 					this.currentDevicePlayer = this.game.players.filter(
-						player => player.id == this.devicePlayerId
+						(player) => player.id == this.devicePlayerId
 					)[0];
 				}
 
 				if (Object.keys(this.currentDevicePlayer).length) {
 					let deck = this.currentDevicePlayer.deck;
 
-					this.dishesDeck = deck.filter(card => card.cardType === 1);
-					this.ritualsDeck = deck.filter(card => card.cardType === 2);
-					this.stuffDeck = deck.filter(card => card.cardType === 3);
+					this.dishesDeck = deck.filter((card) => card.cardType === 1);
+					this.ritualsDeck = deck.filter((card) => card.cardType === 2);
+					this.stuffDeck = deck.filter((card) => card.cardType === 3);
 				}
 
 				if (this.game && this.game.status === "STARTED" && this.game.players) {
-					if (
-						this.playersInGame.length === 0 ||
-						this.playersInGame.length !== this.game.players.length
-					) {
+					if (this.playersInGame.length === 0 || this.playersInGame.length !== this.game.players.length) {
 						this.playersInGame = this.game.players;
 						setTimeout(() => this.adjustImgMapCoords(this.playersInGame), 500);
 					}
@@ -980,6 +1050,19 @@ export default {
 					this.diceRolled = "each-roll";
 					this.adjustImgMapCoords([this.game.step.currentPlayer]);
 				}
+			}
+		},
+
+		"currentDevicePlayer.currentDay.holiday": function() {
+			if (
+				this.currentDevicePlayer &&
+				this.currentDevicePlayer.currentDay &&
+				(this.currentDevicePlayer.currentDay.name == "yangel" ||
+					this.game.step.currentPlayer.currentDay.name == "urodini")
+			) {
+				console.log("current holiday", this.game.step.currentPlayer.currentDay.name);
+				console.log("YESSS, IT'S MY BIRTHDAY TODAY!!!");
+				this.birthdayModalVisible = true;
 			}
 		},
 	},
@@ -1064,12 +1147,9 @@ p {
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
 	background-color: white;
-	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07),
-		0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
-		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275),
-		0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
-		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725),
-		0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
+	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07), 0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
+		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275), 0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
+		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725), 0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
 }
 
 .game-controls-box p {
@@ -1125,12 +1205,9 @@ p {
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
 	background-color: white;
-	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07),
-		0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
-		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275),
-		0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
-		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725),
-		0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
+	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07), 0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
+		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275), 0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
+		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725), 0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
 }
 
 .my-cards-box p {
@@ -1153,13 +1230,13 @@ p {
 	z-index: 9999;
 }
 
-.character-anchor:hover img{
-  position: absolute;
-  width: 17vw !important;
-  height: 20vw !important;
-  left: -75px;
-  bottom: 100px;
-  z-index: 9999;
+.character-anchor:hover img {
+	position: absolute;
+	width: 17vw !important;
+	height: 20vw !important;
+	left: -75px;
+	bottom: 100px;
+	z-index: 9999;
 }
 
 .first-row-deck .p-0:hover img {
@@ -1184,12 +1261,9 @@ p {
 	border: 1px solid #e4e4e4;
 	border-radius: 20px;
 	background-color: white;
-	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07),
-		0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
-		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275),
-		0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
-		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725),
-		0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
+	box-shadow: 0px 100px 80px rgba(205, 205, 205, 0.07), 0px 88.2875px 33.4221px rgba(205, 205, 205, 0.0503198),
+		0px 56.1188px 17.869px rgba(205, 205, 205, 0.0417275), 0px 30.0624px 10.0172px rgba(205, 205, 205, 0.035),
+		0px 13.7171px 5.32008px rgba(205, 205, 205, 0.0282725), 0px 4.3807px 2.21381px rgba(205, 205, 205, 0.0196802);
 }
 
 .my-progress-box p {

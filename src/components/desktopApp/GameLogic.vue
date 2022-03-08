@@ -30,23 +30,21 @@ export default {
 
 	methods: {
 		initializeGame() {
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				this.interval = setInterval(() => {
 					if (!Object.keys(this.game).length) {
 						// this.$emit("show-step-time-out-modal");
 						// clearInterval(this.interval);
-						this.$store
-							.dispatch("getGamesByIdAction", this.$route.params.id)
-							.then(async response => {
-								if (response.status === "WAITING") {
-									this.$emit("game-waiting-player-not-in-game");
-								} else if (response.status === "STARTED") {
-									this.$emit("game-started-player-not-in-game");
-								} else if (response.status === "FINISHED" || response.status === "CANCELLED") {
-									this.$emit("game-finished-or-cancelled");
-									clearInterval(this.interval);
-								}
-							});
+						this.$store.dispatch("getGamesByIdAction", this.$route.params.id).then(async (response) => {
+							if (response.status === "WAITING") {
+								this.$emit("game-waiting-player-not-in-game");
+							} else if (response.status === "STARTED") {
+								this.$emit("game-started-player-not-in-game");
+							} else if (response.status === "FINISHED" || response.status === "CANCELLED") {
+								this.$emit("game-finished-or-cancelled");
+								clearInterval(this.interval);
+							}
+						});
 					} else if (this.gameStatus === "FINISHED" || this.gameStatus === "CANCELLED") {
 						this.$emit("game-finished-or-cancelled");
 						clearInterval(this.interval);
@@ -61,7 +59,7 @@ export default {
 		},
 
 		initializeDevicePlayerId() {
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				this.$store.dispatch("setDevicePlayerIdAction").then(() => {
 					resolve();
 				});
@@ -77,7 +75,7 @@ export default {
 		},
 
 		throwCards(cardsToThrow) {
-			api.throwCards(cardsToThrow).then(res => {});
+			api.throwCards(cardsToThrow).then((res) => {});
 		},
 
 		getDroppedCards() {
@@ -86,9 +84,8 @@ export default {
 				this.stepStatus === "WAITING_VOTE" &&
 				this.currentTurnPlayerId !== this.devicePlayerId
 			) {
-				api
-					.getGame()
-					.then(res => {
+				api.getGame()
+					.then((res) => {
 						let cards = res.step.stepCards;
 						let cardsArray = [];
 						for (let item of cards) {
@@ -103,7 +100,7 @@ export default {
 		},
 
 		vote(cardsToVote) {
-			api.vote(cardsToVote).then(res => {});
+			api.vote(cardsToVote).then((res) => {});
 		},
 
 		setGameStatus() {
@@ -125,10 +122,7 @@ export default {
 		throwDiceDisabled() {
 			if (this.stepStatus !== "WAITING_DICE") {
 				this.$emit("throw-dice-disabled", true);
-			} else if (
-				this.stepStatus === "WAITING_DICE" &&
-				this.currentTurnPlayerId === this.devicePlayerId
-			) {
+			} else if (this.stepStatus === "WAITING_DICE" && this.currentTurnPlayerId === this.devicePlayerId) {
 				this.$emit("throw-dice-disabled", false);
 			}
 		},
@@ -137,6 +131,12 @@ export default {
 			if (this.stepStatus === "WAITING_CARD" && this.currentTurnPlayerId === this.devicePlayerId) {
 				this.$emit("show-throw-cards-modal");
 			}
+		},
+
+		pickBirthdayCard(card) {
+			api.choosePrize(card).then((res) => {
+				console.log("Card submitted", card);
+			});
 		},
 	},
 
