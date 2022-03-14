@@ -81,7 +81,30 @@ export default {
 
 	async choosePrize(birthdayCard) {
 		try {
-			return await axios.post("/api/v1/game/choosePrize", birthdayCard);
-		} catch (error) { }
+			return await axios.post("/api/v1/game/choosePrize", birthdayCard, {
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					card: birthdayCard
+				}),
+			});
+		} catch (error) { console.log("error", error) }
 	},
+
+	// async choosePrize(birthdayCard) {
+	// 	axios.post("/api/v1/game/choosePrize", {
+	// 		headers: {
+	// 			'Accept': 'application/json',
+	// 			'Content-Type': 'application/json'
+	// 		},
+	// 		body: JSON.stringify({
+	// 			card: birthdayCard
+	// 		}),
+	// 	}).then(response => {
+	// 		console.log("response")
+	// 		console.log(response)
+	// 	})
+	// },
 }

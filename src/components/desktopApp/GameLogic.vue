@@ -134,9 +134,7 @@ export default {
 		},
 
 		pickBirthdayCard(card) {
-			api.choosePrize(card).then((res) => {
-				console.log("Card submitted", card);
-			});
+			api.choosePrize(card).then((res) => {});
 		},
 	},
 

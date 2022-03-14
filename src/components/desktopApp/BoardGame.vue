@@ -661,7 +661,7 @@ export default {
 			roomDetails: Object,
 
 			birthdayCardsArray: [],
-			birthdayModalVisible: false,
+			birthdayModalVisible: true,
 		};
 	},
 
